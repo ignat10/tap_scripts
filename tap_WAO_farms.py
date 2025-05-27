@@ -1,5 +1,6 @@
 import time
 import os
+from PIL import Image
 
 
 ADB = "C: \\"  # дописать расположение ADB lenovo
@@ -14,7 +15,7 @@ point_harvest = (200, 1560)
 point_use = (530, 2330)
 point_map = (100, 2300)
 point_search = (1000, 1981)
-point_iron = (600, 2075)
+point_iron = (600, 2075)# point stone, wood, food = (600, 425, 256, 100,   2075)  --162
 point_stone = (425, 2075)
 point_wood = (256, 2075)
 point_food = (100, 2075)
@@ -25,7 +26,7 @@ point_gather = (775, 1158)
 point_go = (900, 2315)
 point_favorites = (70, 1823)
 point_elite = (700, 365)
-point_elite1 = (380, 780)
+point_elite_mine = (380, 780) # point_elite_mine2, 3, 4, 5 = (380 1010, 1230, 1460, 1690) ++230
 point_elite2 = (380, 1010)
 point_elite3 = (380, 1230)
 point_elite4 = (380, 1460)
@@ -39,3 +40,85 @@ point_google = (145, 790)  #google 2,3,4,5 y = 930, 1130, 1330, 1530
 point_castle1 = (500, 1000)
 point_castle2 = (500, 1100)
 point_confirm = (313, 1372)
+
+#functions
+def wait():
+    time.sleep(1)
+    os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
+
+def get_mine(): # to go to basic mine from the map
+    os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
+    time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_iron[0]} {point_iron[1]}")
+    time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
+    time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
+    time.sleep(0.5)
+
+    os.system("adb shell screencap -p /sdcard/screen.png")
+    os.system("adb pull /sdcard/screen.png")
+    img = Image.open("screen.png")
+    color = img.getpixel((point_gather[0], point_gather[1]))
+    print("color of gather if found mine", color)  # it to line up know that mine found
+    while True:
+        if color == color:  # put #(XXX, XXX, XXX)
+            wait()
+            os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
+            time.sleep(1)
+            os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
+            break
+        else:
+            os.system(f"{ADB} shell input tap {point_iron[0]} {point_iron[1]}")  # start from here points iron, stone, wood, food, lv 6,5,4
+            time.sleep(0.5)
+            os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
+
+# start script
+os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
+for i in range(4):#close ad (4 times close)
+    wait()        # close ad
+os.system(f"{ADB} shell input tap {point_help[0]} {point_help[1]}") # alliance help
+time.sleep(1)
+os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
+time.sleep(1)
+os.system(f"{ADB} shell input tap {point_use[0]} {point_use[1]}")
+for i in range(2):
+    wait()
+time.sleep(1)
+os.system(f"{ADB} shell input tap {point_map[0]} {point_map[1]}")
+time.sleep(5)
+
+for i in range(3):
+    get_mine()
+
+
+
+
+
+
+os.system(f"{ADB} shell input tap {point_favorites[0]} {point_favorites[1]}")
+time.sleep(0.5)
+os.system(f"{ADB} shell input tap {point_elite[0]} {point_elite[1]}")
+time.sleep(0.5)
+
+os.system("adb shell screencap -p /sdcard/screen.png") #
+
+os.system("adb pull /sdcard/screen.png")
+
+img = Image.open("screen.png")
+
+color = img.getpixel((point_elite_mine[0], point_elite_mine[1]))
+print(color) # just debug to know what number should I put up
+
+if color == color: # line up, color = (XXX, XXX, XXX)
+    os.system(f"{ADB} shell input tap {point_elite_mine[0]} {point_elite_mine[1]}")
+    time.sleep(1)
+    os.system(f"{ADB} shell input tap {point_gather_elite[0]} {point_gather_elite[1]}")
+    time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
+    print("point elite mine", point_elite_mine) # that and second print for debug (++230)
+    point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 230)
+    print("point elite mine", point_elite_mine)
+else:
+    print("some chemistry error")
+
