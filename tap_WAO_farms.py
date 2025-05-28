@@ -76,7 +76,7 @@ def get_mine(): # to go to basic mine from the map
     color = img.getpixel((point_gather[0], point_gather[1]))
     print("color of gather if found mine", color)  # it to line down to know that mine found
     while True:
-        if color == color:  # put #(XXX, XXX, XXX)
+        if color == (46, 37, 43, 255):  # put #(XXX, XXX, XXX) # I think that is good color
             wait()                                       # if found
             os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
             time.sleep(1)
@@ -86,7 +86,7 @@ def get_mine(): # to go to basic mine from the map
             break
         else:                                                # if not found
             find_another()
-            if mine_type < 490:
+            if mine_type < 470:
                 mine_type += 162
             else:
                 mine_type = 0
@@ -111,6 +111,8 @@ time.sleep(5)
 
 for i in range(3):
     get_mine()
+    lv = 0
+    mine_type = 0
 
 
 
