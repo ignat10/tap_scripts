@@ -22,6 +22,7 @@ point_food = (100, 2075)
 point_plus = (675, 2310)
 point_minus = (115, 2310)
 point_go_mine = (900, 2325)
+point_mine = (545, 1185)
 point_gather = (775, 1158)
 point_go = (900, 2315)
 point_favorites = (70, 1823)
@@ -44,15 +45,26 @@ point_confirm = (313, 1372)
 # 6 lv minus that number
 lv = 0 # iron first than - that
 mine_type = 0
+color = 0
 
 #functions
 def wait():
     time.sleep(1)
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
 
+def check_color():
+    global color, img
+    os.system("adb exec-out screencap -p > screen.png")
+    time.sleep(0.1)
+    img = Image.open("screen.png")
+    color = img.getpixel((point_gather[0], point_gather[1]))
+    print("color of gather if found mine", color)  # it to line down to know that mine found
+
 def find_another():
     global mine_type
     global lv
+    os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")
+    time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     for k in range(5):
@@ -64,32 +76,39 @@ def find_another():
     os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
     time.sleep(2)
 
+def gather_mine():
+    global mine_type, lv
+    os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
+    time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
+    lv = 0
+    mine_type = 0
+
 def get_mine(): # to go to basic mine from the map
     global mine_type, color, lv
-    color = 0
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
     time.sleep(0.5)
+    find_another()
+    check_color()
+    wait()
     while True:
-        if color == (46, 37, 43, 255):  # put #(XXX, XXX, XXX) # I think that is good color
-            wait()                                       # if found
-            os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
-            time.sleep(1)
-            os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
-            lv = 0
-            mine_type = 0
+        if color == (46, 37, 43, 255):  # put #(XXX, XXX, XXX) # I think that is good color                             # if found
+            gather_mine()
             break
-        else:                                                # if not found
-            find_another()
-            os.system("adb exec-out screencap -p > screen.png")
-            time.sleep(1)
-            img = Image.open("screen.png")
-            color = img.getpixel((point_gather[0], point_gather[1]))
-            print("color of gather if found mine", color)  # it to line down to know that mine found
-            if mine_type < 470:
-                mine_type += 162
-            else:
-                mine_type = 0
-                lv += 1
+        else:
+            os.system(f"adb shell input tap {point_mine[0]} {point_mine[1]}")
+            time.sleep(0.5)
+            check_color()
+            if color == (46, 37, 43, 255):
+                gather_mine()
+                break
+            else:           # if not found
+                find_another()
+                if mine_type < 470:
+                    mine_type += 162
+                else:
+                    mine_type = 0
+                    lv += 1
 
 # start script
 os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
@@ -110,8 +129,6 @@ time.sleep(5)
 
 for i in range(3):
     get_mine()
-    lv = 0
-    mine_type = 0
 
 
 
