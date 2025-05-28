@@ -65,8 +65,7 @@ def find_another():
     time.sleep(2)
 
 def get_mine(): # to go to basic mine from the map
-    global mine_type
-    global lv
+    global mine_type, color, lv
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
     time.sleep(0.5)
     while True:
