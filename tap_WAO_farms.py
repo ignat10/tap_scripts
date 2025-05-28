@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 
-ADB = "C:\platform-tools\adb.exe"  #include ADB
+ADB = r"C:\platform-tools\adb.exe"  #include ADB
 
 
 # add points to click
@@ -41,10 +41,9 @@ point_castle1 = (500, 1000)
 point_castle2 = (500, 1100)
 point_confirm = (313, 1372)
 
-lv = 0  # 6 lv minus that number
-lv_out = 0
-mine_type = 0 # iron first than - that
-mine_type_out = 0
+# 6 lv minus that number
+lv = 0 # iron first than - that
+mine_type = 0
 
 #functions
 def wait():
@@ -52,6 +51,8 @@ def wait():
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
 
 def find_another():
+    global mine_type
+    global lv
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
@@ -63,6 +64,8 @@ def find_another():
     time.sleep(0.5)
 
 def get_mine(): # to go to basic mine from the map
+    global mine_type
+    global lv
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
     time.sleep(0.5)
     find_another()
@@ -83,8 +86,6 @@ def get_mine(): # to go to basic mine from the map
             break
         else:                                                # if not found
             find_another()
-            global mine_type
-            global lv
             if mine_type < 490:
                 mine_type += 162
             else:
