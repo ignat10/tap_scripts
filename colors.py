@@ -2,6 +2,8 @@ import time
 import os
 from PIL import Image
 
+ADB = r"C:\platform-tools\adb.exe"
+
 point_gather = (775, 1158)
 
 os.system("adb shell screencap -p /sdcard/screen.png")
