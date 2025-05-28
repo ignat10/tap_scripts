@@ -84,8 +84,6 @@ def gather_mine():
     os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_back[0]} {point_back[1]}")
-    lv = 0
-    mine_type = 0
 
 def get_mine(): # to go to basic mine from the map
     global mine_type, color, lv
@@ -107,12 +105,12 @@ def get_mine(): # to go to basic mine from the map
                 gather_mine()
                 break
             else:           # if not found
-                find_another()
                 if mine_type < 470:
                     mine_type += 162
                 else:
                     mine_type = 0
                     lv += 1
+                find_another()
 
 # start script
 os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
