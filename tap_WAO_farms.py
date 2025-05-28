@@ -25,6 +25,7 @@ point_go_mine = (900, 2325)
 point_mine = (545, 1185)
 point_gather = (775, 1158)
 point_go = (900, 2315)
+point_back = (790, 2121)
 point_favorites = (70, 1823)
 point_elite = (700, 365)
 point_elite_mine = (380, 780) # point_elite_mine2, 3, 4, 5 = (380 1010, 1230, 1460, 1690) ++230
@@ -49,7 +50,7 @@ color = 0
 
 #functions
 def wait():
-    time.sleep(1)
+    time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
 
 def check_color():
@@ -81,6 +82,8 @@ def gather_mine():
     os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
+    time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_back[0]} {point_back[1]}")
     lv = 0
     mine_type = 0
 
@@ -115,11 +118,11 @@ os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily
 for i in range(4):#close ad (4 times close)
     wait()        # close ad
 os.system(f"{ADB} shell input tap {point_help[0]} {point_help[1]}") # alliance help
-time.sleep(1)
+time.sleep(0.5)
 os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
-time.sleep(0.5)
+time.sleep(0.3)
 os.system(f"{ADB} shell input tap {point_harvest[0]} {point_harvest[1]}")
-time.sleep(0.5)
+time.sleep(0.3)
 os.system(f"{ADB} shell input tap {point_use[0]} {point_use[1]}")
 for i in range(2):
     wait()
