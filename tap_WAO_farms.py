@@ -55,26 +55,20 @@ def find_another():
     global lv
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
-    os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
-    time.sleep(0.5)
+    for k in range(5):
+        os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
+        time.sleep(0.1)
     for j in range(lv):
         os.system(f"{ADB} shell input tap {point_minus[0]} {point_minus[1]}")
         time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
-    time.sleep(0.5)
+    time.sleep(2)
 
 def get_mine(): # to go to basic mine from the map
     global mine_type
     global lv
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
     time.sleep(0.5)
-    find_another()
-
-    os.system("adb exec-out screencap -p > screen.png")
-    time.sleep(1)
-    img = Image.open("screen.png")
-    color = img.getpixel((point_gather[0], point_gather[1]))
-    print("color of gather if found mine", color)  # it to line down to know that mine found
     while True:
         if color == (46, 37, 43, 255):  # put #(XXX, XXX, XXX) # I think that is good color
             wait()                                       # if found
@@ -86,6 +80,11 @@ def get_mine(): # to go to basic mine from the map
             break
         else:                                                # if not found
             find_another()
+            os.system("adb exec-out screencap -p > screen.png")
+            time.sleep(1)
+            img = Image.open("screen.png")
+            color = img.getpixel((point_gather[0], point_gather[1]))
+            print("color of gather if found mine", color)  # it to line down to know that mine found
             if mine_type < 470:
                 mine_type += 162
             else:
