@@ -75,7 +75,7 @@ def find_another():
         os.system(f"{ADB} shell input tap {point_minus[0]} {point_minus[1]}")
         time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
-    time.sleep(2)
+    time.sleep(1)
 
 def gather_mine():
     global mine_type, lv
@@ -92,8 +92,8 @@ def get_mine(): # to go to basic mine from the map
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
     time.sleep(0.5)
     find_another()
-    check_color()
     wait()
+    check_color()
     while True:
         if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):# put #(XXX, XXX, XXX) # I think that is good color                             # if found
             gather_mine()
