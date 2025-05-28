@@ -92,14 +92,14 @@ def get_mine(): # to go to basic mine from the map
     check_color()
     wait()
     while True:
-        if color == (46, 37, 43, 255):  # put #(XXX, XXX, XXX) # I think that is good color                             # if found
+        if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):# put #(XXX, XXX, XXX) # I think that is good color                             # if found
             gather_mine()
             break
         else:
             os.system(f"adb shell input tap {point_mine[0]} {point_mine[1]}")
             time.sleep(0.5)
             check_color()
-            if color == (46, 37, 43, 255):
+            if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):
                 gather_mine()
                 break
             else:           # if not found
