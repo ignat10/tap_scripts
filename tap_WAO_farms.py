@@ -99,6 +99,7 @@ def get_mine(): # to go to basic mine from the map
             gather_mine()
             break
         else:
+            time.sleep(0.5)
             os.system(f"adb shell input tap {point_mine[0]} {point_mine[1]}")
             time.sleep(0.5)
             check_color()
