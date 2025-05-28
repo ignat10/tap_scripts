@@ -8,7 +8,7 @@ ADB = r"C:\platform-tools\adb.exe"  #include ADB
 
 # add points to click
 point_take = (520, 1690)
-point_close = (500, 1925)
+point_close = (200, 1925)
 point_help = (1000, 2100)
 point_lord = (1000, 1830)
 point_harvest = (200, 1560)
@@ -99,7 +99,9 @@ for i in range(4):#close ad (4 times close)
 os.system(f"{ADB} shell input tap {point_help[0]} {point_help[1]}") # alliance help
 time.sleep(1)
 os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
-time.sleep(1)
+time.sleep(0.5)
+os.system(f"{ADB} shell input tap {point_harvest[0]} {point_harvest[1]}")
+time.sleep(0.5)
 os.system(f"{ADB} shell input tap {point_use[0]} {point_use[1]}")
 for i in range(2):
     wait()
