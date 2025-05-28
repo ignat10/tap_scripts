@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 
-ADB = "C: \\"  # дописать расположение ADB lenovo
+ADB = "C:\platform-tools\adb.exe"  #include ADB
 
 
 # add points to click
@@ -41,37 +41,55 @@ point_castle1 = (500, 1000)
 point_castle2 = (500, 1100)
 point_confirm = (313, 1372)
 
+lv = 0  # 6 lv minus that number
+lv_out = 0
+mine_type = 0 # iron first than - that
+mine_type_out = 0
+
 #functions
 def wait():
     time.sleep(1)
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
 
-def get_mine(): # to go to basic mine from the map
-    os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
-    time.sleep(0.5)
-    os.system(f"{ADB} shell input tap {point_iron[0]} {point_iron[1]}")
+def find_another():
+    os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
     time.sleep(0.5)
+    for j in range(lv):
+        os.system(f"{ADB} shell input tap {point_minus[0]} {point_minus[1]}")
+        time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
     time.sleep(0.5)
+
+def get_mine(): # to go to basic mine from the map
+    os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
+    time.sleep(0.5)
+    find_another()
 
     os.system("adb shell screencap -p /sdcard/screen.png")
     os.system("adb pull /sdcard/screen.png")
     img = Image.open("screen.png")
     color = img.getpixel((point_gather[0], point_gather[1]))
-    print("color of gather if found mine", color)  # it to line up know that mine found
+    print("color of gather if found mine", color)  # it to line down to know that mine found
     while True:
         if color == color:  # put #(XXX, XXX, XXX)
-            wait()
+            wait()                                       # if found
             os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
             time.sleep(1)
             os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
+            lv = 0
+            mine_type = 0
             break
-        else:
-            os.system(f"{ADB} shell input tap {point_iron[0]} {point_iron[1]}")  # start from here points iron, stone, wood, food, lv 6,5,4
-            time.sleep(0.5)
-            os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
+        else:                                                # if not found
+            find_another()
+            global mine_type
+            global lv
+            if mine_type < 490:
+                mine_type += 162
+            else:
+                mine_type = 0
+                lv += 1
 
 # start script
 os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
