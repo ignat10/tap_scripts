@@ -71,7 +71,9 @@ def get_mine(): # to go to basic mine from the map
     find_another()
 
     os.system("adb shell screencap -p /sdcard/screen.png")
+    time.sleep(1)
     os.system("adb pull /sdcard/screen.png")
+    time.sleep(1)
     img = Image.open("screen.png")
     color = img.getpixel((point_gather[0], point_gather[1]))
     print("color of gather if found mine", color)  # it to line down to know that mine found
