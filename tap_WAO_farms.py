@@ -1,9 +1,10 @@
 import time
 import os
 from PIL import Image
+import subprocess
 
 
-ADB = r"C:\platform-tools\adb.exe"  #include ADB
+ADB = r"C:\Users\ignat\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
 
 
 # add points to click
@@ -21,6 +22,7 @@ point_food = (100, 2075)
 point_plus = (675, 2310)
 point_minus = (115, 2310)
 point_go_mine = (900, 2325)
+point_search_back = (790, 1890)
 point_mine = (545, 1185)
 point_gather = (775, 1158)
 point_go = (900, 2315)
@@ -52,24 +54,22 @@ def wait():
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
 
-def check_color():
-    global color, img
-    os.system("adb exec-out screencap -p > screen.png")
-    time.sleep(0.1)
+def check_color(point_checking):
+    global img, color
+    f = open(f"screen.png", "wb")
+    subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
     img = Image.open("screen.png")
-    color = img.getpixel((point_gather[0], point_gather[1]))
-    print("color of gather if found mine", color)  # it to line down to know that mine found
+    color = img.getpixel((point_checking[0], point_checking[1]))
+    print("color of checking point", color)  # debug
 
 def find_another():
-    global mine_type
-    global lv
+    global mine_type, lv
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     for k in range(5):
         os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
-        time.sleep(0.1)
     for j in range(lv):
         os.system(f"{ADB} shell input tap {point_minus[0]} {point_minus[1]}")
         time.sleep(0.5)
@@ -87,42 +87,51 @@ def gather_mine():
 def get_mine(): # to go to basic mine from the map
     global mine_type, color, lv
     os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")  # At the map
-    time.sleep(0.5)
     find_another()
-    wait()
-    check_color()
     while True:
-        if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):# put #(XXX, XXX, XXX) # I think that is good color                             # if found
-            gather_mine()
-            break
-        else:
-            time.sleep(0.5)
-            os.system(f"adb shell input tap {point_mine[0]} {point_mine[1]}")
-            time.sleep(0.5)
-            check_color()
+        check_color(point_search_back)
+        if all(abs(a - t) < 5 for a, t in zip(color, (50, 45, 35, 255))):  # put #(XXX, XXX, XXX)
+            check_color(point_gather)
+            wait()
             if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):
+                wait()
                 gather_mine()
                 break
-            else:           # if not found
-                if mine_type < 470:
-                    mine_type += 162
-                else:
-                    mine_type = 0
-                    lv += 1
-                find_another()
+            else:
+                os.system(f"{ADB} shell input tap {point_mine[0]} {point_mine[1]}")
+                gather_mine()
+                break
+        else:
+            find_another()
+            check_color(point_gather)
+            if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):# put #(XXX, XXX, XXX) # I think that is good color                             # if found
+                wait()
+                gather_mine()
+                break
+            else:
+                wait()
+                os.system(f"adb shell input tap {point_mine[0]} {point_mine[1]}")
+                check_color(point_gather)    # check color of point_gather
+                if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):
+                    gather_mine()
+                    break
+                else:           # if not found
+                    if mine_type < 470:
+                        mine_type += 162
+                    else:
+                        mine_type = 0
+                        lv += 1
+                    find_another()
 
 # start script
 os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
-for i in range(3):#close ad (3 times close)
+for i in range(3):# close ad (3 times close)
     wait()        # close ad
 os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
-time.sleep(0.3)
 os.system(f"{ADB} shell input tap {point_harvest[0]} {point_harvest[1]}")
-time.sleep(0.3)
 os.system(f"{ADB} shell input tap {point_use[0]} {point_use[1]}")
 for i in range(2):
     wait()
-time.sleep(1)
 os.system(f"{ADB} shell input tap {point_map[0]} {point_map[1]}")
 time.sleep(5)
 
@@ -135,9 +144,7 @@ for i in range(3):
 
 
 os.system(f"{ADB} shell input tap {point_favorites[0]} {point_favorites[1]}")
-time.sleep(0.5)
 os.system(f"{ADB} shell input tap {point_elite[0]} {point_elite[1]}")
-time.sleep(0.5)
 
 os.system("adb shell screencap -p /sdcard/screen.png") #
 
