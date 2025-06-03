@@ -29,11 +29,11 @@ point_go = (900, 2315)
 point_back = (790, 2121)
 point_favorites = (70, 1823)
 point_elite = (700, 365)
-point_elite_mine = (380, 780) # point_elite_mine2, 3, 4, 5 = (380 1010, 1230, 1460, 1690) ++230
-point_elite2 = (380, 1010)
-point_elite3 = (380, 1230)
-point_elite4 = (380, 1460)
-point_elite5 = (380, 1690)
+point_elite_mine = (380, 786) # point_elite_mine2, 3, 4, 5 = (380 1015, 1230, 1460, 1690) ++228
+point_elite2 = (380, 1015)
+point_elite3 = (380, 1242)
+point_elite4 = (380, 1470)
+point_elite5 = (380, 1699)
 point_gather_elite = (770, 940)
 point_avatar = (90, 228)
 point_account = (180, 1100)
@@ -55,7 +55,7 @@ def wait():
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
 
 def check_color(point_checking):
-    global img, color
+    global color
     f = open(f"screen.png", "wb")
     subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
     img = Image.open("screen.png")
@@ -146,24 +146,14 @@ for i in range(3):
 os.system(f"{ADB} shell input tap {point_favorites[0]} {point_favorites[1]}")
 os.system(f"{ADB} shell input tap {point_elite[0]} {point_elite[1]}")
 
-os.system("adb shell screencap -p /sdcard/screen.png") #
-
-os.system("adb pull /sdcard/screen.png")
-
-img = Image.open("screen.png")
-
-color = img.getpixel((point_elite_mine[0], point_elite_mine[1]))
-print(color) # just debug to know what number should I put up
-
-if color == color: # line up, color = (XXX, XXX, XXX)
+check_color(point_elite_mine)
+if all(abs(a - t) < 5 for a, t in zip(color, (0, 0, 0, 255))): # line up, color = (XXX, XXX, XXX)
     os.system(f"{ADB} shell input tap {point_elite_mine[0]} {point_elite_mine[1]}")
-    time.sleep(1)
-    os.system(f"{ADB} shell input tap {point_gather_elite[0]} {point_gather_elite[1]}")
     time.sleep(0.5)
+    os.system(f"{ADB} shell input tap {point_gather_elite[0]} {point_gather_elite[1]}")
     os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
     print("point elite mine", point_elite_mine) # that and second print for debug (++230)
     point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 230)
     print("point elite mine", point_elite_mine)
 else:
     print("some chemistry error")
-
