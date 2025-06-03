@@ -9,7 +9,6 @@ ADB = r"C:\platform-tools\adb.exe"  #include ADB
 # add points to click
 point_take = (520, 1690)
 point_close = (200, 1925)
-point_help = (1000, 2100)
 point_lord = (1000, 1830)
 point_harvest = (200, 1560)
 point_use = (530, 2330)
@@ -114,10 +113,8 @@ def get_mine(): # to go to basic mine from the map
 
 # start script
 os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
-for i in range(4):#close ad (4 times close)
+for i in range(3):#close ad (3 times close)
     wait()        # close ad
-os.system(f"{ADB} shell input tap {point_help[0]} {point_help[1]}") # alliance help
-time.sleep(0.5)
 os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
 time.sleep(0.3)
 os.system(f"{ADB} shell input tap {point_harvest[0]} {point_harvest[1]}")
