@@ -96,7 +96,7 @@ def get_mine(): # to go to basic mine from the map
     find_another()
     while True:
         check_color(point_search_back)
-        if all(abs(a - t) < 5 for a, t in zip(color, (50, 45, 35, 255))):  # put #(XXX, XXX, XXX)
+        if all(abs(a - t) < 15 for a, t in zip(color, (50, 48, 40, 255))):  # put #(XXX, XXX, XXX)
             check_color(point_gather)
             wait()
             if all(abs(a - t) < 5 for a, t in zip(color, (46, 37, 43, 255))):
