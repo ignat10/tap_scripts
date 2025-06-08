@@ -66,7 +66,7 @@ def check_color(point_checking):
     color = img.getpixel((point_checking[0], point_checking[1]))
     print("color of checking point", color)  # debug
 
-def find_another():
+def find_another():# to find another mine if not found
     global mine_type, lv
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
