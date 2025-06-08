@@ -68,8 +68,6 @@ def check_color(point_checking):
 
 def find_another():
     global mine_type, lv
-    os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")
-    time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     for k in range(5):
