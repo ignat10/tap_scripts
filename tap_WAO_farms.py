@@ -78,6 +78,7 @@ def find_another():
         os.system(f"{ADB} shell input tap {point_minus[0]} {point_minus[1]}")
         time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
+    os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
     time.sleep(1)
 
 def gather_mine():
