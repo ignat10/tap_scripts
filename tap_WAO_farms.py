@@ -81,6 +81,7 @@ def find_another():
 
 def gather_mine():
     os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
+    os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
     if witch_mine > 3:
         check_color(point_vip)
         if not color == (0, 132, 162, 255):
