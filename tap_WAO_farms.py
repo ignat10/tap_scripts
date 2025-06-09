@@ -49,7 +49,7 @@ point_confirm = (313, 1372)
 # 6 lv minus that number
 lv = 0 # iron first than - that
 mine_type = 0
-color = 0
+color: tuple[int, int, int, int]
 witch_mine = 0
 acc = 1
 
