@@ -1,0 +1,33 @@
+# Окружение
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# PyCharm настройки
+.idea/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Логи и временные файлы
+*.log
+*.tmp
+
+# Тестовые базы данных, SQLite
+*.sqlite3
+*.db
+
+# Jupyter
+.ipynb_checkpoints
+
+# Python bytecode
+*.pyo
+*.pyd
+**/screen.png
+*.png
+/screen.png
+screen.png
+taap_scripts/
+tap_scripts

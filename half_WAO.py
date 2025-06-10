@@ -28,7 +28,7 @@ point_gather = (775, 1158)
 point_go = (900, 2315)
 point_back = (790, 2121)
 point_favorites = (70, 1823)
-point_favourites_back = (70, 150)
+point_favourites_back = (70, 200)
 point_elite = (700, 365)
 point_elite_mine = (380, 785) # point_elite_mine2, 3, 4, 5 = (380 1015, 1230, 1460, 1690) ++228
 point_elite2 = (380, 1015)
@@ -39,7 +39,7 @@ point_gather_elite = (770, 940)
 point_vip = (900, 1455)
 point_avatar = (90, 228)
 point_account = (180, 1100)
-point_switch = (550, 1528)
+point_switch = (550, 1570)# i think there is something wrong
 point_login = (560, 1320)
 point_google = (145, 790)  # google 2,3,4,5 y = 930, 1130, 1330, 1530
 point_castle1 = (400, 1000)
@@ -118,15 +118,12 @@ def second_farm():
     acc = 2
     point_google = (145, 790)  # google 2,3,4,5 y = 930, 1130, 1330, 1530
     os.system(f"{ADB} shell input tap {point_avatar[0]} {point_avatar[1]}")
-    time.sleep(1)
     os.system(f"{ADB} shell input tap {point_account[0]} {point_account[1]}")
     while True:
         os.system(f"{ADB} shell input tap {point_switch[0]} {point_switch[1]}")
-        time.sleep(0.5)
         os.system(f"{ADB} shell input tap {point_login[0]} {point_login[1]}")
         time.sleep(1)
         os.system(f"{ADB} shell input tap {point_google[0]} {point_google[1]}")
-        time.sleep(1)
         if acc == 1:
             os.system(f"{ADB} shell input tap {point_castle1[0]} {point_castle1[1]}")
             acc = 2
@@ -144,44 +141,19 @@ def second_farm():
 
 
 # start script
-for farm in range(8):
-    os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
-    for i in range(3):# close ad (3 times close)
-        wait()        # close ad
-    os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
-    time.sleep(0.5)
-    os.system(f"{ADB} shell input tap {point_harvest[0]} {point_harvest[1]}")
-    os.system(f"{ADB} shell input tap {point_use[0]} {point_use[1]}")
-    for i in range(2):
-        wait()
-    os.system(f"{ADB} shell input tap {point_map[0]} {point_map[1]}")
-    time.sleep(3)
 
-    for i in range(3):
-        get_mine()
-
-
-
-
-
-    os.system(f"{ADB} shell input tap {point_favorites[0]} {point_favorites[1]}")
-    os.system(f"{ADB} shell input tap {point_elite[0]} {point_elite[1]}")
-
-    print("color of blue is", check_color(point_elite_mine))
-    if check_color(point_elite_mine) == (34, 108, 137, 255): # line up, color = (XXX, XXX, XXX)
-        os.system(f"{ADB} shell input tap {point_elite_mine[0]} {point_elite_mine[1]}")
-        time.sleep(1)
-        os.system(f"{ADB} shell input tap {point_gather_elite[0]} {point_gather_elite[1]}")
-        time.sleep(1)
-        if not check_color(point_vip) == (0, 132, 162, 255):# if castle => 19
-            os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
-            point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
-            time.sleep(1)
-        else:
-            wait()
-            wait()
+print("color of blue is", check_color(point_elite_mine))
+if check_color(point_elite_mine) == (34, 108, 137, 255): # line up, color = (XXX, XXX, XXX)
+    os.system(f"{ADB} shell input tap {point_elite_mine[0]} {point_elite_mine[1]}")
+    time.sleep(1)
+    os.system(f"{ADB} shell input tap {point_gather_elite[0]} {point_gather_elite[1]}")
+    if not check_color(point_vip) == (0, 132, 162, 255):# if castle => 19
+        os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
+        point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
     else:
-        print("some chemistry error")
-        os.system(f"{ADB} shell input tap {point_favourites_back[0]} {point_favourites_back[1]}")
-        get_mine()
-    second_farm()
+        wait()
+        wait()
+else:
+    print("some chemistry error")
+    os.system(f"{ADB} shell input tap {point_favourites_back[0]} {point_favourites_back[1]}")
+second_farm()
