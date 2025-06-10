@@ -54,6 +54,9 @@ witch_mine = 0
 acc = 1
 
 #functions
+def click(cords):
+    os.system(f"{ADB} shell input tap {cords[0]} {cords[1]}")
+
 def wait():
     time.sleep(0.5)
     os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
