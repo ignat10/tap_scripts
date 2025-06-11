@@ -31,3 +31,4 @@ Thumbs.db
 screen.png
 taap_scripts/
 tap_scripts
+__pycache__/
