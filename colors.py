@@ -45,7 +45,7 @@ point_castle2 = (400, 1100)
 point_confirm = (313, 1372)
 point_vip = (891, 1411)
 
-point_checking = point_vip
+point_checking = point_elite_mine
 
 f = open(f"screen.png", "wb")
 subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)

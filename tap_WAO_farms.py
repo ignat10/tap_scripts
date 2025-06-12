@@ -125,9 +125,9 @@ def second_farm():
     time.sleep(1)
     os.system(f"{ADB} shell input tap {point_account[0]} {point_account[1]}")
     while True:
-        time.sleep(0.5)
+        time.sleep(1)
         os.system(f"{ADB} shell input tap {point_switch[0]} {point_switch[1]}")
-        time.sleep(0.5)
+        time.sleep(1)
         os.system(f"{ADB} shell input tap {point_login[0]} {point_login[1]}")
         time.sleep(1)
         os.system(f"{ADB} shell input tap {point_google[0]} {point_google[1]}")
@@ -171,6 +171,7 @@ for farm in range(8):
 
     os.system(f"{ADB} shell input tap {point_favorites[0]} {point_favorites[1]}")
     os.system(f"{ADB} shell input tap {point_elite[0]} {point_elite[1]}")
+    time.sleep(1)
 
     if check_color(point_elite_mine) == (34, 108, 137, 255):
         os.system(f"{ADB} shell input tap {point_elite_mine[0]} {point_elite_mine[1]}")
@@ -187,7 +188,7 @@ for farm in range(8):
             wait()
             wait()
     else:
-        print("some chemistry error")
+        print("some chemistry error", check_color(point_elite_mine))
         os.system(f"{ADB} shell input tap {point_favourites_back[0]} {point_favourites_back[1]}")
         get_mine()
     second_farm()
