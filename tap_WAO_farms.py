@@ -192,3 +192,4 @@ for farm in range(8):
         os.system(f"{ADB} shell input tap {point_favourites_back[0]} {point_favourites_back[1]}")
         get_mine()
     second_farm()
+    time.sleep(10)
