@@ -152,7 +152,6 @@ def get_elite():
 
 def second_farm():
     global point_google, acc
-    acc = 2
     os.system(f"{ADB} shell input tap {point_avatar[0]} {point_avatar[1]}")
     time.sleep(1)
     os.system(f"{ADB} shell input tap {point_account[0]} {point_account[1]}")
