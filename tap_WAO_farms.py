@@ -54,48 +54,63 @@ witch_mine = 0
 acc = 1
 
 #functions
-def click(cords):
+def click(cords: (int, int)):
     os.system(f"{ADB} shell input tap {cords[0]} {cords[1]}")
 
 def wait():
     time.sleep(0.5)
-    os.system(f"{ADB} shell input tap {point_close[0]} {point_close[1]}")
+    click(point_close)
 
-def check_color(point_checking):
+def check_color(point_checking: (int, int)):
     global img
     f = open(f"screen.png", "wb")
     subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
     img = Image.open("screen.png")
     return img.getpixel((point_checking[0], point_checking[1]))
 
+def harvest():
+    click(point_lord)
+    click(point_harvest)
+    click(point_use)
+    wait()
+    wait()
+
+def inside():
+    click(point_take)  # take daily gift                        # Inside the castle
+    for _ in range(3):  # close ad (3 times close)
+        wait()  # close ad
+    harvest()
+    click(point_map)
+    time.sleep(2)
+
 def find_another():# to find another mine if not found
     global mine_type, lv
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     for k in range(5):
-        os.system(f"{ADB} shell input tap {point_plus[0]} {point_plus[1]}")
+        click(point_plus)
     for j in range(lv):
-        os.system(f"{ADB} shell input tap {point_minus[0]} {point_minus[1]}")
+        click(point_minus)
         time.sleep(0.5)
     for l in range(3):
-        os.system(f"{ADB} shell input tap {point_go_mine[0]} {point_go_mine[1]}")
+        click(point_go_mine)
     time.sleep(1)
 
 def gather_mine():
     click(point_mine)
     time.sleep(1)
-    os.system(f"{ADB} shell input tap {point_gather[0]} {point_gather[1]}")
+    click(point_gather)
     if witch_mine < 3:
-        if not check_color(point_vip) == (0, 132, 162, 255):
-            os.system(f"{ADB} shell input tap {point_go[0]} {point_go[1]}")
-            os.system(f"{ADB} shell input tap {point_back[0]} {point_back[1]}")
-        else:
+        if check_color(point_vip) == (0, 132, 162, 255):# if I don't have free march
             wait()
             wait()
+            return
+        click(point_go)
+        click(point_back)
 
 def get_mine(): # to go to basic mine from the map
     global mine_type, lv, witch_mine
-    os.system(f"{ADB} shell input tap {point_search[0]} {point_search[1]}")
+    click(point_search)
     find_another()
     while True:
         if all(abs(a - t) < 5 for a, t in zip(check_color(point_search_back), (40, 36, 34, 255))):# if mine found
@@ -104,7 +119,7 @@ def get_mine(): # to go to basic mine from the map
                 gather_mine()
                 break
             else:# if mine found but point gather is invisible
-                os.system(f"{ADB} shell input tap {point_mine[0]} {point_mine[1]}")
+                click(point_mine)
                 time.sleep(0.5)
                 print(True if all(abs(a - t) < 20 for a, t in zip(check_color(point_gather), (45, 43, 37, 255))) else False)
                 gather_mine()
@@ -120,83 +135,74 @@ def get_mine(): # to go to basic mine from the map
 def get_elite():
     global point_elite_mine
     while True:
-        os.system(f"{ADB} shell input tap {point_favorites[0]} {point_favorites[1]}")
-        os.system(f"{ADB} shell input tap {point_elite[0]} {point_elite[1]}")
+        click(point_favorites)
+        click(point_elite)
         time.sleep(1)
 
         if check_color(point_elite_mine) == (34, 108, 137, 255):# color of blue
-            os.system(f"{ADB} shell input tap {point_elite_mine[0]} {point_elite_mine[1]}")
+            click(point_elite_mine)
             time.sleep(3)# too much but should work
             color = check_color(point_gather_elite)
             if not all(abs(a - t) < 10 for a, t in zip(color, (144, 72, 51, 255))):# if elite isn't occupied by another alliance
-                os.system(f"{ADB} shell input tap {point_gather_elite[0]} {point_gather_elite[1]}")
+                click(point_gather_elite)
                 time.sleep(1)
                 color = check_color(point_vip)
 
-                if not color == (0, 132, 162, 255):# if castle can go 19 # I think this color isn't True
+                if color != (0, 132, 162, 255):# if I don't need VIP # I think this color isn't True
                      if color == (55, 80, 18, 255):# if somebody is going to elite mine
                          click(point_vip)
-                     click(point_go)
-                     return 0
+                     click(point_go)# regularly I should be there
+                     return 1# 1 is alright I went to elite
                 else:
                     wait()
                     wait()
                     click(point_back)
-                    return 3
+                    return 3# if I need VIP
             else:# if elite is occupied by someone
                 point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
         else:
             print("some chemistry error", check_color(point_elite_mine))
-            os.system(f"{ADB} shell input tap {point_favourites_back[0]} {point_favourites_back[1]}")
-            return 1
+            click(point_favourites_back)
+            return 2# if there is no elites
 
 def second_farm():
     global point_google, acc
-    os.system(f"{ADB} shell input tap {point_avatar[0]} {point_avatar[1]}")
+    click(point_avatar)
     time.sleep(1)
-    os.system(f"{ADB} shell input tap {point_account[0]} {point_account[1]}")
+    click(point_account)
     while True:
         time.sleep(1)
-        os.system(f"{ADB} shell input tap {point_switch[0]} {point_switch[1]}")
+        click(point_switch)
         time.sleep(1)
-        os.system(f"{ADB} shell input tap {point_login[0]} {point_login[1]}")
+        click(point_login)
         time.sleep(1)
-        os.system(f"{ADB} shell input tap {point_google[0]} {point_google[1]}")
+        click(point_google)
         time.sleep(1)
         if acc == 1:
-            os.system(f"{ADB} shell input tap {point_castle1[0]} {point_castle1[1]}")
+            click(point_castle1)
             acc = 2
             break
         else:        # if 1 acc is used
             if check_color(point_castle2) == (42, 74, 102, 255):# if 2 acc exists
-               os.system(f"{ADB} shell input tap {point_castle2[0]} {point_castle2[1]}")# go inside
-               break
+                click(point_castle2)# go inside
+                break
             else:   # if 2 acc is not exists
-                wait()# close menu
+                 wait()# close menu
             acc = 1
             point_google = (145, point_google[1] + 200)# second google acc
-    os.system(f"{ADB} shell input tap {point_confirm[0]} {point_confirm[1]}")
+            click(point_confirm)# go inside
+            print("second farm")
+    time.sleep(10)
 
 
 
 # start script
 for farm in range(8):
-    os.system(f"{ADB} shell input tap {point_take[0]} {point_take[1]}") # take daily gift                        # Inside the castle
-    for i in range(3):# close ad (3 times close)
-        wait()        # close ad
-    os.system(f"{ADB} shell input tap {point_lord[0]} {point_lord[1]}")
-    time.sleep(0.5)
-    os.system(f"{ADB} shell input tap {point_harvest[0]} {point_harvest[1]}")
-    os.system(f"{ADB} shell input tap {point_use[0]} {point_use[1]}")
-    for i in range(2):
-        wait()
-    os.system(f"{ADB} shell input tap {point_map[0]} {point_map[1]}")
-    time.sleep(3)
+    inside()
 
     for i in range(3):
         get_mine()
 
-    if not get_elite() == True:# if there is no elite mines
+    if not get_elite() == 2:# 2 is if there is no elite mines, 1 is alright, 3 is I need VIP
         get_mine()
     second_farm()
-    time.sleep(10)
