@@ -39,7 +39,7 @@ point_gather_elite = (780, 930)
 point_vip = (891, 1411)
 point_avatar = (90, 228)
 point_account = (180, 1100)
-point_switch = (550, 1528)
+point_switch = (550, 1600)
 point_login = (560, 1320)
 point_google = (145, 930)  # google 1,2,3,4,5 y = 730, 930, 1130, 1330, 1530
 point_castle1 = (400, 1000)
@@ -69,18 +69,23 @@ def check_color(point_checking: (int, int)):
     return img.getpixel((point_checking[0], point_checking[1]))
 
 def harvest():
+    time.sleep(0.5)
     click(point_lord)
+    time.sleep(0.5)
     click(point_harvest)
+    time.sleep(0.5)
     click(point_use)
     wait()
     wait()
 
 def inside():
+    print("running inside")
     click(point_take)  # take daily gift                        # Inside the castle
-    for _ in range(3):  # close ad (3 times close)
+    for _ in range(4):  # close ad (4 times close)
         wait()  # close ad
     harvest()
     click(point_map)
+    print("running outside")
     time.sleep(2)
 
 def find_another():# to find another mine if not found
@@ -167,6 +172,8 @@ def get_elite():
 
 def second_farm():
     global point_google, acc
+    print("running second_farm")
+    time.sleep(1)
     click(point_avatar)
     time.sleep(1)
     click(point_account)
@@ -177,9 +184,10 @@ def second_farm():
         click(point_login)
         time.sleep(1)
         click(point_google)
-        time.sleep(1)
+        time.sleep(2)
         if acc == 1:
             click(point_castle1)
+            time.sleep(1)
             acc = 2
             break
         else:        # if 1 acc is used
@@ -190,8 +198,8 @@ def second_farm():
                  wait()# close menu
             acc = 1
             point_google = (145, point_google[1] + 200)# second google acc
-            click(point_confirm)# go inside
-            print("second farm")
+    click(point_confirm)# go inside
+    print("end second farm")
     time.sleep(10)
 
 
@@ -200,9 +208,9 @@ def second_farm():
 for farm in range(8):
     inside()
 
-    for i in range(3):
+    for _ in range(3):
         get_mine()
 
-    if not get_elite() == 2:# 2 is if there is no elite mines, 1 is alright, 3 is I need VIP
+    if get_elite() == 2:# 2 is if there is no elite mines, 1 is alright, 3 is I need VIP
         get_mine()
     second_farm()
