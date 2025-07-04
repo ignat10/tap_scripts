@@ -157,18 +157,18 @@ def get_elite():
                      if color == (55, 80, 18, 255):# if somebody is going to elite mine
                          click(point_vip)
                      click(point_go)# regularly I should be there
-                     return 1# 1 is alright I went to elite
+                     return True# is alright I went to elite
                 else:
                     wait()
                     wait()
                     click(point_back)
-                    return 3# if I need VIP
+                    return False# if I need VIP
             else:# if elite is occupied by someone
                 point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
         else:
             print("some chemistry error", check_color(point_elite_mine))
             click(point_favourites_back)
-            return 2# if there is no elites
+            return False# if there is no elites
 
 def second_farm():
     global point_google, acc
@@ -211,6 +211,7 @@ for farm in range(8):
     for _ in range(3):
         get_mine()
 
-    if get_elite() == 2:# 2 is if there is no elite mines, 1 is alright, 3 is I need VIP
+    if not get_elite():
         get_mine()
+
     second_farm()
