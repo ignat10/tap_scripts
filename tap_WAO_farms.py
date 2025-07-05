@@ -200,7 +200,7 @@ def second_farm():
             point_google = (145, point_google[1] + 200)# second google acc
     click(point_confirm)# go inside
     print("end second farm")
-    time.sleep(10)
+    time.sleep(15)
 
 
 
