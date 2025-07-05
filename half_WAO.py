@@ -47,7 +47,6 @@ point_castle2 = (400, 1100)
 point_confirm = (313, 1372)
 
 # 6 lv minus that number
-img = None
 lv = 0 # iron first than - that
 mine_type = 0
 witch_mine = 0
@@ -61,20 +60,29 @@ def wait():
     time.sleep(0.5)
     click(point_close)
 
-def check_color(point_checking: (int, int)):
-    global img
+def make_screen():
     f = open(f"screen.png", "wb")
     subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
-    img = Image.open("screen.png")
-    return img.getpixel((point_checking[0], point_checking[1]))
+    return Image.open("screen.png")
+
+def get_pixel(screen, cords):
+    return screen.getpixel(cords)
+
+def check_color(point_checking: (int, int)):
+    return make_screen().getpixel((point_checking[0], point_checking[1]))
+
+def similar_color(color: (int, int, int, int), another_color: (int, int, int, int), tolerance: int) -> bool:
+    return all(abs(a - t < tolerance) for a, t in zip(another_color, color))
 
 def harvest():
+    print("Harvesting...")
     time.sleep(0.5)
     click(point_lord)
     time.sleep(0.5)
     click(point_harvest)
     time.sleep(0.5)
     click(point_use)
+    print("end harvest")
     wait()
     wait()
 
@@ -102,8 +110,6 @@ def find_another():# to find another mine if not found
     time.sleep(1)
 
 def gather_mine():
-    click(point_mine)
-    time.sleep(1)
     click(point_gather)
     if witch_mine < 3:
         if check_color(point_vip) == (0, 132, 162, 255):# if I don't have free march
@@ -118,16 +124,19 @@ def get_mine(): # to go to basic mine from the map
     click(point_search)
     find_another()
     while True:
-        if all(abs(a - t) < 5 for a, t in zip(check_color(point_search_back), (40, 36, 34, 255))):# if mine found
+        img = make_screen()
+        if similar_color((40, 36, 34, 255), (get_pixel(img, point_search_back)), 5):# if mine found
             print("mine found")
-            if all(abs(a - t) < 20 for a, t in zip(check_color(point_gather), (45, 43, 37, 255))):# tuple of color gather mine # if mine found and gather is visible
-                gather_mine()
-                break
-            else:# if mine found but point gather is invisible
+            if not similar_color((45, 43, 37, 255), get_pixel(img, point_gather), 20):# if mine found but point gather is invisible
+                print(False)
                 click(point_mine)
-                time.sleep(0.5)
-                print(True if all(abs(a - t) < 20 for a, t in zip(check_color(point_gather), (45, 43, 37, 255))) else False)
-                gather_mine()
+                time.sleep(1)
+            print(True)
+            click(point_mine)
+            time.sleep(2)
+            gather_mine()
+            witch_mine += 1
+            return
         else:             # if mine not found
             if mine_type < 470:
                 mine_type += 162
@@ -135,7 +144,6 @@ def get_mine(): # to go to basic mine from the map
                 mine_type = 0
                 lv += 1
             find_another()
-    witch_mine += 1
 
 def get_elite():
     global point_elite_mine
@@ -157,18 +165,18 @@ def get_elite():
                      if color == (55, 80, 18, 255):# if somebody is going to elite mine
                          click(point_vip)
                      click(point_go)# regularly I should be there
-                     return 1# 1 is alright I went to elite
+                     return True# is alright I went to elite
                 else:
                     wait()
                     wait()
                     click(point_back)
-                    return 3# if I need VIP
+                    return False# if I need VIP
             else:# if elite is occupied by someone
                 point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
         else:
             print("some chemistry error", check_color(point_elite_mine))
             click(point_favourites_back)
-            return 2# if there is no elites
+            return False# if there is no elites
 
 def second_farm():
     global point_google, acc
@@ -177,33 +185,20 @@ def second_farm():
     click(point_avatar)
     time.sleep(1)
     click(point_account)
-    while True:
-        time.sleep(1)
-        click(point_switch)
-        time.sleep(1)
-        click(point_login)
-        time.sleep(1)
-        click(point_google)
-        time.sleep(1)
-        if acc == 1:
-            click(point_castle1)
-            time.sleep(1)
-            acc = 2
-            break
-        else:        # if 1 acc is used
-            if check_color(point_castle2) == (42, 74, 102, 255):# if 2 acc exists
-                click(point_castle2)# go inside
-                break
-            else:   # if 2 acc is not exists
-                 wait()# close menu
-            acc = 1
-            point_google = (145, point_google[1] + 200)# second google acc
+    time.sleep(1)
+    click(point_switch)
+    time.sleep(1)
+    click(point_login)
+    time.sleep(1)
+    click(point_google)
+    time.sleep(2)
+    click(point_castle2)
+    time.sleep(1)
     click(point_confirm)# go inside
     print("end second farm")
-    time.sleep(10)
+    time.sleep(15)
 
 
 
 # start script
-
-second_farm()
+get_mine()
