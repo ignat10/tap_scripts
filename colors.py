@@ -203,11 +203,5 @@ def second_farm():
 
 
 # start script
-bol = True
-img = make_screen()
-color = get_pixel(img, point_search_back)
-print(color)
-print(similar_color((40, 36, 34, 255), (get_pixel(img, point_search_back)), 5))# if mine found
-print(bol)
-bol = not bol
-print(bol)
+while True:
+    print(check_color(point_gather_elite))
