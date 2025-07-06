@@ -1,15 +1,36 @@
-# venv
-.venv/
-
-# cache
+# Окружение
+venv/
+env/
 __pycache__/
+*.py[cod]
 
-# IDE's trash
+# PyCharm настройки
 .idea/
 
-# screens
-*.png
+# Системные файлы
+.DS_Store
+Thumbs.db
 
-# local
-my_packages/local/
-/my_packages/data/client_secret.json
+# Логи и временные файлы
+*.log
+*.tmp
+
+# Тестовые базы данных, SQLite
+*.sqlite3
+*.db
+
+# Jupyter
+.ipynb_checkpoints
+
+# Python bytecode
+*.pyo
+*.pyd
+**/screen.png
+*.png
+/screen.png
+screen.png
+half_WAO.py
+times.py
+tap_scripts
+half.py
+__pycache__/
