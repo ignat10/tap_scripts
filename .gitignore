@@ -29,6 +29,7 @@ Thumbs.db
 *.png
 /screen.png
 screen.png
-taap_scripts/
+half_WAO.py
+times.py
 tap_scripts
 __pycache__/
