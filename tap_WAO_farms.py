@@ -146,35 +146,39 @@ def get_mine(): # to go to basic mine from the map
             find_another()
 
 def get_elite():
-    global point_elite_mine
+    global point_elite_mine, farm
     print("Elite")
     while True:
         click(point_favorites)
         click(point_elite)
         time.sleep(1)
-
         if check_color(point_elite_mine) == (34, 108, 137, 255):# color of blue
             click(point_elite_mine)
             time.sleep(3)# too much but should work
-            color = check_color(point_gather_elite)
-            if not all(abs(a - t) < 10 for a, t in zip(color, (144, 72, 51, 255))):# if elite isn't occupied by another alliance
+            color = check_color(point_elite_mine)
+            print("color of point gather is ", color)
+            if not similar_color((144, 72, 51, 255), color, 10):# if elite isn't occupied by another alliance
                 click(point_gather_elite)
                 time.sleep(1)
                 color = check_color(point_vip)
-
                 if color != (0, 132, 162, 255):# if I don't need VIP # I think this color isn't True
                      if color == (55, 80, 18, 255):# if somebody is going to elite mine
                          click(point_vip)
                      click(point_go)# regularly I should be there
-                     point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
+                     if farm != 0:
+                        point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
                      return True# is alright I went to elite
                 else:
                     wait()
                     wait()
                     click(point_back)
-                    return False# if I need VIP
+                    return True# if I need VIP
             else:# if elite is occupied by someone
-                point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
+                print("someone else is already elite")
+                if farm != 0:
+                  point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
+                else:
+                    return False
         else:
             print("some chemistry error", check_color(point_elite_mine))
             click(point_favourites_back)
