@@ -2,6 +2,7 @@ import time
 import os
 from PIL import Image
 import subprocess
+import cv2
 
 
 ADB = r"C:\Users\ignat\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
@@ -204,4 +205,16 @@ def second_farm():
 
 # start script
 while True:
-    print(check_color(point_gather_elite))
+    t = time.perf_counter()
+    temp = cv2.imread("temp.png")
+
+
+    print(temp.shape)
+    similarity = cv2.matchTemplate(temp, temp, cv2.TM_CCOEFF_NORMED)
+
+
+    x, val, y, cords = cv2.minMaxLoc(similarity)
+
+    print(f"{similarity} is similarity, {x}, {val}, {y} {cords} is x val y cords")
+    e = time.perf_counter()
+    print(e-t)
