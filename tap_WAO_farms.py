@@ -2,6 +2,7 @@ import time
 import os
 from PIL import Image
 import subprocess
+import cv2
 
 
 ADB = r"C:\Users\ignat\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
@@ -88,7 +89,7 @@ def harvest():
 
 def inside():
     print("running inside")
-    click(point_take)  # take daily gift                        # Inside the castle
+    # click(point_take)  # take daily gift                        # Inside the castle
     for _ in range(4):  # close ad (4 times close)
         wait()  # close ad
     harvest()
@@ -100,12 +101,12 @@ def find_another():# to find another mine if not found
     global mine_type, lv
     os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
-    for k in range(5):
+    for _ in range(5):
         click(point_plus)
-    for j in range(lv):
+    for _ in range(lv):
         click(point_minus)
         time.sleep(0.5)
-    for l in range(3):
+    for _ in range(3):
         click(point_go_mine)
     time.sleep(2)
 
