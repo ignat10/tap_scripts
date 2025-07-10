@@ -213,8 +213,8 @@ while True:
     similarity = cv2.matchTemplate(temp, temp, cv2.TM_CCOEFF_NORMED)
 
 
-    x, val, y, cords = cv2.minMaxLoc(similarity)
+    x, val, y, cor = cv2.minMaxLoc(similarity)
 
-    print(f"{similarity} is similarity, {x}, {val}, {y} {cords} is x val y cords")
+    print(f"{similarity} is similarity, {x}, {val}, {y} {cor} is x val y cords")
     e = time.perf_counter()
     print(e-t)
