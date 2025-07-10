@@ -2,7 +2,7 @@ import time
 import os
 from PIL import Image
 import subprocess
-import cv2
+# import cv2
 
 
 ADB = r"C:\Users\ignat\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
@@ -62,8 +62,8 @@ def wait():
     click(point_close)
 
 def make_screen():
-    f = open(f"screen.png", "wb")
-    subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
+    with open(f"screen.png", "wb") as f:
+        subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
     return Image.open("screen.png")
 
 def get_pixel(screen, cords):
@@ -214,14 +214,15 @@ def zeroing():
     # there can be zeroing lv (
 
 # start script
-for farm in range(8):
+for farm in range(7):
     inside()
 
-    for _ in range(3):
+    for _ in range(2):
         get_mine()
 
     if not get_elite():
         get_mine()
+    get_mine()
 
     second_farm()
     zeroing()
