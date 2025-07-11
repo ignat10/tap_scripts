@@ -156,7 +156,7 @@ def get_elite():
         if check_color(point_elite_mine) == (34, 108, 137, 255):# color of blue
             click(point_elite_mine)
             time.sleep(3)# too much but should work
-            color = check_color(point_elite_mine)
+            color = check_color(point_gather_elite)
             print("color of point gather is ", color)
             if not similar_color((144, 72, 51, 255), color, 10):# if elite isn't occupied by another alliance
                 click(point_gather_elite)
