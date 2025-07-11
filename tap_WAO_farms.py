@@ -140,8 +140,10 @@ def get_mine(): # to go to basic mine from the map
             return
         else:             # if mine not found
             if mine_type < 470:
+                print("second type")
                 mine_type += 162
             else:
+                print("less lv")
                 mine_type = 0
                 lv += 1
             find_another()
@@ -177,7 +179,7 @@ def get_elite():
             else:# if elite is occupied by someone
                 print("someone else is already elite")
                 if farm != 0:
-                  point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
+                  point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)# again while
                 else:
                     return False
         else:
