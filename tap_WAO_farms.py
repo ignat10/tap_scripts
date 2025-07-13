@@ -31,11 +31,8 @@ point_back = (790, 2121)
 point_favorites = (70, 1823)
 point_favourites_back = (70, 150)
 point_elite = (700, 365)
-point_elite_mine = (380, 785) # point_elite_mine2, 3, 4, 5 = (380 1015, 1230, 1460, 1690) ++228
-point_elite2 = (380, 1015)
-point_elite3 = (380, 1242)
-point_elite4 = (380, 1470)
-point_elite5 = (380, 1699)
+point_elite_blue = (380, 785) # point_elite_blue2, 3, 4, 5 = (380 1015, 1230, 1460, 1690) ++228
+point_elite_mine1 = (380, 785)
 point_gather_elite = (780, 930)
 point_vip = (891, 1411)
 point_avatar = (90, 228)
@@ -47,9 +44,9 @@ point_castle1 = (400, 1000)
 point_castle2 = (400, 1100)
 point_confirm = (313, 1372)
 
-# 6 lv minus that number
+
 lv = 0 # iron first than - that
-mine_type = 0
+mine_type = 0# 6 lv minus that number
 witch_mine = 0
 acc: bool = True
 
@@ -88,8 +85,8 @@ def harvest():
     wait()
 
 def inside():
-    print("running inside")
-    # click(point_take)  # take daily gift                        # Inside the castle
+    print("running inside")                        # Inside the castle
+    # click(point_take)  # take daily gift
     for _ in range(4):  # close ad (4 times close)
         wait()  # close ad
     harvest()
@@ -128,11 +125,12 @@ def get_mine(): # to go to basic mine from the map
         img = make_screen()
         if similar_color((40, 36, 34, 255), (get_pixel(img, point_search_back)), 5):# if mine found
             print("mine found")
-            if not similar_color((45, 43, 37, 255), get_pixel(img, point_gather), 20):# if mine found but point gather is invisible
+            if similar_color((45, 43, 37, 255), get_pixel(img, point_gather), 20):# if mine found and point gather is invisible
+                print(True)
+            else:# click on mine to get it visible
                 print(False)
                 click(point_mine)
                 time.sleep(1)
-            print(True)
             click(point_mine)
             time.sleep(2)
             gather_mine()
@@ -148,19 +146,28 @@ def get_mine(): # to go to basic mine from the map
                 lv += 1
             find_another()
 
-def get_elite():
-    global point_elite_mine, farm
+def second_point_blue():
+    global point_elite_blue
+    point_elite_blue = (point_elite_blue, point_elite_blue[1] + 228)
+
+def get_elite(farm):
     print("Elite")
+    match farm:
+        case 0 | 4:
+            point_elite_mine = point_elite_mine1
+            second_blue: bool = False
+        case _:
+            point_elite_mine = point_elite_blue
+            second_blue: bool = True
     while True:
         click(point_favorites)
         click(point_elite)
         time.sleep(1)
-        if check_color(point_elite_mine) == (34, 108, 137, 255):# color of blue
+        color = check_color(point_elite_mine)
+        if color == (34, 108, 137, 255):# color of blue
             click(point_elite_mine)
             time.sleep(3)# too much but should work
-            color = check_color(point_gather_elite)
-            print("color of point gather is ", color)
-            if not similar_color((144, 72, 51, 255), color, 10):# if elite isn't occupied by another alliance
+            if not similar_color((144, 72, 51, 255), check_color(point_gather_elite), 10):# if elite isn't occupied by another alliance
                 click(point_gather_elite)
                 time.sleep(1)
                 color = check_color(point_vip)
@@ -168,9 +175,9 @@ def get_elite():
                      if color == (55, 80, 18, 255):# if somebody is going to elite mine
                          click(point_vip)
                      click(point_go)# regularly I should be there
-                     if farm != 0:
-                        point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)
-                     return True# is alright I went to elite
+                     if second_blue:
+                         second_point_blue()
+                     return True# everything is alright I went to elite
                 else:
                     wait()
                     wait()
@@ -178,12 +185,12 @@ def get_elite():
                     return True# if I need VIP
             else:# if elite is occupied by someone
                 print("someone else is already elite")
-                if farm != 0:
-                  point_elite_mine = (point_elite_mine[0], point_elite_mine[1] + 228)# again while
+                if second_blue:
+                    second_point_blue()# again while
                 else:
                     return False
         else:
-            print("some chemistry error", check_color(point_elite_mine))
+            print("some chemistry error", color)
             click(point_favourites_back)
             return False# if there is no elites
 
@@ -216,13 +223,13 @@ def zeroing():
     # there can be zeroing lv (
 
 # start script
-for farm in range(7):
+for castle in range(7):
     inside()
 
     for _ in range(2):
         get_mine()
 
-    if not get_elite():
+    if not get_elite(castle):
         get_mine()
     get_mine()
 
