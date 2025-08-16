@@ -7,6 +7,9 @@ import subprocess
 
 ADB = r"D:\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
 
+# add resolutions
+realme_7_resolution = (1080, 2400)
+poco_X7_pro_resolution = (1220, 2712)
 
 # add points to click
 point_take = (520, 1690)
