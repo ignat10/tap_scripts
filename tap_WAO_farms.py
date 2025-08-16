@@ -54,6 +54,14 @@ witch_mine = 0
 acc: bool = True
 
 #functions
+def connect_adb():
+    print("connecting adb")
+    clipboard = paste()
+    while clipboard.find(IP) == -1:
+        clipboard = paste()
+    print(f"connecting to {clipboard}")
+    system(f"adb connect {clipboard}")
+
 def click(cords: (int, int)):
     os.system(f"{ADB} shell input tap {cords[0]} {cords[1]}")
 
