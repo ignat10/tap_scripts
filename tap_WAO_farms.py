@@ -5,7 +5,7 @@ import subprocess
 # import cv2
 
 
-ADB = r"C:\Users\ignat\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
+ADB = r"D:\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
 
 
 # add points to click
