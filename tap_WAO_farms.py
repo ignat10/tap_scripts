@@ -1,17 +1,20 @@
 import time
-import os
+from os import system
 from PIL import Image
 import subprocess
-# import cv2
+from my_packeges.poco_coordinates import points
+from pyperclip import paste
+import cv2
 
+# adb shell input tap 500 500
 
-ADB = r"D:\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
-
+# ADB = r"D:\platform-tools\adb.exe"   #include ADB lenovo ( "C:\platform-tools\adb.exe" )
+IP = "192.168.0.1"
 # add resolutions
-realme_7_resolution = (1080, 2400)
-poco_X7_pro_resolution = (1220, 2712)
+REALME_7_RESOLUTION = (1080, 2400)
+POCO_X7_PRO_RESOLUTION = (1220, 2712)
 
-# add points to click
+# add points to click as floats
 point_take = (520, 1690)
 point_close = (200, 1925)
 point_lord = (1000, 1830)
@@ -49,7 +52,7 @@ point_confirm = (313, 1372)
 
 
 lv = 0 # iron first than - that
-mine_type = 0# 6 lv minus that number
+mine_type = 0 # 6 lv minus that number
 witch_mine = 0
 acc: bool = True
 
@@ -63,15 +66,15 @@ def connect_adb():
     system(f"adb connect {clipboard}")
 
 def click(cords: (int, int)):
-    os.system(f"{ADB} shell input tap {cords[0]} {cords[1]}")
+    system(f"adb shell input tap {cords[0]} {cords[1]}")
 
 def wait():
     time.sleep(0.5)
-    click(point_close)
+    click(points["close"])
 
 def make_screen():
     with open(f"screen.png", "wb") as f:
-        subprocess.run([ADB, "exec-out", "screencap", "-p"], stdout = f)
+        subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout = f)
     return Image.open("screen.png")
 
 def get_pixel(screen, cords):
@@ -83,14 +86,17 @@ def check_color(point_checking: (int, int)):
 def similar_color(color: (int, int, int, int), another_color: (int, int, int, int), tolerance: int) -> bool:
     return all(abs(a - t < tolerance) for a, t in zip(another_color, color))
 
-def harvest():
+def lord_skills():
     print("Harvesting...")
     time.sleep(0.5)
-    click(point_lord)
+    click(points["lord"])
     time.sleep(0.5)
-    click(point_harvest)
+    system("adb shell input tap 1000 900")
+    click(points["use"])
     time.sleep(0.5)
-    click(point_use)
+    click(points["harvest"])
+    time.sleep(0.5)
+    click(points["use"])
     print("end harvest")
     wait()
     wait()
@@ -100,14 +106,14 @@ def inside():
     # click(point_take)  # take daily gift
     for _ in range(4):  # close ad (4 times close)
         wait()  # close ad
-    harvest()
+    lord_skills()
     click(point_map)
     print("running outside")
     time.sleep(2)
 
 def find_another():# to find another mine if not found
     global mine_type, lv
-    os.system(f"{ADB} shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
+    system(f"adb shell input tap {point_iron[0] - mine_type} {point_iron[1]}")
     time.sleep(0.5)
     for _ in range(5):
         click(point_plus)
@@ -145,6 +151,7 @@ def get_mine(): # to go to basic mine from the map
             click(point_mine)
             time.sleep(2)
             gather_mine()
+            print("gathering mine")
             witch_mine += 1
             return
         else:             # if mine not found
@@ -234,6 +241,7 @@ def zeroing():
     # there can be zeroing lv (
 
 # start script
+connect_adb()
 for castle in range(7):
     inside()
 
