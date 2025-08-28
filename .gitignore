@@ -11,4 +11,4 @@ __pycache__/
 *.png
 
 # local
-colors.py
+my_packages/local/
