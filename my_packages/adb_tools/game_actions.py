@@ -176,17 +176,20 @@ def zeroing():
     witch_mine = 0
     # there can be zeroing lv (
 
+def farm_castle(castle):
+    inside()
+
+    for _ in range(2):
+        get_mine()
+
+    if not get_elite(castle):
+        get_mine()
+    get_mine()
+
+    second_farm()
+    zeroing()
+
 
 def farming():
     for castle in range(7):
-        inside()
-
-        for _ in range(2):
-            get_mine()
-
-        if not get_elite(castle):
-            get_mine()
-        get_mine()
-
-        second_farm()
-        zeroing()
+        farm_castle(castle)
