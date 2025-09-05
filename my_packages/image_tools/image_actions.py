@@ -8,6 +8,11 @@ def make_screen():
         run(["adb", "exec-out", "screencap", "-p"], stdout = f)
     return Image.open("screen.png")
 
+def make_screen_cv2():
+    with open(f"screen.png", "wb") as f:
+        run(["adb", "exec-out", "screencap", "-p"], stdout = f)
+    return cv2.imread("screen.png")
+
 def get_pixel(screen, cords):
     return screen.getpixel(cords)
 
