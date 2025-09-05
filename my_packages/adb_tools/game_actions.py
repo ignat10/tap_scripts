@@ -3,7 +3,7 @@ from time import sleep
 from os import system
 
 # local packages
-from my_packages.adb_tools.poco_coordinates import points, STEPS, COLORS
+from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions
 
 lv = 0   # 6 lv minus that number      # lv_minuses
