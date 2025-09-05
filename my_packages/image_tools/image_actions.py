@@ -1,5 +1,6 @@
 from subprocess import run
 
+import cv2
 from PIL import Image
 
 def make_screen():
