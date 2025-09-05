@@ -191,5 +191,7 @@ def farm_castle(castle):
 
 
 def farming():
+    print("start in 5 seconds")
+    sleep(5)
     for castle in range(7):
         farm_castle(castle)
