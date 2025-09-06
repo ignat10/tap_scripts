@@ -4,13 +4,13 @@ from os import system
 
 # local packages
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
-from my_packages.image_tools import image_actions
+from my_packages.image_tools import image_actions, screen_states
+from my_packages.utils import inputter
 
 lv = 0   # 6 lv minus that number      # lv_minuses
-TYPE_GAP = 470
-mine_type = 0 # iron first than - that # type_minuses
 witch_mine = 0
 acc: bool = True
+castle = None
 
 def click(cords: (int, int)):
     system(f"adb shell input tap {cords[0]} {cords[1]}")
@@ -30,10 +30,11 @@ def lord_skills():
     click(points["harvest"])
     sleep(0.5)
     click(points["use"])
-    sleep(0.5)
-    wait()
+    sleep(0.3)
     click(points["recall_all"])
     sleep(0.5)
+    click(points["use"])
+    sleep(0.3)
     click(points["use"])
     print("end harvest")
     wait()
@@ -50,7 +51,7 @@ def inside():
     sleep(3)
 
 def find_another():# to find another mine if not found
-    click((points["iron"][0] - mine_type, points["iron"][1]))
+    click((points["iron"][0] + STEPS["mine_type"], points["iron"][1]))
     sleep(0.5)
     for _ in range(5):
         click(points["plus"])
@@ -77,13 +78,12 @@ def get_mine(): # to go to basic mine from the map
     sleep(1)
     find_another()
     while True:
-        img = image_actions.make_screen()
-        if image_actions.similar_color(COLORS["search_back"], (image_actions.get_pixel(img, points["search_back"])), 5):# if mine found
+        if screen_states.mine_found():
             print("mine found")
-            if image_actions.similar_color(image_actions.get_pixel(img, points["gather"]), COLORS["gather"], 20):# if mine found and point gather is invisible
-                print(True)
+            if screen_states.visible_gather():# if mine found and point gather is invisible
+                print("gather visible")
             else:# click on mine to get it visible
-                print(False)
+                print("gather not visible")
                 click(points["mine"])
                 sleep(1)
             click(points["mine"])
@@ -93,19 +93,19 @@ def get_mine(): # to go to basic mine from the map
             witch_mine += 1
             return
         else:             # if mine not found
-            if mine_type < TYPE_GAP:
-                print("second type")
-                mine_type += STEPS["mine"]
+            if STEPS["mine_type"] < STEPS["minimum_mine_type"]:
+                print("second mine type")
+                STEPS["mine_type"] += STEPS["mine"]
             else:
                 print("less lv")
-                mine_type = 0
+                STEPS["mine_type"] = 0
                 lv += 1
             find_another()
 
 
-def get_elite(farm):
+def get_elite():
     print("Elite")
-    match farm:
+    match castle:
         case 0 | 4:
             points["elite_mine"] = points["elite_mine1"]
             second_blue = False
@@ -115,6 +115,7 @@ def get_elite(farm):
         
     while True:
         click(points["favorites"])
+        sleep(1)
         click(points["elite"])
         sleep(1)
         color = image_actions.check_color(points["elite_mine"])
@@ -151,7 +152,7 @@ def get_elite(farm):
 def second_farm():
     global acc
     print("running second_farm")
-    sleep(1)
+    sleep(2)
     click(points["avatar"])
     sleep(1)
     click(points["account"])
@@ -176,22 +177,24 @@ def zeroing():
     witch_mine = 0
     # there can be zeroing lv (
 
-def farm_castle(castle):
-    inside()
+def outside():
+    get_mine()
+    get_mine()
 
-    for _ in range(2):
-        get_mine()
-
-    if not get_elite(castle):
+    if not get_elite():
         get_mine()
     get_mine()
 
+def farm_castle():
+    inside()
+    outside()
     second_farm()
     zeroing()
 
 
 def farming():
-    print("start in 5 seconds")
+    global castle
+    castle = inputter.farm_number()
     sleep(5)
-    for castle in range(7):
-        farm_castle(castle)
+    for _ in range(7):
+        farm_castle()
