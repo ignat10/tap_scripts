@@ -34,11 +34,11 @@ points = {
     "favorites": (79, 2060),
     "favourites_back": (79, 170),
     "elite": (791, 412),
-    "elite_blue":(429, 887),
-    "elite_mine1": (429, 887),
+    "elite_blue":(429, 757),
+    "elite_mine1": (429, 757),
     "gather_elite": (881, 1051),
     "vip": (1006, 1594),
-    "avatar": (102, 258),
+    "avatar": (100, 100),
     "account": (203, 1243),
     "switch": (621, 1808),
     "login": (633, 1492),
@@ -51,15 +51,17 @@ points = {
 
 STEPS = {
     "mine": -183,
-    "blue": 258,
-    "google": 226
+    "mine_type": 0,
+    "minimum_mine_type": -470,
+    "blue": 259,
+    "google": 226,
 }
 
 COLORS = {
     "search_back": (197, 170, 129, 255),
     "vip": (0, 132, 162, 255),
-    "gather": (45, 43, 37, 255),
-    "blue": (34, 108, 137, 255),
+    "gather": (45, 43, 37, 255), # V
+    "blue": (56, 107, 134, 255),
     "gather_elite": (144, 72, 51, 255),
     "occupied": (55, 80, 18, 255),
 
