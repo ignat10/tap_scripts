@@ -18,8 +18,10 @@ def connect_adb():
     while True:
         output = console(['adb', "devices"])
         print("stdout:", output)
-        devices = output.count("device") - 1 + output.count("offline")
-        print("devices:", devices)
+        online = output.count("device") - 1
+        offline = output.count("offline")
+        devices = online + offline
+        print(f"online: {online}, offline: {offline}:")
         match devices:
             case 0:
                 clipboard = paste()
@@ -27,12 +29,11 @@ def connect_adb():
                     print("connecting to device")
                     run(["adb", "connect", clipboard])
                 else:
-                    print(f"copy your ip, now clipboard = {clipboard}")
-            case 1:
+                    print(f"clipboard is '{clipboard}'\ncopy your ip")
+            case 1 if online:
                 break
             case _:
                 run(["adb", "disconnect"])
-                print("disconnect")
         sleep(1)
 
     print("connected to device")
