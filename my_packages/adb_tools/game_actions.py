@@ -6,10 +6,11 @@ from os import system
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions, screen_states
 from my_packages.utils import inputter
+from my_packages.utils.calculator import bots
 
 lv = 0   # 6 lv minus that number      # lv_minuses
 witch_mine = 0
-acc: bool = True
+second_google: bool = True
 castle = None
 
 def click(cords: (int, int)):
@@ -19,8 +20,8 @@ def wait():
     sleep(0.5)
     click(points["close"])
 
-def point_step(point: str, step: str, index):
-    points[point] = (points[point][index], points[point][index] + STEPS[step])
+def point_step(name: str, index):
+    points[name][index] = STEPS[name]
 
 def lord_skills():
     print("Harvesting...")
@@ -73,7 +74,7 @@ def gather_mine():
     click(points["back"])
 
 def get_mine(): # to go to basic mine from the map
-    global mine_type, lv, witch_mine
+    global lv, witch_mine
     click(points["search"])
     sleep(1)
     find_another()
@@ -131,7 +132,7 @@ def get_elite():
                          click(points["vip"])
                      click(points["go"])# regularly I should be there
                      if second_blue:
-                         point_step("elite_blue", "blue", 1)
+                         point_step("elite_blue", 1)
                      return True# everything is alright I went to elite
                 else:
                     wait()
@@ -141,7 +142,7 @@ def get_elite():
             else:# if elite is occupied by someone
                 print("someone else is already elite")
                 if second_blue:
-                    point_step("elite_blue", "blue", 1)# again while
+                    point_step("elite_blue", 1)# again while
                 else:
                     return False
         else:
@@ -150,7 +151,6 @@ def get_elite():
             return False# if there is no elites
 
 def second_farm():
-    global acc
     print("running second_farm")
     sleep(2)
     click(points["avatar"])
@@ -160,15 +160,18 @@ def second_farm():
     click(points["switch"])
     sleep(1)
     click(points["login"])
-    sleep(1)
+    sleep(2)
     click(points["google"])
     sleep(3)
     click(points["castle2"])
     sleep(1)
     click(points["confirm"])# go inside
-    if not acc:
-        point_step("google", "google", 1)
-    acc = not acc
+    while not bots[castle]:
+        castle += 1
+        if bots[castle]:
+
+    if not second_google:
+        point_step("google", 1)
     print("end second farm")
     sleep(20)# I can make the still checking there
 
@@ -198,3 +201,4 @@ def farming():
     sleep(5)
     for _ in range(7):
         farm_castle()
+        castle += 1
