@@ -43,8 +43,7 @@ points = {
     "switch": [621, 1808],
     "login": [633, 1492],
     "google": [164, 1051],
-    "castle1": [452, 1130],
-    "castle2": [452, 1243],
+    "castle": [452, 1130],
     "confirm": [354, 1550],
 }
 
@@ -55,6 +54,7 @@ STEPS = {
     "minimum_mine_type": -470,
     "elite_blue": 259,
     "google": 226,
+    "castle": 111,
 }
 
 COLORS = {
