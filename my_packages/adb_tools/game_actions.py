@@ -6,11 +6,12 @@ from os import system
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions, screen_states
 from my_packages.utils import inputter
-from my_packages.utils.calculator import bots
+from my_packages.data.accounts import farms
 
 lv = 0   # 6 lv minus that number      # lv_minuses
 witch_mine = 0
-second_google: bool = True
+which_google = 1
+which_acc = 1
 castle = None
 
 def click(cords: (int, int)):
@@ -151,7 +152,15 @@ def get_elite():
             return False# if there is no elites
 
 def second_farm():
+    global which_google, which_acc
     print("running second_farm")
+    if which_acc < farms[which_google]:
+        point_step("castle", 1)
+    else:
+        which_google += 1
+        point_step("google", 1)
+        which_acc = 1
+
     sleep(2)
     click(points["avatar"])
     sleep(1)
@@ -163,15 +172,9 @@ def second_farm():
     sleep(2)
     click(points["google"])
     sleep(3)
-    click(points["castle2"])
+    click(points["castle"])
     sleep(1)
     click(points["confirm"])# go inside
-    while not bots[castle]:
-        castle += 1
-        if bots[castle]:
-
-    if not second_google:
-        point_step("google", 1)
     print("end second farm")
     sleep(20)# I can make the still checking there
 
