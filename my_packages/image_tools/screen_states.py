@@ -17,9 +17,15 @@ def mine_found():
     fullscreen = image_actions.make_screen_cv2()
     city19 = cv2.imread(path("city19"))
     search_menu = cv2.imread(path("search_mine_menu"))
-    is_city = True if cv2.minMaxLoc(cv2.matchTemplate(fullscreen, city19, cv2.TM_CCORR_NORMED))[1] > 0.95 else False
-    is_map = True if cv2.minMaxLoc(cv2.matchTemplate(fullscreen, search_menu, cv2.TM_CCORR_NORMED))[1] > 0.95 else False
-    print(f"city {is_city} || map {is_map}")
+    city_day = cv2.imread(path("city_day_19"))
+
+    float_city = cv2.minMaxLoc(cv2.matchTemplate(fullscreen, city19, cv2.TM_CCORR_NORMED))[1]
+    float_city_day = cv2.minMaxLoc(cv2.matchTemplate(fullscreen, city_day, cv2.TM_CCORR_NORMED))[1]
+    float_menu = cv2.minMaxLoc(cv2.matchTemplate(fullscreen, search_menu, cv2.TM_CCORR_NORMED))[1]
+
+    is_city = True if (float_city > 0.95) or (float_city_day > 0.95) else False
+    is_map = True if float_menu > 0.95 else False
+    print(f"city {float_city}, {is_city} || map {float_menu}, {is_map}")
     return is_map and not is_city
 
 def visible_gather():
