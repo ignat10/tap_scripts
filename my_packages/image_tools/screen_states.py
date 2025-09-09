@@ -30,23 +30,19 @@ def visible_gather():
     is_gather = True if cv2.minMaxLoc(result)[1] > 0.90 else False
     return is_gather
 
-if __name__ == "__screen_states__":
-    # with open(f"screen.png", "wb") as f:
-    #     subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout = f)
-    #
-    # print("sleep")
-    # time.sleep(4)
-    #
-    # with open("temp.png", "wb") as f:
-    #     subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout=f)
-    #
-    # main = cv2.imread("temp.png")
-    # main = cv2.imread(path("mine_found"))
-    # part = cv2.imread(path("city19"))
-    # result = cv2.matchTemplate(main, part, cv2.TM_CCORR_NORMED)
-    # _, max_val, _, max_loc = cv2.minMaxLoc(result)
-    # print(max_val, max_loc)
-    # screen = cv2.imread("screens/screen.png")
-    # img = cv2.imread("screens/screen2.png")
-    # print(cv2.PSNR(screen, img))
-    print(visible_gather())
+if __name__ == "__main__":
+    connect_adb()
+    with open(f"screen.png", "wb") as f:
+        subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout = f)
+
+    print("sleep")
+    time.sleep(4)
+
+    with open("temp.png", "wb") as f:
+        subprocess.run(["adb", "exec-out", "screencap", "-p"], stdout=f)
+
+    main = cv2.imread("screen.png")
+    part = cv2.imread(path("event_add3"))
+    result = cv2.matchTemplate(main, part, cv2.TM_CCORR_NORMED)
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+    print(max_val, max_loc)
