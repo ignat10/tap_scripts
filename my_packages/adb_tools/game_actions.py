@@ -24,6 +24,10 @@ def wait():
 def point_step(name: str, index):
     points[name][index] = STEPS[name]
 
+def close_add():
+    while (coords := screen_states.get_coords_add()) is not None:
+        click(coords)
+
 def lord_skills():
     print("Harvesting...")
     sleep(0.5)
@@ -36,7 +40,7 @@ def lord_skills():
     click(points["recall_all"])
     sleep(0.5)
     click(points["use"])
-    sleep(0.3)
+    sleep(1)
     click(points["use"])
     print("end harvest")
     wait()
@@ -45,8 +49,7 @@ def lord_skills():
 def inside():
     print("running inside")                        # Inside the castle
     # click(point_take)  # take daily gift
-    for _ in range(4):  # close ad (4 times close)
-        wait()  # close ad
+    close_add()
     lord_skills()
     click(points["map"])
     print("running outside")
@@ -95,7 +98,7 @@ def get_mine(): # to go to basic mine from the map
             witch_mine += 1
             return
         else:             # if mine not found
-            if STEPS["mine_type"] < STEPS["minimum_mine_type"]:
+            if STEPS["mine_type"] > STEPS["minimum_mine_type"]:
                 print("second mine type")
                 STEPS["mine_type"] += STEPS["mine"]
             else:
