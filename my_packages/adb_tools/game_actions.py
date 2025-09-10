@@ -24,7 +24,9 @@ def wait():
     click(points["close"])
 
 def point_step(name: str, index):
-    points[name][index] = STEPS[name]
+    point = points[name]
+    point[index] += STEPS[name]
+    return point
 
 def close_add():
     while (coords := screen_states.get_coords_add()) is not None:
@@ -159,12 +161,8 @@ def get_elite():
 def second_farm():
     global which_google, which_acc
     print("running second_farm")
-    if which_acc < farms[which_google]:
-        point_step("castle", 1)
-    else:
-        which_google += 1
-        point_step("google", 1)
-        which_acc = 1
+
+    set_which(1)
 
     sleep(2)
     click(points["avatar"])
@@ -175,9 +173,9 @@ def second_farm():
     sleep(1)
     click(points["login"])
     sleep(2)
-    click(points["google"])
+    click(point_step("google", 1))
     sleep(3)
-    click(points["castle"])
+    click(point_step("castle", 1))
     sleep(1)
     click(points["confirm"])# go inside
     print("end second farm")
@@ -187,6 +185,15 @@ def zeroing():
     global witch_mine
     witch_mine = 0
     # there can be zeroing lv (
+
+def set_which(acc_steps):
+    global which_google, which_acc
+    for _ in range(acc_steps):
+        if which_acc < farms[which_google]:
+            which_acc += 1
+        else:
+            which_google += 1
+            which_acc = 1
 
 def outside():
     get_mine()
