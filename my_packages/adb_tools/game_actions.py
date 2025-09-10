@@ -206,7 +206,6 @@ def farm_castle():
 def farming():
     global castle
     castle = inputter.farm_number()
-    sleep(5)
     for _ in range(7):
         farm_castle()
         castle += 1
