@@ -14,10 +14,10 @@ def console(command: list[str]) -> str:
     ).stdout
 
 def list_devices() -> list[tuple]:
-    output = console(["adb, devices"])
+    output = console(["adb", "devices"])
     lines = output.splitlines()
     devices = []
-    for line in lines:
+    for line in lines[1::]:
         if line.strip():
             name, status = line.split("\t")
             devices.append((name, status))
@@ -30,27 +30,27 @@ def connect_adb():
     while True:
         devices = list_devices()
         print("devices:", devices)
-        active_device = None
         for serial, status in devices:
             if status == "device":
-                active_device = serial
+                _device_id = serial
                 break
 
-        match active_device:
-            case 0:
-                clipboard = paste()
-                if clipboard.find(IP) != -1:
-                    print("connecting to device")
-                    run(["adb", "connect", clipboard])
-                else:
-                    print(f"clipboard is '{clipboard}'\ncopy your ip")
-            case 1:
-                break
-            case _:
-                pass
+        print("active_device:", _device_id)
+        if _device_id is not None:
+            break
+        else:
+            clipboard = paste()
+            if clipboard.find(IP) != -1:
+                print("connecting to device")
+                run(["adb", "connect", clipboard])
+            else:
+                print(f"clipboard is '{clipboard}'\ncopy your ip")
         sleep(1)
 
     print("connected to device")
+    return _device_id
 
 def get_device_name():
+    if _device_id is None:
+        return connect_adb()
     return _device_id
