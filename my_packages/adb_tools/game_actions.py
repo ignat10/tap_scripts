@@ -11,8 +11,8 @@ from my_packages.adb_tools.adb_config import get_device_name
 
 lv = 0   # 6 lv minus that number      # lv_minuses
 witch_mine = 0
-which_google = 1
-which_acc = 1
+which_google = 0
+which_acc = 0
 castle = None
 device = get_device_name()
 
@@ -29,6 +29,7 @@ def point_step(name: str, index):
     return point
 
 def close_add():
+    print("Closing...")
     while (coords := screen_states.get_coords_add()) is not None:
         click(coords)
 
@@ -43,8 +44,6 @@ def lord_skills():
     sleep(0.3)
     click(points["recall_all"])
     sleep(0.5)
-    click(points["use"])
-    sleep(1)
     click(points["use"])
     print("end harvest")
     wait()
@@ -73,12 +72,14 @@ def find_another():# to find another mine if not found
 
 def gather_mine():
     click(points["gather"])
-    if witch_mine < 3:
-        if image_actions.check_color(points["vip"]) == COLORS["vip"]:# if I don't have free march
-            wait()
-            wait()
-            return
+    sleep(0.5)
+    # if witch_mine < 3:
+    #     if image_actions.check_color(points["vip"]) == COLORS["vip"]:# if I don't have free march
+    #         wait()
+    #         wait()
+    #         return
     click(points["go"])
+    sleep(0.5)
     click(points["back"])
 
 def get_mine(): # to go to basic mine from the map
@@ -125,34 +126,19 @@ def get_elite():
     while True:
         click(points["favorites"])
         sleep(1)
-        click(points["elite"])
+        click(points["alliance_elite"])
         sleep(1)
-        color = image_actions.check_color(points["elite_mine"])
-        if color == COLORS["blue"]:# color of blue
-            click(points["elite_mine"])
+        color = image_actions.check_color(points["elite_blue"])
+        if color == COLORS["elite_blue"]:# color of blue
+            click(points["elite_blue"])
             sleep(3)# too much but should work
-            if not image_actions.similar_color(image_actions.check_color(points["gather_elite"]), COLORS["gather_elite"], 10):# if elite isn't occupied by another alliance
-                click(points["gather_elite"])
-                sleep(1)
-                color = image_actions.check_color(points["vip"])
-                if color != COLORS["vip"]:# if I don't need VIP # I think this color isn't True
-                     if color == COLORS["occupied"]:# if somebody is going to elite mine
-                         click(points["vip"])
-                     click(points["go"])# regularly I should be there
-                     if second_blue:
-                         point_step("elite_blue", 1)
-                     return True# everything is alright I went to elite
-                else:
-                    wait()
-                    wait()
-                    click(points["back"])
-                    return True# if I need VIP
-            else:# if elite is occupied by someone
-                print("someone else is already elite")
-                if second_blue:
-                    point_step("elite_blue", 1)# again while
-                else:
-                    return False
+            click(points["gather_elite"])
+            sleep(1)
+            click(points["go"])# regularly I should be there
+
+            if second_blue:
+                points["elite_blue"] = point_step("elite_blue", 1)
+            return True# everything is alright I went to elite
         else:
             print("some chemistry error", color)
             click(points["favourites_back"])
@@ -212,7 +198,8 @@ def farm_castle():
 
 def farming():
     global castle
-    castle = inputter.farm_number()
+    set_which(inputter.farm_number())
     for _ in range(7):
+        print(f"farming castle {castle}")
         farm_castle()
         castle += 1
