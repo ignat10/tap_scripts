@@ -33,7 +33,7 @@ points = {
     "back": [892, 2397],
     "favorites": [79, 2060],
     "favourites_back": [79, 170],
-    "elite": [791, 412],
+    "alliance_elite": [791, 300],
     "elite_blue":[429, 757],
     "elite_mine1": [429, 757],
     "gather_elite": [881, 1051],
@@ -61,7 +61,7 @@ COLORS = {
     "search_back": [197, 170, 129, 255],
     "vip": [0, 132, 162, 255],
     "gather": [45, 43, 37, 255], # V
-    "blue": [56, 107, 134, 255],
+    "elite_blue": [56, 107, 134, 255],
     "gather_elite": [144, 72, 51, 255],
     "occupied": [55, 80, 18, 255],
 
