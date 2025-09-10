@@ -3,14 +3,20 @@ from subprocess import run
 import cv2
 from PIL import Image
 
+from my_packages.adb_tools.adb_config import get_device_name
+
+device = get_device_name()
+
 def make_screen():
     with open(f"screen.png", "wb") as f:
-        run(["adb", "exec-out", "screencap", "-p"], stdout = f)
-    return Image.open("screen.png")
+        run(["adb", "-s", device, "exec-out", "screencap", "-p"], stdout = f)
+
+def open_screen_PIL():
+    make_screen()
+    return Image.open(f"screen.png")
 
 def make_screen_cv2():
-    with open(f"screen.png", "wb") as f:
-        run(["adb", "exec-out", "screencap", "-p"], stdout = f)
+    make_screen()
     return cv2.imread("screen.png")
 
 def get_pixel(screen, cords):
