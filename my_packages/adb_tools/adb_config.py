@@ -51,3 +51,6 @@ def connect_adb():
         sleep(1)
 
     print("connected to device")
+
+def get_device_name():
+    return _device_id
