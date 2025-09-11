@@ -30,8 +30,11 @@ def point_step(name: str, index):
 
 def close_add():
     print("Closing...")
-    while (coords := screen_states.get_coords_add()) is not None:
-        click(coords)
+    while not screen_states.main_menu():
+        if (coords := screen_states.get_coords_add()) is not None:
+            click(coords)
+        else:
+            wait()
 
 def lord_skills():
     print("Harvesting...")
@@ -198,7 +201,8 @@ def farm_castle():
 
 def farming():
     global castle
-    set_which(inputter.farm_number())
+    castle = inputter.farm_number()
+    set_which(castle)
     for _ in range(7):
         print(f"farming castle {castle}")
         farm_castle()
