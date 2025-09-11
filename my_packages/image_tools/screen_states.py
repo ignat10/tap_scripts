@@ -8,7 +8,6 @@ from my_packages.image_tools import image_actions
 screens_path = r"D:\Documents\GitHub\PythonProject\tap_scripts\my_packages\image_tools\screens\\"
 format = r".png"
 
-xs = sum(1 for name in os.listdir(screens_path) if "x" in name)
 
 def path(name: str):
     return screens_path + name + format
@@ -18,12 +17,21 @@ def where_x(fullscreen, name: str):
     part = cv2.imread(path(name))
     match = cv2.matchTemplate(fullscreen, part, cv2.TM_CCOEFF_NORMED)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match)
+    print(f"name: {name, min_val, max_val, min_loc, max_loc}")
     return max_loc if max_val > 0.9 else None
 
 def main_menu():
-    return
+    fullscreen = image_actions.open_screen_cv2()
+    for i in range(sum(1 for name in os.listdir(screens_path) if "main_menu" in name)):
+        part = cv2.imread(path("main_menu" + str(i)))
+        result = cv2.PSNR(fullscreen, part)
+        print(f"result: {result}")
+        if result > 20:
+            return True
+    return False
 
 def get_coords_add():
+    xs = sum(1 for name in os.listdir(screens_path) if "x" in name)
     print(f"xs = {xs}")
     time.sleep(0.2)
     fullscreen = image_actions.open_screen_cv2()
@@ -38,9 +46,9 @@ def get_coords_add():
 def mine_found():
     fullscreen = image_actions.open_screen_cv2()
 
-    city19 = cv2.imread(path("city19"))
+    city19 = cv2.imread(path("city0"))
     search_menu = cv2.imread(path("search_mine_menu"))
-    city_day = cv2.imread(path("city_day_19"))
+    city_day = cv2.imread(path("city1"))
 
     float_city = cv2.minMaxLoc(cv2.matchTemplate(fullscreen, city19, cv2.TM_CCORR_NORMED))[1]
     float_city_day = cv2.minMaxLoc(cv2.matchTemplate(fullscreen, city_day, cv2.TM_CCORR_NORMED))[1]
@@ -60,4 +68,4 @@ def visible_gather():
     return is_gather
 
 if __name__ == "__main__":
-    image_actions.make_screen()
+    print(cv2.PSNR(image_actions.open_screen_cv2(), cv2.imread(path("main_menu1"))))
