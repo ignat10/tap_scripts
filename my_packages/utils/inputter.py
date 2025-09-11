@@ -1,4 +1,4 @@
-def farm_number():
+def farm_number() -> int:
     number = input("enter from which farm do we start: ")
 
     if number.isdigit():
