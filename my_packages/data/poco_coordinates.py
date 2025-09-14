@@ -8,9 +8,10 @@
 # for step in float_steps:
 #     index = int[input[f"{step}: "]]
 #     print[int[round[step * POCO_X7_PRO_RESOLUTION[index]]]]
+from frozendict import frozendict
 
 
-points = {
+points = frozendict({
     "take": [587, 1910],
     "close": [226, 2175],
     "lord":  [1130, 2068],
@@ -42,10 +43,10 @@ points = {
     "account": [203, 1243],
     "switch": [621, 1808],
     "login": [633, 1492],
-    "google": [164, 1051],
-    "castle": [452, 1130],
+    "google": [164, 840],
+    "castle": [452, 1067],
     "confirm": [354, 1550],
-}
+})
 
 
 STEPS = {
@@ -53,8 +54,8 @@ STEPS = {
     "mine_type": 0,
     "minimum_mine_type": -470,
     "elite_blue": 259,
-    "google": 226,
-    "castle": 111,
+    "google": 200,
+    "castle": 135,
 }
 
 COLORS = {

@@ -26,7 +26,7 @@ def main_menu():
         part = cv2.imread(path("main_menu" + str(i)))
         result = cv2.PSNR(fullscreen, part)
         print(f"result: {result}")
-        if result > 20:
+        if result > 17:
             return True
     return False
 

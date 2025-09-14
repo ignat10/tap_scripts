@@ -13,6 +13,8 @@ lv = 0   # 6 lv minus that number      # lv_minuses
 witch_mine = 0
 which_google = 0
 which_acc = 0
+which_blue_MIA = 0
+which_blue_ = 0
 castle = None
 device = get_device_name()
 
@@ -23,9 +25,11 @@ def wait():
     sleep(0.5)
     click(points["close"])
 
-def point_step(name: str, index):
-    point = points[name]
-    point[index] += STEPS[name]
+def point_step(name: str, index, times) -> list[int]:
+    point = list(points[name])
+    print(f"points[name]: {points[name]} point: {point} name: [{name}], times: {times}")
+    point[index] += STEPS[name] * times
+    print(f"return point: {point}")
     return point
 
 def close_add():
@@ -35,6 +39,7 @@ def close_add():
             click(coords)
         else:
             wait()
+        sleep(0.5)
 
 def lord_skills():
     print("Harvesting...")
@@ -117,13 +122,14 @@ def get_mine(): # to go to basic mine from the map
 
 
 def get_elite():
+    global which_blue
     print("Elite")
     match castle:
         case 0 | 4:
-            points["elite_mine"] = points["elite_mine1"]
+            which_blue = 0
             second_blue = False
         case _:
-            points["elite_mine"] = points["elite_blue"]
+            which_blue = which_blue_MIA
             second_blue = True
         
     while True:
@@ -133,14 +139,14 @@ def get_elite():
         sleep(1)
         color = image_actions.check_color(points["elite_blue"])
         if color == COLORS["elite_blue"]:# color of blue
-            click(points["elite_blue"])
+            click(point_step("elite_blue", 1, which_blue))
             sleep(3)# too much but should work
             click(points["gather_elite"])
             sleep(1)
             click(points["go"])# regularly I should be there
 
             if second_blue:
-                points["elite_blue"] = point_step("elite_blue", 1)
+                which_blue += 1
             return True# everything is alright I went to elite
         else:
             print("some chemistry error", color)
@@ -162,27 +168,29 @@ def second_farm():
     sleep(1)
     click(points["login"])
     sleep(2)
-    click(point_step("google", 1))
+    print(f"step gool, {which_google}")
+    click(point_step("google", 1, which_google))
     sleep(3)
-    click(point_step("castle", 1))
+    print(f"step acc: {which_acc}")
+    click(point_step("castle", 1, which_acc))
     sleep(1)
     click(points["confirm"])# go inside
     print("end second farm")
-    sleep(20)# I can make the still checking there
+    sleep(13)# I can make the still checking there
 
 def zeroing():
     global witch_mine
     witch_mine = 0
     # there can be zeroing lv (
 
-def set_which(acc_steps):
+def set_which(acc_steps: int):
     global which_google, which_acc
     for _ in range(acc_steps):
-        if which_acc < farms[which_google]:
+        if which_acc < farms[which_google] - 1:
             which_acc += 1
         else:
             which_google += 1
-            which_acc = 1
+            which_acc = 0
 
 def outside():
     get_mine()
