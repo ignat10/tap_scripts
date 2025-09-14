@@ -35,6 +35,7 @@ def close_add():
             click(coords)
         else:
             wait()
+        sleep(0.5)
 
 def lord_skills():
     print("Harvesting...")
