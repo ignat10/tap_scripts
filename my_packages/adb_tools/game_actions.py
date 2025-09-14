@@ -13,6 +13,8 @@ lv = 0   # 6 lv minus that number      # lv_minuses
 witch_mine = 0
 which_google = 0
 which_acc = 0
+which_blue_MIA = 0
+which_blue_ = 0
 castle = None
 device = get_device_name()
 
@@ -120,13 +122,14 @@ def get_mine(): # to go to basic mine from the map
 
 
 def get_elite():
+    global which_blue
     print("Elite")
     match castle:
         case 0 | 4:
-            points["elite_mine"] = points["elite_mine1"]
+            which_blue = 0
             second_blue = False
         case _:
-            points["elite_mine"] = points["elite_blue"]
+            which_blue = which_blue_MIA
             second_blue = True
         
     while True:
@@ -143,7 +146,7 @@ def get_elite():
             click(points["go"])# regularly I should be there
 
             if second_blue:
-                points["elite_blue"] = point_step("elite_blue", 1)
+                which_blue += 1
             return True# everything is alright I went to elite
         else:
             print("some chemistry error", color)
