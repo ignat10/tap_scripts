@@ -4,20 +4,21 @@ import cv2
 from PIL import Image
 
 from my_packages.adb_tools.adb_config import get_device_name
+from my_packages.data.paths import temp_screen_path
 
 device = get_device_name()
 
 def make_screen():
-    with open(f"screen.png", "wb") as f:
+    with open(temp_screen_path, "wb") as f:
         run(["adb", "-s", device, "exec-out", "screencap", "-p"], stdout = f)
 
 def open_screen_PIL():
     make_screen()
-    return Image.open(f"screen.png")
+    return Image.open(temp_screen_path)
 
 def open_screen_cv2():
     make_screen()
-    return cv2.imread("screen.png")
+    return cv2.imread(temp_screen_path)
 
 
 def check_color(point_checking: (int, int)):
