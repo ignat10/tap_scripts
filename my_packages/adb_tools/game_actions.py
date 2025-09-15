@@ -168,7 +168,7 @@ def set_which(acc_steps: int):
             which_acc = 0
 
 def loading():
-    while not screen_states.loading():
+    while screen_states.loading():
         print("loading")
 
 def lord_skills():
