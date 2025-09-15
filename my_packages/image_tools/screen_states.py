@@ -8,17 +8,20 @@ from my_packages.image_tools import image_actions
 screens_path = r"D:\Documents\GitHub\PythonProject\tap_scripts\my_packages\image_tools\screens\\"
 format = r".png"
 
-
 def path(name: str):
     return screens_path + name + format
 
-def where_x(fullscreen, name: str):
-    print(f"name = {name}")
-    part = cv2.imread(path(name))
-    match = cv2.matchTemplate(fullscreen, part, cv2.TM_CCOEFF_NORMED)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match)
-    print(f"name: {name, min_val, max_val, min_loc, max_loc}")
-    return max_loc if max_val > 0.9 else None
+
+
+def loading():
+    fullscreen = image_actions.open_screen_cv2()
+    for i in range(sum(1 for name in os.listdir(screens_path) if "main_menu" in name)):
+        origin = cv2.imread(path("main_menu" + str(i)))
+        result = cv2.PSNR(fullscreen, origin)
+        print(f"result: {result}")
+        if result > 10:
+            return False
+    return True
 
 def main_menu():
     fullscreen = image_actions.open_screen_cv2()
@@ -29,6 +32,15 @@ def main_menu():
         if result > 17:
             return True
     return False
+
+def where_x(fullscreen, name: str):
+    print(f"name = {name}")
+    part = cv2.imread(path(name))
+    match = cv2.matchTemplate(fullscreen, part, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match)
+    print(f"name: {name, min_val, max_val, min_loc, max_loc}")
+    return max_loc if max_val > 0.9 else None
+
 
 def get_coords_add():
     xs = sum(1 for name in os.listdir(screens_path) if "x" in name)
