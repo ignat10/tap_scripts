@@ -41,31 +41,6 @@ def close_add():
             wait()
         sleep(0.5)
 
-def lord_skills():
-    print("Harvesting...")
-    sleep(0.5)
-    click(points["lord"])
-    sleep(0.5)
-    click(points["harvest"])
-    sleep(0.5)
-    click(points["use"])
-    sleep(0.3)
-    click(points["recall_all"])
-    sleep(0.5)
-    click(points["use"])
-    print("end harvest")
-    wait()
-    wait()
-
-def inside():
-    print("running inside")                        # Inside the castle
-    # click(point_take)  # take daily gift
-    close_add()
-    lord_skills()
-    click(points["map"])
-    print("running outside")
-    sleep(3)
-
 def find_another():# to find another mine if not found
     click((points["iron"][0] + STEPS["mine_type"], points["iron"][1]))
     sleep(0.5)
@@ -102,8 +77,9 @@ def get_mine(): # to go to basic mine from the map
                 print("gather visible")
             else:# click on mine to get it visible
                 print("gather not visible")
-                click(points["mine"])
                 sleep(1)
+                click(points["gather"])
+                sleep(2)
             click(points["mine"])
             sleep(2)
             gather_mine()
@@ -122,7 +98,6 @@ def get_mine(): # to go to basic mine from the map
 
 
 def get_elite():
-    global which_blue
     print("Elite")
     match castle:
         case 0 | 4:
@@ -168,7 +143,7 @@ def second_farm():
     sleep(1)
     click(points["login"])
     sleep(2)
-    print(f"step gool, {which_google}")
+    print(f"step google, {which_google}")
     click(point_step("google", 1, which_google))
     sleep(3)
     print(f"step acc: {which_acc}")
@@ -176,7 +151,7 @@ def second_farm():
     sleep(1)
     click(points["confirm"])# go inside
     print("end second farm")
-    sleep(13)# I can make the still checking there
+    # I can make the still checking there
 
 def zeroing():
     global witch_mine
@@ -191,6 +166,35 @@ def set_which(acc_steps: int):
         else:
             which_google += 1
             which_acc = 0
+
+def loading():
+    while not screen_states.loading():
+        print("loading")
+
+def lord_skills():
+    print("Harvesting...")
+    sleep(0.5)
+    click(points["lord"])
+    sleep(0.5)
+    click(points["harvest"])
+    sleep(0.5)
+    click(points["use"])
+    sleep(0.3)
+    click(points["recall_all"])
+    sleep(0.5)
+    click(points["use"])
+    print("end harvest")
+    wait()
+    wait()
+
+def inside():
+    print("running inside")                        # Inside the castle
+    loading()
+    close_add()
+    lord_skills()
+    click(points["map"])
+    print("running outside")
+    sleep(3)
 
 def outside():
     get_mine()
