@@ -12,3 +12,4 @@ __pycache__/
 
 # local
 my_packages/local/
+/my_packages/data/client_secret.json
