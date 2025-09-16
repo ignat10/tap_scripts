@@ -1,13 +1,12 @@
 # standard library
 from time import sleep
-from os import system
 
 # local packages
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions, screen_states
 from my_packages.utils import inputter
 from my_packages.data.accounts import farms
-from my_packages.adb_tools.adb_config import get_device_name
+from my_packages.core.adb_tools import click
 
 lv = 0   # 6 lv minus that number      # lv_minuses
 witch_mine = 0
@@ -16,10 +15,8 @@ which_acc = 0
 which_blue_MIA = 0
 which_blue_ = 0
 castle = None
-device = get_device_name()
 
-def click(cords: (int, int)):
-    system(f"adb -s {device} shell input tap {cords[0]} {cords[1]}")
+
 
 def wait():
     sleep(0.5)
