@@ -1,16 +1,13 @@
-from subprocess import run
-
 import cv2
 from PIL import Image
 
 from my_packages.adb_tools.adb_config import get_device_name
 from my_packages.data.paths import temp_screen_path
+from my_packages.core.adb_tools import make_screen
 
 device = get_device_name()
 
-def make_screen():
-    with open(temp_screen_path, "wb") as f:
-        run(["adb", "-s", device, "exec-out", "screencap", "-p"], stdout = f)
+
 
 def open_screen_PIL():
     make_screen()
