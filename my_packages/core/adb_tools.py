@@ -1,8 +1,7 @@
-# libraries
 from os import system
 from subprocess import run
 
-# packages
+
 from my_packages.adb_tools.adb_config import get_device_name
 from my_packages.data.paths import temp_screen_path
 
