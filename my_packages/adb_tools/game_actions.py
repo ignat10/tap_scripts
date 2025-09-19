@@ -22,7 +22,12 @@ def wait():
     sleep(0.5)
     click(points["close"])
 
-def point_step(name: str, index, times) -> list[int]:
+
+def point_step(name: str,
+               index,
+               times
+               ) -> list[int]:
+
     point = list(points[name])
     print(f"points[name]: {points[name]} point: {point} name: [{name}], times: {times}")
     point[index] += STEPS[name] * times
