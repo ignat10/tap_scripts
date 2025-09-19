@@ -1,21 +1,18 @@
-# standard library
 from time import sleep
 
-# local packages
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions, screen_states, get_coords
 from my_packages.utils import inputter
 from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
 
-lv = 0   # 6 lv minus that number      # lv_minuses
+lv = 0  # 6 lv minus that number      # lv_minuses
 witch_mine = 0
 which_google = 0
 which_acc = 0
 which_blue_MIA = 0
 which_blue_ = 0
 castle = None
-
 
 
 def wait():
@@ -34,6 +31,7 @@ def point_step(name: str,
     print(f"return point: {point}")
     return point
 
+
 def close_add():
     print("Closing...")
     while not screen_states.main_menu():
@@ -43,7 +41,8 @@ def close_add():
             wait()
         sleep(0.5)
 
-def find_another():# to find another mine if not found
+
+def find_another():  # to find another mine if not found
     click((points["iron"][0] + STEPS["mine_type"], points["iron"][1]))
     sleep(0.5)
     for _ in range(5):
@@ -54,6 +53,7 @@ def find_another():# to find another mine if not found
     for _ in range(3):
         click(points["go_mine"])
     sleep(2)
+
 
 def gather_mine():
     click(points["gather"])
@@ -67,7 +67,8 @@ def gather_mine():
     sleep(0.5)
     click(points["back"])
 
-def get_mine(): # to go to basic mine from the map
+
+def get_mine():  # to go to basic mine from the map
     global lv, witch_mine
     click(points["search"])
     sleep(1)
@@ -75,9 +76,9 @@ def get_mine(): # to go to basic mine from the map
     while True:
         if screen_states.mine_found():
             print("mine found")
-            if screen_states.visible_gather():# if mine found and point gather is invisible
+            if screen_states.visible_gather():  # if mine found and point gather is invisible
                 print("gather visible")
-            else:# click on mine to get it visible
+            else:  # click on mine to get it visible
                 print("gather not visible")
                 sleep(1)
                 click(points["gather"])
@@ -88,7 +89,7 @@ def get_mine(): # to go to basic mine from the map
             print("gathering mine")
             witch_mine += 1
             return
-        else:             # if mine not found
+        else:  # if mine not found
             if STEPS["mine_type"] > STEPS["minimum_mine_type"]:
                 print("second mine type")
                 STEPS["mine_type"] += STEPS["mine"]
@@ -108,27 +109,28 @@ def get_elite():
         case _:
             which_blue = which_blue_MIA
             second_blue = True
-        
+
     while True:
         click(points["favorites"])
         sleep(1)
         click(points["alliance_elite"])
         sleep(1)
         color = image_actions.check_color(points["elite_blue"])
-        if color == COLORS["elite_blue"]:# color of blue
+        if color == COLORS["elite_blue"]:  # color of blue
             click(point_step("elite_blue", 1, which_blue))
-            sleep(3)# too much but should work
+            sleep(3)  # too much but should work
             click(points["gather_elite"])
             sleep(1)
-            click(points["go"])# regularly I should be there
+            click(points["go"])  # regularly I should be there
 
             if second_blue:
                 which_blue += 1
-            return True# everything is alright I went to elite
+            return True  # everything is alright I went to elite
         else:
             print("some chemistry error", color)
             click(points["favourites_back"])
-            return False# if there is no elites
+            return False  # if there is no elites
+
 
 def second_farm():
     global which_google, which_acc
@@ -151,14 +153,16 @@ def second_farm():
     print(f"step acc: {which_acc}")
     click(point_step("castle", 1, which_acc))
     sleep(1)
-    click(points["confirm"])# go inside
+    click(points["confirm"])  # go inside
     print("end second farm")
     # I can make the still checking there
+
 
 def zeroing():
     global witch_mine
     witch_mine = 0
     # there can be zeroing lv (
+
 
 def set_which(acc_steps: int):
     global which_google, which_acc
@@ -169,9 +173,11 @@ def set_which(acc_steps: int):
             which_google += 1
             which_acc = 0
 
+
 def loading():
     while screen_states.loading():
         print("loading")
+
 
 def lord_skills():
     print("Harvesting...")
@@ -189,14 +195,16 @@ def lord_skills():
     wait()
     wait()
 
+
 def inside():
-    print("running inside")                        # Inside the castle
+    print("running inside")  # Inside the castle
     loading()
     close_add()
     lord_skills()
     click(points["map"])
     print("running outside")
     sleep(3)
+
 
 def outside():
     get_mine()
@@ -205,6 +213,7 @@ def outside():
     if not get_elite():
         get_mine()
     get_mine()
+
 
 def farm_castle():
     inside()
