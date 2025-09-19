@@ -3,7 +3,7 @@ from time import sleep
 
 # local packages
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
-from my_packages.image_tools import image_actions, screen_states
+from my_packages.image_tools import image_actions, screen_states, get_coords
 from my_packages.utils import inputter
 from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
@@ -32,7 +32,7 @@ def point_step(name: str, index, times) -> list[int]:
 def close_add():
     print("Closing...")
     while not screen_states.main_menu():
-        if (coords := screen_states.get_coords_add()) is not None:
+        if (coords := get_coords.x()) is not None:
             click(coords)
         else:
             wait()
