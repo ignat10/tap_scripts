@@ -12,12 +12,11 @@ which_google = 0
 which_acc = 0
 which_blue_MIA = 0
 which_blue_ = 0
-castle = None
 
 
-def wait():
+def wait_and_click(coords: list[int]):
     sleep(0.5)
-    click(points["close"])
+    click(coords)
 
 
 def point_step(name: str,
@@ -43,8 +42,7 @@ def close_add():
 
 
 def find_another():  # to find another mine if not found
-    click((points["iron"][0] + STEPS["mine_type"], points["iron"][1]))
-    sleep(0.5)
+    wait_and_click(point_step("mine_type", 0, witch_mine))
     for _ in range(5):
         click(points["minus"])
     for _ in range(lv):
@@ -71,7 +69,6 @@ def gather_mine():
 def get_mine():  # to go to basic mine from the map
     global lv, witch_mine
     click(points["search"])
-    sleep(1)
     find_another()
     while True:
         if screen_states.mine_found():
@@ -178,8 +175,8 @@ def lord_skills():
     sleep(0.5)
     click(points["use"])
     print("end harvest")
-    wait()
-    wait()
+    wait_and_click(points["close"])
+    wait_and_click(points["close"])
 
 
 def inside():
