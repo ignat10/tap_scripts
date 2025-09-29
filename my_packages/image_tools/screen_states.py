@@ -1,29 +1,21 @@
+from enum import Enum
+
+
 from my_packages.image_tools.image_actions import search_part, is_fullscreen
 from my_packages.data.paths import path
 
 
 
 def loading():
-    folder_path = path["mian_menus"]
-    gap = 12
-    return search_part(folder_path, gap)
+    return not main_menu(10)
 
-
-def main_menu():
+def main_menu(gap=17) -> bool:
     folder_path = path["main_menus"]
-    gap = 17
     return is_fullscreen(folder_path, gap)
 
 
-def mine_found() -> bool:
-    city = is_city()
-    menu = is_menu()
-    print(f"city {city} || map/menu {menu}")
-    return menu and not city
-
-
 def is_city() -> bool:
-    gap = 0.9
+    gap = 0.8
     folder_path = path["cities"]
     return search_part(folder_path, gap)
 
@@ -31,10 +23,35 @@ def is_city() -> bool:
 def is_menu() -> bool:
     folder_path = path["search_menus"]
     gap = 0.9
-    return search_part(folder_path, gap)
+    return search_part(folder_path, gap, True)
 
 
-def visible_gather():
+class SearchState(Enum):
+    NOT_MAP = 0
+    NOT_FOUND = 1
+    FOUND_VISIBLE = 2
+    FOUND_NOT_VISIBLE = 3
+
+
+def search_state() -> SearchState:
+    city = is_city()
+    menu = is_menu()
+
+    if not menu:
+        return SearchState.NOT_MAP
+
+    elif city:
+        return SearchState.NOT_FOUND
+
+    elif is_visible_gather():
+        return SearchState.FOUND_VISIBLE
+
+    else:
+        return SearchState.FOUND_NOT_VISIBLE
+
+
+def is_visible_gather() -> bool:
     folder_path = path["gather"]
+    fullscreen = False
     gap = 0.8
-    return search_part(folder_path, gap)
+    return search_part(folder_path, gap, fullscreen)
