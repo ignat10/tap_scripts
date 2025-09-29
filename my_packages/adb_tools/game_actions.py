@@ -13,12 +13,12 @@ which_blue_MIA = 0
 which_blue_ = 0
 
 
-def wait_and_click(coords: list[int]):
-    sleep(0.5)
+def wait_and_click(coords: tuple[int, int], delay=0.5):
+    sleep(delay)
     click(coords)
 
 
-def repeat_click(coords: list[int], times: int):
+def repeat_click(coords: tuple[int, int], times: int):
     for _ in range(times):
         click(coords)
 
@@ -43,20 +43,16 @@ def close_add():
 
 
 def find_another_mine():  # to find another mine if not found
-    wait_and_click(point_step("mine_type", 0, witch_mine))
+    wait_and_click(point_step("mine_type", 0, which_mine))
     repeat_click(points["minus"], 5)
     repeat_click(points["plus"], lv - 1)
-    sleep(0.5)
     repeat_click(points["go_mine"], 3)
-    sleep(2)
 
 
 def gather_mine():
-    click(points["gather"])
-    sleep(0.5)
-    click(points["go"])
-    sleep(0.5)
-    click(points["back"])
+    wait_and_click(points["gather"])
+    wait_and_click(points["go"])
+    wait_and_click(points["back"])
 
 
 def get_mine():  # to go to basic mine from the map
@@ -123,22 +119,15 @@ def get_elite(google: int, castle: int):
 
 def second_farm(google: int, castle: int):
     print("running second_farm")
-    sleep(2)
-    click(points["avatar"])
-    sleep(1)
-    click(points["account"])
-    sleep(1)
-    click(points["switch"])
-    sleep(1)
-    click(points["login"])
-    sleep(2)
-    print(f"step google, {which_google}")
-    click(point_step("google", 1, google))
-    sleep(3)
-    print(f"step acc: {which_acc}")
-    click(point_step("castle", 1, castle))
-    sleep(1)
-    click(points["confirm"])  # go inside
+    wait_and_click(points["avatar"])
+    wait_and_click(points["account"])
+    wait_and_click(points["switch"])
+    wait_and_click(points["login"], 1)
+    print(f"step google, {google}")
+    wait_and_click(point_step("google", 1, google), 2)
+    print(f"step acc: {castle}")
+    wait_and_click(point_step("castle", 1, castle), 3)
+    wait_and_click(points["confirm"], 1)  # go inside
     print("end second farm")
 
 
@@ -155,16 +144,9 @@ def loading():
 
 def lord_skills():
     print("Harvesting...")
-    sleep(0.5)
-    click(points["lord"])
-    sleep(0.5)
-    click(points["harvest"])
-    sleep(0.5)
-    click(points["use"])
-    sleep(0.3)
-    click(points["recall_all"])
-    sleep(0.5)
-    click(points["use"])
+    wait_and_click(points["lord"])
+    wait_and_click(points["harvest"])
+    wait_and_click(points["use"])
     print("end harvest")
     wait_and_click(points["close"])
     wait_and_click(points["close"])
@@ -177,10 +159,10 @@ def inside():
     lord_skills()
     click(points["map"])
     print("finished inside")
-    sleep(3)
 
 
 def outside(google: int, castle: int):
+    sleep(3)
     print("running outside")
     get_mine()
     get_mine()
