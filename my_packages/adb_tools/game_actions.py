@@ -45,13 +45,10 @@ def close_add():
 
 def find_another_mine():  # to find another mine if not found
     wait_and_click(point_step("mine_type", 0, witch_mine))
-    for _ in range(5):
-        click(points["minus"])
-    for _ in range(lv):
-        click(points["plus"] - 1)
-        sleep(0.5)
-    for _ in range(3):
-        click(points["go_mine"])
+    repeat_click(points["minus"], 5)
+    repeat_click(points["plus"], lv - 1)
+    sleep(0.5)
+    repeat_click(points["go_mine"], 3)
     sleep(2)
 
 
