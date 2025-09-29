@@ -8,7 +8,7 @@ from my_packages.data.paths import screen_state_path
 device = get_device_name()
 
 
-def click(cords: (int, int)):
+def click(cords: list[int]):
     system(f"adb -s {device} shell input tap {cords[0]} {cords[1]}")
 
 
