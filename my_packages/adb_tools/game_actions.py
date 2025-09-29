@@ -26,13 +26,14 @@ def repeat_click(coords: tuple[int, int], times: int):
 def point_step(name: str,
                index: int,
                times: int,
-               ) -> list[int]:
+               ) -> tuple[int, int]:
 
-    point = list(points[name])
-    print(f"points[name]: {points[name]} point: {point} name: [{name}], times: {times}")
-    point[index] += STEPS[name] * times
+    point = list[int](points[name])
+    step = int(STEPS[name])
+    print(f"point: {point}, index: {index} step: {step}, name: [{name}], times: {times}")
+    point[index] += step * times
     print(f"return point: {point}")
-    return point
+    return tuple[int, int](point)
 
 
 def close_add():
@@ -131,12 +132,6 @@ def second_farm(google: int, castle: int):
     print("end second farm")
 
 
-def zeroing():
-    global witch_mine
-    witch_mine = 0
-    # there can be zeroing lv (
-
-
 def loading():
     while screen_states.loading():
         print("loading")
@@ -148,6 +143,9 @@ def lord_skills():
     wait_and_click(points["harvest"])
     wait_and_click(points["use"])
     print("end harvest")
+    wait_and_click(points["recall_all"])
+    wait_and_click(points["use"])
+    print("end recall_all")
     wait_and_click(points["close"])
     wait_and_click(points["close"])
 
