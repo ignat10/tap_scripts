@@ -32,13 +32,10 @@ def point_step(name: str,
 
 
 def close_add():
-    print("Closing...")
+    print("Closing add...")
     while not screen_states.main_menu():
-        if (coords := get_coords.x()) is not None:
-            click(coords)
-        else:
-            wait()
-        sleep(0.5)
+        coords = get_coords.x() or points["close"]
+        click(coords)
 
 
 def find_another():  # to find another mine if not found
