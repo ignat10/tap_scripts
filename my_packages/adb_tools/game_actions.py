@@ -201,15 +201,16 @@ def inside():
     close_add()
     lord_skills()
     click(points["map"])
-    print("running outside")
+    print("finished inside")
     sleep(3)
 
 
-def outside():
+def outside(google: int, castle: int):
+    print("running outside")
     get_mine()
     get_mine()
 
-    if not get_elite():
+    if not get_elite(google, castle):
         get_mine()
     get_mine()
 
