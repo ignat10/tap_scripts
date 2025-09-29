@@ -6,7 +6,7 @@ from my_packages.utils import inputter
 from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
 
-lv = 0  # 6 lv minus that number      # lv_minuses
+lv = 6  # level of mine
 witch_mine = 0
 which_google = 0
 which_acc = 0
@@ -46,9 +46,9 @@ def find_another():  # to find another mine if not found
     click((points["iron"][0] + STEPS["mine_type"], points["iron"][1]))
     sleep(0.5)
     for _ in range(5):
-        click(points["plus"])
-    for _ in range(lv):
         click(points["minus"])
+    for _ in range(lv):
+        click(points["plus"] - 1)
         sleep(0.5)
     for _ in range(3):
         click(points["go_mine"])
@@ -96,7 +96,7 @@ def get_mine():  # to go to basic mine from the map
             else:
                 print("less lv")
                 STEPS["mine_type"] = 0
-                lv += 1
+                lv -= 1
             find_another()
 
 
