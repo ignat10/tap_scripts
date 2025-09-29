@@ -19,6 +19,11 @@ def wait_and_click(coords: list[int]):
     click(coords)
 
 
+def repeat_click(coords: list[int], times: int):
+    for _ in range(times):
+        click(coords)
+
+
 def point_step(name: str,
                index: int,
                times: int,
@@ -38,7 +43,7 @@ def close_add():
         click(coords)
 
 
-def find_another():  # to find another mine if not found
+def find_another_mine():  # to find another mine if not found
     wait_and_click(point_step("mine_type", 0, witch_mine))
     for _ in range(5):
         click(points["minus"])
@@ -61,7 +66,7 @@ def gather_mine():
 def get_mine():  # to go to basic mine from the map
     global lv, witch_mine
     click(points["search"])
-    find_another()
+    find_another_mine()
     while True:
         if screen_states.mine_found():
             print("mine found")
@@ -86,7 +91,7 @@ def get_mine():  # to go to basic mine from the map
                 print("less lv")
                 STEPS["mine_type"] = 0
                 lv -= 1
-            find_another()
+            find_another_mine()
 
 
 def get_elite(google: int, castle: int):
