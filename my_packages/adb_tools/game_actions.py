@@ -53,11 +53,6 @@ def find_another():  # to find another mine if not found
 def gather_mine():
     click(points["gather"])
     sleep(0.5)
-    # if witch_mine < 3:
-    #     if image_actions.check_color(points["vip"]) == COLORS["vip"]:# if I don't have free march
-    #         wait()
-    #         wait()
-    #         return
     click(points["go"])
     sleep(0.5)
     click(points["back"])
@@ -103,7 +98,6 @@ def get_elite(google: int, castle: int):
         case _:
             which_blue = which_blue_MIA
             second_blue = True
-
     while True:
         click(points["favorites"])
         sleep(1)
@@ -145,7 +139,6 @@ def second_farm(google: int, castle: int):
     sleep(1)
     click(points["confirm"])  # go inside
     print("end second farm")
-    # I can make the still checking there
 
 
 def zeroing():
