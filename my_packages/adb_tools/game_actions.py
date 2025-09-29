@@ -75,7 +75,7 @@ def get_mine():  # to go to basic mine from the map
             else:  # click on mine to get it visible
                 print("gather not visible")
                 sleep(1)
-                click(points["gather"])
+                click(points["mine"])
                 sleep(2)
             click(points["mine"])
             sleep(2)
