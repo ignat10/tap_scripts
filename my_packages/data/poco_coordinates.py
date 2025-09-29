@@ -50,8 +50,7 @@ points = {
 
 STEPS = {
     "mine": -183,
-    "mine_type": 0,
-    "minimum_mine_type": -470,
+    "mine_type": -200,
     "elite_blue": 259,
     "google": 200,
     "castle": 135,
