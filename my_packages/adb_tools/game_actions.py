@@ -2,6 +2,7 @@ from time import sleep
 
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions, screen_states, get_coords
+from my_packages.image_tools.screen_states import SearchState
 from my_packages.utils import inputter
 from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
@@ -61,32 +62,32 @@ def gather_mine():
 def get_mine():  # to go to basic mine from the map
     global lv, which_mine
     click(points["search"])
-    find_another_mine()
     while True:
-        if screen_states.mine_found():
-            print("mine found")
-            if screen_states.visible_gather():  # if mine found and point gather is invisible
-                print("gather visible")
-            else:  # click on mine to get it visible
-                print("gather not visible")
-                sleep(1)
+        find_another_mine()
+        match screen_states.search_state():
+            case SearchState.FOUND_VISIBLE:
+                print("gather is visible")
                 click(points["mine"])
                 sleep(2)
-            click(points["mine"])
-            sleep(2)
-            gather_mine()
-            print("gathering mine")
-            witch_mine += 1
-            return
-        else:  # if mine not found
-            if STEPS["mine_type"] > STEPS["minimum_mine_type"]:
-                print("second mine type")
-                STEPS["mine_type"] += STEPS["mine"]
-            else:
-                print("less lv")
-                STEPS["mine_type"] = 0
-                lv -= 1
-            find_another_mine()
+                gather_mine()
+                return
+            case SearchState.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                print("gather is invisible")
+                click(points["mine"])
+                wait_and_click(points["mine"])
+                sleep(2)
+                gather_mine()
+                return
+            case SearchState.NOT_FOUND: # if mine not found
+                if which_mine < 4:
+                    print("second mine type")
+                    which_mine += 1
+                else:
+                    print("less lv")
+                    lv -= 1
+                    which_mine = 0
+            case SearchState.NOT_MAP:
+                print("somehow I'm not at the map.\npanic")
 
 
 def get_elite(google: int, castle: int):
