@@ -7,9 +7,7 @@ from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
 
 lv = 6  # level of mine
-witch_mine = 0
-which_google = 0
-which_acc = 0
+which_mine = 0
 which_blue_MIA = 0
 which_blue_ = 0
 
@@ -61,7 +59,7 @@ def gather_mine():
 
 
 def get_mine():  # to go to basic mine from the map
-    global lv, witch_mine
+    global lv, which_mine
     click(points["search"])
     find_another_mine()
     while True:
@@ -195,7 +193,6 @@ def farm_castle(google: int, castle: int):
     inside()
     outside(google, castle)
     second_farm(google, castle)
-    zeroing()
 
 
 def farming():
