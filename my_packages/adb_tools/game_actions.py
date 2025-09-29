@@ -108,7 +108,6 @@ def get_elite(google: int, castle: int):
             click(points["gather_elite"])
             sleep(1)
             click(points["go"])  # regularly I should be there
-
             if second_blue:
                 which_blue += 1
             return True  # everything is alright I went to elite
@@ -135,6 +134,7 @@ def second_farm(google: int, castle: int):
 def loading():
     while screen_states.loading():
         print("loading")
+    print("loaded")
 
 
 def lord_skills():
@@ -151,8 +151,8 @@ def lord_skills():
 
 
 def inside():
-    print("running inside")  # Inside the castle
     loading()
+    print("running inside")  # Inside the castle
     close_add()
     lord_skills()
     click(points["map"])
@@ -178,6 +178,7 @@ def farm_castle(google: int, castle: int):
 
 def farming():
     for google in range(inputter.farm_number(), len(farms)):
+        print(f"google: {google}")
         for castle in range(farms[google]):
             print(f"farming castle {castle}")
             farm_castle(google, castle)
