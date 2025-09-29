@@ -21,8 +21,8 @@ def wait():
 
 
 def point_step(name: str,
-               index,
-               times
+               index: int,
+               times: int,
                ) -> list[int]:
 
     point = list(points[name])
@@ -100,10 +100,10 @@ def get_mine():  # to go to basic mine from the map
             find_another()
 
 
-def get_elite():
+def get_elite(google: int, castle: int):
     print("Elite")
-    match castle:
-        case 0 | 4:
+    match (google, castle):
+        case (0, 0) | (2, 1):
             which_blue = 0
             second_blue = False
         case _:
@@ -132,8 +132,7 @@ def get_elite():
             return False  # if there is no elites
 
 
-def second_farm():
-    global which_google, which_acc
+def second_farm(google: int, castle: int):
     print("running second_farm")
 
     set_which(1)
@@ -215,18 +214,15 @@ def outside():
     get_mine()
 
 
-def farm_castle():
+def farm_castle(google: int, castle: int):
     inside()
-    outside()
-    second_farm()
+    outside(google, castle)
+    second_farm(google, castle)
     zeroing()
 
 
 def farming():
-    global castle
-    castle = inputter.farm_number()
-    set_which(castle)
-    for _ in range(7):
-        print(f"farming castle {castle}")
-        farm_castle()
-        castle += 1
+    for google in range(inputter.farm_number(), len(farms)):
+        for castle in range(farms[google]):
+            print(f"farming castle {castle}")
+            farm_castle(google, castle)
