@@ -134,9 +134,6 @@ def get_elite(google: int, castle: int):
 
 def second_farm(google: int, castle: int):
     print("running second_farm")
-
-    set_which(1)
-
     sleep(2)
     click(points["avatar"])
     sleep(1)
@@ -147,10 +144,10 @@ def second_farm(google: int, castle: int):
     click(points["login"])
     sleep(2)
     print(f"step google, {which_google}")
-    click(point_step("google", 1, which_google))
+    click(point_step("google", 1, google))
     sleep(3)
     print(f"step acc: {which_acc}")
-    click(point_step("castle", 1, which_acc))
+    click(point_step("castle", 1, castle))
     sleep(1)
     click(points["confirm"])  # go inside
     print("end second farm")
@@ -161,16 +158,6 @@ def zeroing():
     global witch_mine
     witch_mine = 0
     # there can be zeroing lv (
-
-
-def set_which(acc_steps: int):
-    global which_google, which_acc
-    for _ in range(acc_steps):
-        if which_acc < farms[which_google] - 1:
-            which_acc += 1
-        else:
-            which_google += 1
-            which_acc = 0
 
 
 def loading():
