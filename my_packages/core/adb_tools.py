@@ -14,3 +14,4 @@ def click(cords: list[int]):
 
 def make_screen():
     system(f"adb -s {device} exec-out screencap -p > {screen_state_path}")
+    print("screenshot")
