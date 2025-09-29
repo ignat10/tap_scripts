@@ -8,10 +8,9 @@
 # for step in float_steps:
 #     index = int[input[f"{step}: "]]
 #     print[int[round[step * POCO_X7_PRO_RESOLUTION[index]]]]
-from frozendict import frozendict
 
 
-points = frozendict({
+points = {
     "take": [587, 1910],
     "close": [226, 2175],
     "lord":  [1130, 2068],
@@ -46,7 +45,7 @@ points = frozendict({
     "google": [164, 840],
     "castle": [452, 1067],
     "confirm": [354, 1550],
-})
+}
 
 
 STEPS = {
