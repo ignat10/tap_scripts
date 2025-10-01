@@ -2,7 +2,6 @@ from time import sleep
 
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
 from my_packages.image_tools import image_actions, screen_states, get_coords
-from my_packages.image_tools.screen_states import SearchState
 from my_packages.utils import inputter
 from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
@@ -26,9 +25,9 @@ def point_step(name: str,
                times: int,
                ) -> tuple[int, int]:
 
-    point = list[int](points[name])
-    step = int(STEPS[name])
-    print(f"point: {point}, index: {index} step: {step}, name: [{name}], times: {times}")
+    point = points[name]
+    step = STEPS[name]
+    print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
     point[index] += step * times
     print(f"return point: {point}")
     assert points[index] != point, f"point after step hasn't been changed: {point}"
@@ -60,28 +59,22 @@ def get_mine(lv: int, mine_type: int):  # to go to basic mine from the map
     while True:
         find_another_mine(lv, mine_type)
         match screen_states.search_state():
-            case SearchState.FOUND_VISIBLE:
+            case screen_states.Mine.FOUND_VISIBLE:
                 print("gather is visible")
-                click(points["mine"])
-                sleep(2)
-                gather_mine()
-                return
-            case SearchState.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                break
+            case screen_states.Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                 print("gather is invisible")
                 click(points["mine"])
-                wait_and_click(points["mine"])
-                sleep(2)
-                gather_mine()
-                return
-            case SearchState.NOT_FOUND: # if mine not found
-                if which_mine < 4:
+                break
+            case screen_states.Mine.NOT_FOUND: # if mine not found
+                if mine_type < 4:
                     print("second mine type")
-                    which_mine += 1
+                    mine_type += 1
                 else:
                     print("less lv")
                     lv -= 1
-                    which_mine = 0
-            case SearchState.NOT_MAP:
+                    mine_type = 0
+            case screen_states.Mine.NOT_MAP:
                 print("somehow I'm not at the map.\npanic")
     wait_and_click(points["mine"])
     sleep(2)
