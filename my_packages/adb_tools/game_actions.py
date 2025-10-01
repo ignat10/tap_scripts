@@ -1,9 +1,9 @@
 from time import sleep
 
 from my_packages.data.poco_coordinates import points, STEPS, COLORS
+from my_packages.data import farms
 from my_packages.image_tools import image_actions, screen_states, get_coords
 from my_packages.utils import inputter
-from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
 
 which_blue_MIA = 0
