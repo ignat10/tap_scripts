@@ -1,3 +1,5 @@
+farms = [1, 2, 2, 2, 2]
+
 class Farm:
     def __init__(self, name, lv, alliance):
         self.name = name
