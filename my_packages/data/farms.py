@@ -1,10 +1,14 @@
-farms = [1, 2, 2, 2, 2]
+from my_packages.utils.inputter import farm_number
+from my_packages.adb_tools.game_actions import Farm
 
-class Farm:
-    def __init__(self, name, lv, alliance):
-        self.name = name
-        self.lv = lv
-        self.alliance = alliance
-        self.mine_lv = 6
-        self.mine_type = 0
+accounts = [1, 2, 2, 2, 2]
+number = 1
 
+leo = ("leo", 19, "MIA")
+
+
+castles: list = []
+for google in range(farm_number(), len(accounts)):
+    for account in range(accounts[google]):
+        castles.append(Farm(number, leo[0], google, account, leo[1], leo[2]))
+        number += 1
