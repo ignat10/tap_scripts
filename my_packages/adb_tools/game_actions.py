@@ -7,8 +7,6 @@ from my_packages.utils import inputter
 from my_packages.data.accounts import farms
 from my_packages.core.adb_tools import click
 
-lv = 6  # level of mine
-which_mine = 0
 which_blue_MIA = 0
 which_blue_ = 0
 
@@ -44,8 +42,8 @@ def close_add():
         click(coords)
 
 
-def find_another_mine():  # to find another mine if not found
-    wait_and_click(point_step("mine_type", 0, which_mine))
+def find_another_mine(lv, mine_type):  # to find another mine if not found
+    wait_and_click(point_step("mine_type", 0, mine_type))
     repeat_click(points["minus"], 5)
     repeat_click(points["plus"], lv - 1)
     repeat_click(points["go_mine"], 3)
@@ -57,11 +55,10 @@ def gather_mine():
     wait_and_click(points["back"])
 
 
-def get_mine():  # to go to basic mine from the map
-    global lv, which_mine
+def get_mine(lv: int, mine_type: int):  # to go to basic mine from the map
     click(points["search"])
     while True:
-        find_another_mine()
+        find_another_mine(lv, mine_type)
         match screen_states.search_state():
             case SearchState.FOUND_VISIBLE:
                 print("gather is visible")
@@ -86,6 +83,10 @@ def get_mine():  # to go to basic mine from the map
                     which_mine = 0
             case SearchState.NOT_MAP:
                 print("somehow I'm not at the map.\npanic")
+    wait_and_click(points["mine"])
+    sleep(2)
+    gather_mine()
+    return lv, mine_type
 
 
 def get_elite(google: int, castle: int):
@@ -163,12 +164,13 @@ def inside():
 def outside(google: int, castle: int):
     sleep(3)
     print("running outside")
-    get_mine()
-    get_mine()
-
-    if not get_elite(google, castle):
-        get_mine()
-    get_mine()
+    lv = 6  # level of mine
+    mine_type = 0
+    for mine in range(4):
+        if mine == 2:
+            if get_elite(google, castle):
+                continue
+        lv, mine_type = get_mine(lv, mine_type)
 
 
 def farm_castle(google: int, castle: int):
