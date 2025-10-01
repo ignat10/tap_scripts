@@ -26,28 +26,28 @@ def is_menu() -> bool:
     return search_part(folder_path, gap, True)
 
 
-class SearchState(Enum):
+class Mine(Enum):
     NOT_MAP = 0
     NOT_FOUND = 1
     FOUND_VISIBLE = 2
     FOUND_NOT_VISIBLE = 3
 
 
-def search_state() -> SearchState:
+def search_state() -> Mine:
     city = is_city()
     menu = is_menu()
 
     if not menu:
-        return SearchState.NOT_MAP
+        return Mine.NOT_MAP
 
     elif city:
-        return SearchState.NOT_FOUND
+        return Mine.NOT_FOUND
 
     elif is_visible_gather():
-        return SearchState.FOUND_VISIBLE
+        return Mine.FOUND_VISIBLE
 
     else:
-        return SearchState.FOUND_NOT_VISIBLE
+        return Mine.FOUND_NOT_VISIBLE
 
 
 def is_visible_gather() -> bool:
