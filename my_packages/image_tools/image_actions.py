@@ -2,28 +2,28 @@ import cv2, os
 from PIL import Image
 
 from my_packages.data.paths import screen_state_path
-from my_packages.core.adb_tools import make_screen
+from my_packages.core.adb_console import make_screen
 
 
 
 
-def open_screen_pillow():
+def _open_screen_pillow():
     make_screen()
     return Image.open(screen_state_path)
 
 
-def open_screen_cv2():
+def _open_screen_cv2():
     make_screen()
     return cv2.imread(screen_state_path)
 
 
-def check_color(point_checking: list[int]):
-    return list[int](open_screen_pillow().getpixel((point_checking[0], point_checking[1])))
+def check_color(point_checking: tuple[int, int]):
+    return list[int](_open_screen_pillow().getpixel((point_checking[0], point_checking[1])))
 
 
 def search_part(folder_path, gap: float, fullscreen=None):
     if fullscreen is None:
-        fullscreen = open_screen_cv2()
+        fullscreen = _open_screen_cv2()
     else:
         fullscreen = cv2.imread(screen_state_path)
 
@@ -34,13 +34,11 @@ def search_part(folder_path, gap: float, fullscreen=None):
         print(f"matched {name}: {max_val}/1.0")
         if max_val > gap:
             return max_loc
-
     return None
 
 
 def is_fullscreen(folder_path, gap: int) -> bool:
-    fullscreen = open_screen_cv2()
-
+    fullscreen = _open_screen_cv2()
     for name in os.listdir(folder_path):
         origin = cv2.imread(folder_path / name)
         matched = cv2.PSNR(fullscreen, origin)
