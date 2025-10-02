@@ -1,7 +1,8 @@
 from enum import Enum
 
 
-from my_packages.image_tools.image_actions import search_part, is_fullscreen
+from my_packages.data.poco_coordinates import COLORS
+from my_packages.image_tools.image_actions import search_part, is_fullscreen, check_color
 from my_packages.data.paths import path
 
 
@@ -55,3 +56,7 @@ def is_visible_gather() -> bool:
     fullscreen = False
     gap = 0.8
     return search_part(folder_path, gap, fullscreen)
+
+
+def is_blue(coords) -> bool:
+    return check_color(coords) == COLORS["blue"]
