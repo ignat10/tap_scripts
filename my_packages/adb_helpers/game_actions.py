@@ -1,10 +1,4 @@
-from time import sleep
-
-from my_packages.data.poco_coordinates import points, STEPS, COLORS
-from my_packages.data.farms import castles
-from my_packages.image_tools import image_actions, screen_states, get_coords
-from my_packages.core.adb_tools import click
-
+from my_packages.utils.farm_utils import *
 
 
 class Farm:
@@ -38,7 +32,7 @@ class Farm:
                     break
                 case screen_states.Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    click(points["mine"])
+                    click(points["gather"])
                     break
                 case screen_states.Mine.NOT_FOUND:  # if mine not found
                     if self.mine_type < 4:
@@ -74,8 +68,7 @@ class Farm:
             sleep(1)
             click(points["alliance_elite"])
             sleep(1)
-            color = image_actions.check_color(points["elite_blue"])
-            if color == COLORS["elite_blue"]:  # color of blue
+            if screen_states.is_blue(point_step("blue", 1, 1)):  # color of blue
                 click(point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
                 click(points["gather_elite"])
@@ -85,7 +78,7 @@ class Farm:
                     which_blue += 1
                 return True  # everything is alright I went to elite
             else:
-                print("some chemistry error", color)
+                print("some chemistry error")
                 click(points["favourites_back"])
                 return False  # if there is no elites
 
@@ -103,82 +96,10 @@ class Farm:
         print("end second farm")
 
 
-
-
-def wait_and_click(coords: tuple[int, int], delay=0.5):
-    sleep(delay)
-    click(coords)
-
-
-def repeat_click(coords: tuple[int, int], times: int):
-    for _ in range(times):
-        click(coords)
-
-
-def point_step(name: str,
-               index: int,
-               times: int,
-               ) -> tuple[int, int]:
-
-    point = points[name]
-    step = STEPS[name]
-    print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
-    point[index] += step * times
-    print(f"return point: {point}")
-    assert points[index] != point, f"point after step hasn't been changed: {point}"
-    return point
-
-
-def close_add():
-    print("Closing add...")
-    while not screen_states.main_menu():
-        coords = get_coords.x() or points["close"]
-        click(coords)
-
-
-def gather_mine():
-    wait_and_click(points["gather"])
-    wait_and_click(points["go"])
-    wait_and_click(points["back"])
-
-
-def loading():
-    while screen_states.loading():
-        print("loading")
-    print("loaded")
-
-
-def lord_skills():
-    print("Harvesting...")
-    wait_and_click(points["lord"])
-    wait_and_click(points["harvest"])
-    wait_and_click(points["use"])
-    print("end harvest")
-    wait_and_click(points["recall_all"])
-    wait_and_click(points["use"])
-    print("end recall_all")
-    wait_and_click(points["close"])
-    wait_and_click(points["close"])
-
-
-def inside():
-    loading()
-    print("running inside")  # Inside the castle
-    close_add()
-    lord_skills()
-    click(points["map"])
-    print("finished inside")
-
-
-def farm_castle(c):
-    inside()
-    c.outside()
-    c.second_farm()
-
-
-def farming():
-    for c in castles:
-        farm_castle(c)
+    def farm_castle(self):
+        inside()
+        self.outside()
+        self.second_farm()
 
 
 # how to fix most likely due to a circular import
@@ -192,4 +113,3 @@ def farming():
 # fix get_elite excludes
 
 # where to put general fns
-
