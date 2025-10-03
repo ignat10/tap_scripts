@@ -10,6 +10,8 @@
 #     print(int(round(step * POCO_X7_PRO_RESOLUTION(index))))
 
 
+DEVICE_IP = "192.168.0.192"
+
 points = {
     "take": (587, 1910),
     "close": (226, 2175),
