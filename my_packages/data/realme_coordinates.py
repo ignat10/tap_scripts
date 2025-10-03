@@ -6,7 +6,7 @@ points = {
     "use": (530, 2330),
     "map": (100, 2300),
     "search": (1000, 1981),
-    "iron": (600, 2075),# point stone, wood, food: (600, 425, 256, 100,   2075),  --162
+    "iron": (600, 2075),  # point stone, wood, food: (600, 425, 256, 100,   2075),  --162
     "stone": (425, 2075),
     "wood": (256, 2075),
     "food": (100, 2075),
@@ -21,7 +21,7 @@ points = {
     "favorites": (70, 1823),
     "favourites_back": (70, 150),
     "elite": (700, 365),
-    "elite_blue": (380, 785), # "elite_blue2, 3, 4, 5": (380 1015, 1230, 1460, 1690), ++228
+    "elite_blue": (380, 785),  # "elite_blue2, 3, 4, 5": (380 1015, 1230, 1460, 1690), ++228
     "elite_mine1": (380, 785),
     "gather_elite": (780, 930),
     "vip": (891, 1411),
@@ -34,7 +34,6 @@ points = {
     "castle2": (400, 1100),
     "confirm": (313, 1372),
 }
-
 
 steps = {
     "iron_step": -162,  # step

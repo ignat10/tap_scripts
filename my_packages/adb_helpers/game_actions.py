@@ -95,18 +95,16 @@ class Farm:
         wait_and_click(points["confirm"], 1)  # go inside
         print("end second farm")
 
-
     def farm_castle(self):
         inside()
         self.outside()
         self.second_farm()
 
-
 # how to fix most likely due to a circular import
 
 # where to storage castles
 
-#different between self.fn || farm.fn
+# different between self.fn || farm.fn
 
 # gow to minimalize connection between modules and max them kol-vo
 
