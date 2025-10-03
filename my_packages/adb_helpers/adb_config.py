@@ -1,6 +1,5 @@
 from time import sleep
-
-from pyperclip import paste
+import pyperclip
 
 from my_packages.core.adb_console import find_device, connect_device
 from my_packages.data.poco_coordinates import DEVICE_IP
@@ -13,10 +12,14 @@ def connect_adb():
         if device is not None:
             break
         else:
-            clipboard = paste()
+            clipboard = pyperclip.paste()
             if clipboard.find(DEVICE_IP) != -1:
                 print(f"connecting to device '{clipboard}'")
-                connect_device(clipboard)
+                if connect_device(clipboard):
+                    continue
+                else:
+                    print(f"error connecting to device '{clipboard}'\nreset clipboard")
+                    pyperclip.copy(None)
             else:
                 print(f"clipboard is '{clipboard}'\ncopy your IP")
         sleep(1)
