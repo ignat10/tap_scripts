@@ -1,6 +1,7 @@
+from my_packages.adb_helpers.game_actions import Farm
 from my_packages.data.farms import accounts, leo
 from my_packages.utils.inputter import farm_number
-from my_packages.adb_helpers.game_actions import Farm
+
 
 def make_castles() -> list[Farm]:
     castles: list = []

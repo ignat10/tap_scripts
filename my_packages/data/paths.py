@@ -1,5 +1,5 @@
-from pathlib import Path
 from os import listdir
+from pathlib import Path
 
 screens = Path(r"D:\Documents\GitHub\PythonProject\tap_scripts\my_packages\image_tools\screens")
 

@@ -1,4 +1,5 @@
 from time import sleep
+
 from pyperclip import paste
 
 from my_packages.core.adb_console import find_device, connect_device

@@ -1,10 +1,9 @@
-import cv2, os
+import cv2
+import os
 from PIL import Image
 
-from my_packages.data.paths import screen_state_path
 from my_packages.core.adb_console import make_screen
-
-
+from my_packages.data.paths import screen_state_path
 
 
 def _open_screen_pillow():
