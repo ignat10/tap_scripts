@@ -6,7 +6,7 @@ from my_packages.image_tools.image_actions import search_part, is_fullscreen, ch
 
 
 def loading():
-    return not main_menu(10)
+    return not main_menu(13)
 
 
 def main_menu(gap=17) -> bool:
