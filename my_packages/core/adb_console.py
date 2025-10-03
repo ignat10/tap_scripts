@@ -13,6 +13,14 @@ def adb(arguments: str) -> None:
 def adb_s(arguments: str) -> None:
     adb(f"-s {device} {arguments}")
 
+def adb_run(arguments: str) -> str:
+    arguments.split(" ").insert(0, "adb")
+    output = run(arguments,
+        capture_output=True,
+        text=True,
+        )
+    return output.stdout
+
 
 def click(cords: tuple[int, int]):
     adb_s(f"shell input tap {cords[0]} {cords[1]}")
@@ -24,11 +32,8 @@ def make_screen():
 
 def find_device() -> str | None:
     global device
-    output = run(["adb", "devices"],
-                 capture_output=True,
-                 text=True
-                 )
-    lines: list[str] = output.stdout.splitlines()
+    output = adb_run("devices")
+    lines: list[str] = output.splitlines()
     devices: list[tuple[str, str]] = []
     for line in lines[1::]:
         if line.strip():
