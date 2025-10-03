@@ -14,11 +14,13 @@ def adb_s(arguments: str) -> None:
     adb(f"-s {device} {arguments}")
 
 def adb_run(arguments: str) -> str:
-    arguments.split(" ").insert(0, "adb")
-    output = run(arguments,
-        capture_output=True,
-        text=True,
-        )
+    cmd = f"adb {arguments}"
+    print(f"running: {cmd}")
+    output = run(cmd,
+                 shell=True,
+                 capture_output=True,
+                 text=True
+                 )
     return output.stdout
 
 
@@ -47,4 +49,6 @@ def find_device() -> str | None:
 
 
 def connect_device(serial: str):
-    adb(f"connect {serial}")
+    output = adb_run(f"connect {serial}")
+    is_success: bool = output.find(f"connected to {serial}") == 1
+    return is_success
