@@ -1,29 +1,28 @@
 from enum import Enum
 
-from my_packages.data.paths import path
 from my_packages.data.poco_coordinates import COLORS
 from my_packages.image_tools.image_actions import search_part, is_fullscreen, check_color
 
 
-def loading():
+def loading() -> bool:
     return not main_menu(15)
 
 
-def main_menu(gap=17) -> bool:
-    folder_path = path["main_menus"]
-    return is_fullscreen(folder_path, gap)
+def main_menu(gap=22) -> bool:
+    folder = "main_menus"
+    return is_fullscreen(folder, gap)
 
 
 def is_city() -> bool:
     gap = 0.8
-    folder_path = path["cities"]
-    return search_part(folder_path, gap)
+    folder_name = "cities"
+    return search_part(folder_name, gap)
 
 
 def is_menu() -> bool:
-    folder_path = path["search_menus"]
+    folder_name = "search_menus"
     gap = 0.9
-    return search_part(folder_path, gap, True)
+    return search_part(folder_name, gap, True)
 
 
 class Mine(Enum):
@@ -34,13 +33,10 @@ class Mine(Enum):
 
 
 def search_state() -> Mine:
-    city = is_city()
-    menu = is_menu()
-
-    if not menu:
+    if not is_menu():
         return Mine.NOT_MAP
 
-    elif city:
+    elif is_city():
         return Mine.NOT_FOUND
 
     elif is_visible_gather():
@@ -51,10 +47,10 @@ def search_state() -> Mine:
 
 
 def is_visible_gather() -> bool:
-    folder_path = path["gather"]
+    folder_name = "gather"
     fullscreen = False
     gap = 0.8
-    return search_part(folder_path, gap, fullscreen)
+    return search_part(folder_name, gap, fullscreen)
 
 
 def is_blue(coords) -> bool:

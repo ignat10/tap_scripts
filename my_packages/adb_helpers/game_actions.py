@@ -68,7 +68,7 @@ class Farm:
             sleep(1)
             click(points["alliance_elite"])
             sleep(1)
-            if screen_states.is_blue(point_step("blue", 1, 1)):  # color of blue
+            if screen_states.is_blue(point_step("elite_blue", 1, 1)):  # color of blue
                 click(point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
                 click(points["gather_elite"])
@@ -99,12 +99,6 @@ class Farm:
         inside()
         self.outside()
         self.second_farm()
-
-# how to fix most likely due to a circular import
-
-# where to storage castles
-
-# different between self.fn || farm.fn
 
 # gow to minimalize connection between modules and max them kol-vo
 
