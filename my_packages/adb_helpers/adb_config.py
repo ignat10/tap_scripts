@@ -3,8 +3,7 @@ from time import sleep
 from pyperclip import paste
 
 from my_packages.core.adb_console import find_device, connect_device
-
-IP = "192.168.0.1"
+from my_packages.data.poco_coordinates import DEVICE_IP
 
 
 def connect_adb():
@@ -15,7 +14,7 @@ def connect_adb():
             break
         else:
             clipboard = paste()
-            if clipboard.find(IP) != -1:
+            if clipboard.find(DEVICE_IP) != -1:
                 print(f"connecting to device '{clipboard}'")
                 connect_device(clipboard)
             else:
