@@ -3,7 +3,6 @@ from subprocess import run
 
 from my_packages.data.paths import screen_state_path
 
-
 device = None
 
 
