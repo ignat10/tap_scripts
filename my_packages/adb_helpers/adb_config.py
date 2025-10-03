@@ -6,6 +6,7 @@ from my_packages.core.adb_console import find_device, connect_device
 
 IP = "192.168.0.1"
 
+
 def connect_adb():
     print("connecting adb")
     while True:

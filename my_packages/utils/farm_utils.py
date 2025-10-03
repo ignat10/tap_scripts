@@ -19,14 +19,13 @@ def point_step(name: str,
                index: int,
                times: int,
                ) -> tuple[int, int]:
-
     point: list[int] = list[int](points[name])
     step = STEPS[name]
     print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
     point[index] += step * times
     print(f"return point: {point}")
     assert points[name] != point, f"point after step hasn't been changed: {point}"
-    return tuple[int,int](point)
+    return tuple[int, int](point)
 
 
 def close_add():
