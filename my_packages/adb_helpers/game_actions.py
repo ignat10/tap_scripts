@@ -105,3 +105,25 @@ class Farm:
 # fix get_elite excludes
 
 # where to put general fns
+
+""""
+8. Предлагаемый по-шаговый план работы (практический, 9 шагов)
+
+Добавить my_packages/core/adb_device.py и заменить ключевые вызовы ADB (в adb_console, game_actions) на AdbDevice. (малый коммит)
+
+Исправить adb_run и парсинг subprocess. (маленький)
+
+Сделать safe screenshot в image_actions. (маленький)
+
+Вынести wait_and_click, repeat_click в utils и типизировать. (малый)
+
+Создать models/castle.py dataclass и переписать farm_castle/farming на объекты. (средний)
+
+Убрать глобали и перенести state в объекты (Castle). (средний)
+
+Добавить logging и заменить print на logger. (малый)
+
+Настроить flake8/ruff/black и pre-commit. (малый)
+
+Добавить базовые unit-tests и workflow CI. (средний)
+"""
