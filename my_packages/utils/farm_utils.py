@@ -1,6 +1,6 @@
 from time import sleep
 
-from my_packages.core.adb_console import click
+from my_packages.core.adb_utils import click
 from my_packages.data.poco_coordinates import points, STEPS
 from my_packages.image_tools import get_coords, screen_states
 
@@ -19,12 +19,13 @@ def point_step(name: str,
                index: int,
                times: int,
                ) -> tuple[int, int]:
-    point: list[int] = list[int](points[name])
+    original = tuple(points[name])
+    point = list[int](original)
     step = STEPS[name]
     print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
     point[index] += step * times
     print(f"return point: {point}")
-    assert points[name] != point, f"point after step hasn't been changed: {point}"
+    assert original != point, f"point after step hasn't been changed: {point}"
     return tuple[int, int](point)
 
 
@@ -42,6 +43,7 @@ def gather_mine():
 
 
 def loading():
+    sleep(1)
     while screen_states.loading():
         print("loading")
     print("loaded")
