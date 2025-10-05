@@ -1,11 +1,11 @@
 from time import sleep
 import pyperclip
 
-from my_packages.core.adb_console import find_device, connect_device
+from my_packages.core.adb_device import find_device, connect_device
 from my_packages.data.poco_coordinates import DEVICE_IP
 
 
-def connect_adb():
+def connect_adb() -> None:
     print("connecting adb")
     while True:
         device = find_device()
@@ -25,3 +25,4 @@ def connect_adb():
         sleep(1)
 
     print(f"connected to device '{device}'")
+    return None
