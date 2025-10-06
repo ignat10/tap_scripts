@@ -2,7 +2,7 @@ import cv2
 from PIL import Image
 
 from my_packages.core.adb_utils import make_screen
-from my_packages.data.paths import screen_state_path, path, Path
+from my_packages.data.paths import screen_state_path, path
 
 
 def _open_screen_pillow():
@@ -25,13 +25,15 @@ def search_part(folder_name: str, gap: float, fullscreen=None):
     else:
         fullscreen = cv2.imread(screen_state_path)
 
+    max_val: float = 0
     for name in path[folder_name]:
         origin = cv2.imread(name)
         matched = cv2.matchTemplate(fullscreen, origin, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(matched)
-        print(f"matched {max_val}/1.0")
         if max_val > gap:
+            print(f"matched {name[-10:]} {max_val}/{gap}")
             return max_loc
+    print(f"no matched {max_val}/{gap}")
     return None
 
 
@@ -40,8 +42,8 @@ def is_fullscreen(folder_name: str, gap: int) -> bool:
     for file in path[folder_name]:
         origin = cv2.imread(str(file))
         matched = cv2.PSNR(fullscreen, origin)
-        print(f"similarity :{matched}/50")
         if matched > gap:
+            print(f"similarity :{matched}/{gap}")
             return True
 
     return False
