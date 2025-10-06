@@ -1,10 +1,10 @@
 from .adb_console import adb_run
-from my_packages.core.adb_device import get_device_name
+from .adb_device import device
 from ..data.paths import screen_state_path
 
 
 def adb_s(arguments: str, **kwargs) -> None:
-    command = f"-s {get_device_name()} {arguments}"
+    command = f"-s {device.device} {arguments}"
     adb_run(command, **kwargs)
 
 
