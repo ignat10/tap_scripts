@@ -13,5 +13,4 @@ def click(cords: tuple[int, int]) -> None:
 
 
 def make_screen() -> None:
-    print("make screen")
     adb_s(f"exec-out screencap -p > {screen_state_path}", shell=True)
