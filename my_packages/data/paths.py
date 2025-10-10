@@ -1,15 +1,27 @@
-import os
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__)) # packages
+SCREENS_DIR = os.path.join(BASE_DIR, 'image_tools', 'screens')
+screen_state_path = os.path.join(BASE_DIR, 'local', 'screen.png')
 
 
-screens = r"D:\Documents\GitHub\PythonProject\tap_scripts\my_packages\image_tools\screens"
-screen_state_path = r"D:\Documents\GitHub\PythonProject\tap_scripts\my_packages\local\screen.png"
-path: dict[str, list[str]] = {}
 
-for fol in os.listdir(screens):
-    folder_path = os.path.join(screens, fol)
-    path[fol] = []
-    for img in os.listdir(folder_path):
-        screen_path = os.path.join(folder_path, img)
-        path[fol].append(screen_path)
+def build_image_paths() -> dict[str, list[str]]:
+    result = {}
+    for folder in os.listdir(SCREENS_DIR):
+        result[folder] = []
+        for image in os.listdir(os.path.join(SCREENS_DIR, folder)):
+            result[folder].append(image)
+    return result
 
-print(path)
+
+def build_full_path_list(key: str) -> list[str]:
+    result = []
+    for image in _path[key]:
+        full_path = os.path.join(SCREENS_DIR, key, image)
+        result.append(full_path)
+    return result
+
+
+_path = build_image_paths()
+print(_path)
