@@ -49,5 +49,5 @@ def is_fullscreen(folder_name: str, gap: int) -> bool:
         if matched > gap:
             print(f"similarity :{matched}/{gap}")
             return True
-    print(f"no matched {examples} max result: {matched}/{gap}")
+    print(f"no matched. max result: {matched}/{gap}")
     return False
