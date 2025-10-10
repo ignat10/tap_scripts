@@ -32,6 +32,7 @@ def point_step(name: str,
 def close_add():
     print("Closing add...")
     while not screen_states.main_menu():
+        sleep(0.5)
         coords = get_coords.x() or points["close"]
         click(coords)
 
