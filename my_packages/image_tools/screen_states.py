@@ -14,15 +14,15 @@ def main_menu(gap=22) -> bool:
 
 
 def is_city() -> bool:
-    gap = 0.8
+    gap = 0.7
     folder_name = "cities"
-    return search_part(folder_name, gap, True)
+    return bool(search_part(folder_name, gap, True))
 
 
 def is_menu() -> bool:
     folder_name = "search_menus"
     gap = 0.9
-    return search_part(folder_name, gap)
+    return bool(search_part(folder_name, gap))
 
 
 class Mine(Enum):
@@ -49,8 +49,8 @@ def search_state() -> Mine:
 def is_visible_gather() -> bool:
     folder_name = "gather"
     gap = 0.8
-    return search_part(folder_name, gap, True)
+    return bool(search_part(folder_name, gap, True))
 
 
 def is_blue(coords) -> bool:
-    return check_color(coords) == COLORS["blue"]
+    return check_color(coords) == COLORS["elite_blue"]
