@@ -1,7 +1,6 @@
 from enum import Enum
 
-from my_packages.data.poco_coordinates import COLORS
-from my_packages.image_tools.image_actions import search_part, is_full, check_color
+from my_packages.image_tools.image_actions import search_part, is_full, check_part_screen
 
 
 def loading() -> bool:
@@ -53,5 +52,7 @@ def is_visible_gather() -> bool:
     return bool(search_part(folder_name, gap, True))
 
 
-def is_blue(coords) -> bool:
-    return check_color(coords) == COLORS["elite_blue"]
+def is_blue(coords: tuple[int, int]) -> bool:
+    folder = "blue"
+    gap = 0.8
+    return check_part_screen(folder, coords, gap)

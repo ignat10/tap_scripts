@@ -1,14 +1,9 @@
 import cv2
-from PIL import Image
 from skimage.metrics import structural_similarity as ssim
 
 from my_packages.core.adb_utils import make_screen
 from my_packages.data.paths import screen_state_path, build_full_paths
 
-
-def _get_pillow_screen():
-    make_screen()
-    return Image.open(screen_state_path)
 
 
 def _read_temp_screen():
