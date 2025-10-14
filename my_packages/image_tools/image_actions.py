@@ -15,8 +15,10 @@ def _get_cv2_screen():
     return _read_temp_screen()
 
 
-def check_color(point_checking: tuple[int, int]) -> list[int]:
-    return list(_get_pillow_screen().getpixel((point_checking[0], point_checking[1])))
+def _cut_screen(x0, x1, y0, y1):
+    screen = _read_temp_screen()
+    cutted = screen[y0:y1, x0:x1]
+    return cutted
 
 
 def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple[int, int] | None:
@@ -34,6 +36,24 @@ def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple[int, int
         max_val = max(max_val, matched)
     print(f"no matched {max_val}/{gap}")
     return None
+
+
+def check_part_screen(folder: str, coords: tuple[int, int], gap: float) -> bool:
+    make_screen()
+    paths = build_full_paths(folder)
+    for image in paths:
+        origin = cv2.imread(image)
+        shaped = origin.shape
+        size = (shaped[1], shaped[0])
+        x_half, y_half = size[0] // 2, size[1] // 2
+        section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
+        cutted = _cut_screen(*section)
+        resized = cv2.resize(cutted, size)
+        result = ssim(resized, origin, win_size=size[1])
+        print(f"ssim result: {result}")
+        if result > gap:
+            return True
+    return False
 
 
 def is_full(folder_name: str, gap: float, fullscreen=None) -> bool:
