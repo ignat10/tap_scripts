@@ -1,5 +1,6 @@
 import cv2
 from PIL import Image
+from skimage.metrics import structural_similarity as ssim
 
 from my_packages.core.adb_utils import make_screen
 from my_packages.data.paths import screen_state_path, build_full_path_list
@@ -38,16 +39,19 @@ def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple[int, int
     return None
 
 
-def is_fullscreen(folder_name: str, gap: int) -> bool:
-    fullscreen = _open_screen_cv2()
-    examples: list[str] = build_full_path_list(folder_name)
+def is_full(folder_name: str, gap: float, fullscreen=None) -> bool:
+    fullscreen = _read_temp_screen() if fullscreen is not None else _get_cv2_screen()
 
-    matched: float = 0
+    gray_fullscreen = cv2.cvtColor(fullscreen, cv2.COLOR_BGR2GRAY)
+    examples: list[str] = build_full_paths(folder_name)
+    max_val: float = 0
     for image in examples:
         origin = cv2.imread(image)
-        matched = cv2.PSNR(fullscreen, origin)
-        if matched > gap:
-            print(f"similarity :{matched}/{gap}")
+        gray_origin = cv2.cvtColor(origin, cv2.COLOR_BGR2GRAY)
+        result = ssim(gray_fullscreen, gray_origin)
+        if result >= gap:
+            print(f"is full. {image[-10:]} {result}/{gap}")
             return True
-    print(f"no matched. max result: {matched}/{gap}")
+        max_val = max(max_val, result)
+    print(f"no full {max_val}/{gap}")
     return False
