@@ -3,38 +3,40 @@ from PIL import Image
 from skimage.metrics import structural_similarity as ssim
 
 from my_packages.core.adb_utils import make_screen
-from my_packages.data.paths import screen_state_path, build_full_path_list
+from my_packages.data.paths import screen_state_path, build_full_paths
 
 
-def _open_screen_pillow():
+def _get_pillow_screen():
     make_screen()
     return Image.open(screen_state_path)
 
 
-def _open_screen_cv2():
-    make_screen()
+def _read_temp_screen():
     return cv2.imread(screen_state_path)
 
 
+def _get_cv2_screen():
+    make_screen()
+    return _read_temp_screen()
+
+
 def check_color(point_checking: tuple[int, int]) -> list[int]:
-    return list[int](_open_screen_pillow().getpixel((point_checking[0], point_checking[1])))
+    return list(_get_pillow_screen().getpixel((point_checking[0], point_checking[1])))
 
 
 def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple[int, int] | None:
-    if fullscreen is None:
-        fullscreen = _open_screen_cv2()
-    else:
-        fullscreen = cv2.imread(screen_state_path)
+    fullscreen = _read_temp_screen() if fullscreen is not None else _get_cv2_screen()
 
-    examples: list[str] = build_full_path_list(folder_name)
-    max_val: float = 0
+    examples: list[str] = build_full_paths(folder_name)
+    max_val: float = 0.0
     for image in examples:
         origin = cv2.imread(image)
         matched = cv2.matchTemplate(fullscreen, origin, cv2.TM_CCOEFF_NORMED)
-        _, max_val, _, max_loc = cv2.minMaxLoc(matched)
-        if max_val > gap:
-            print(f"matched {image[-10:]} {max_val}/{gap}")
-            return tuple[int, int](max_loc)
+        _, matched, _, coords = cv2.minMaxLoc(matched)
+        if matched > gap:
+            print(f"matched {image[-10:]} {matched}/{gap}")
+            return tuple[int, int](coords)
+        max_val = max(max_val, matched)
     print(f"no matched {max_val}/{gap}")
     return None
 

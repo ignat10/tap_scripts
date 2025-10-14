@@ -29,12 +29,12 @@ def point_step(name: str,
     return tuple[int, int](point)
 
 
-def close_add():
-    print("Closing add...")
+def close_ad():
+    print("Closing ad...")
     while not screen_states.main_menu():
-        sleep(0.5)
         coords = get_coords.x() or points["close"]
-        click(coords)
+        wait_and_click(coords)
+    print("Ad closed.")
 
 
 def gather_mine():
@@ -66,7 +66,7 @@ def lord_skills():
 def inside():
     loading()
     print("running inside")  # Inside the castle
-    close_add()
+    close_ad()
     lord_skills()
     click(points["map"])
     print("finished inside")
