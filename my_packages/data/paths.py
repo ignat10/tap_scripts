@@ -15,7 +15,7 @@ def build_image_paths() -> dict[str, list[str]]:
     return result
 
 
-def build_full_path_list(key: str) -> list[str]:
+def build_full_paths(key: str) -> list[str]:
     result = []
     for image in _path[key]:
         full_path = os.path.join(SCREENS_DIR, key, image)
