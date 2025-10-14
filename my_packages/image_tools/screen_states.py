@@ -5,7 +5,8 @@ from my_packages.image_tools.image_actions import search_part, is_full, check_pa
 
 def loading() -> bool:
     gap = 0.6
-    return not main_menu(gap)
+    folder = "ads"
+    return not is_full(folder, gap)
 
 
 def main_menu(gap=0.8) -> bool:

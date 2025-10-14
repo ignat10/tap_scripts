@@ -33,7 +33,9 @@ def close_ad():
     print("Closing ad...")
     while not screen_states.main_menu():
         coords = get_coords.x() or points["close"]
-        wait_and_click(coords)
+        click(coords)
+        print(f"x find: {not coords == points["close"]}, {coords} pressed")
+        sleep(1)
     print("Ad closed.")
 
 
@@ -97,6 +99,7 @@ class Farm:
         click(points["search"])
         while True:
             self.find_another_mine()
+            sleep(1)
             match screen_states.search_state():
                 case screen_states.Mine.FOUND_VISIBLE:
                     print("gather is visible")
