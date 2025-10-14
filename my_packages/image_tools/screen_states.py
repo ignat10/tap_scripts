@@ -1,16 +1,17 @@
 from enum import Enum
 
 from my_packages.data.poco_coordinates import COLORS
-from my_packages.image_tools.image_actions import search_part, is_fullscreen, check_color
+from my_packages.image_tools.image_actions import search_part, is_full, check_color
 
 
 def loading() -> bool:
-    return not main_menu(15)
+    gap = 0.6
+    return not main_menu(gap)
 
 
-def main_menu(gap=22) -> bool:
+def main_menu(gap=0.8) -> bool:
     folder = "main_menus"
-    return is_fullscreen(folder, gap)
+    return is_full(folder, gap)
 
 
 def is_city() -> bool:
