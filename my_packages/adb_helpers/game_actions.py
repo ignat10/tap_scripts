@@ -10,70 +10,6 @@ def wait_and_click(coords: tuple[int, int], delay=0.5):
     click(coords)
 
 
-def repeat_click(coords: tuple[int, int], times: int):
-    for _ in range(times):
-        click(coords)
-
-
-def point_step(name: str,
-               index: int,
-               times: int,
-               ) -> tuple[int, int]:
-    original = tuple(points[name])
-    point = list[int](original)
-    step = STEPS[name]
-    print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
-    point[index] += step * times
-    print(f"return point: {point}")
-    assert original != point, f"point after step hasn't been changed: {point}"
-    return tuple[int, int](point)
-
-
-def close_ad():
-    print("Closing ad...")
-    while not screen_states.main_menu():
-        coords = get_coords.x() or points["close"]
-        click(coords)
-        print(f"x find: {not coords == points["close"]}, {coords} pressed")
-        sleep(1)
-    print("Ad closed.")
-
-
-def gather_mine():
-    wait_and_click(points["gather"])
-    wait_and_click(points["go"])
-    wait_and_click(points["back"])
-
-
-def loading():
-    sleep(1)
-    while screen_states.loading():
-        print("loading")
-    print("loaded")
-
-
-def lord_skills():
-    print("Harvesting...")
-    wait_and_click(points["lord"])
-    wait_and_click(points["harvest"])
-    wait_and_click(points["use"])
-    print("end harvest")
-    wait_and_click(points["recall_all"])
-    wait_and_click(points["use"])
-    print("end recall_all")
-    wait_and_click(points["close"])
-    wait_and_click(points["close"])
-
-
-def inside():
-    loading()
-    print("running inside")  # Inside the castle
-    close_ad()
-    lord_skills()
-    click(points["map"])
-    print("finished inside")
-
-
 class Farm:
     def __init__(self, number: int, name: str, google: int, account: int, lv: int, alliance: str):
         self.number = number
@@ -85,6 +21,65 @@ class Farm:
         self.mine_lv = 6
         self.mine_type = 0
         self.blue = 0
+
+    def repeat_click(self, coords: tuple[int, int], times: int):
+        for _ in range(times):
+            click(coords)
+
+    def point_step(self,
+                   name: str,
+                   index: int,
+                   times: int,
+                   ) -> tuple[int, int]:
+        original = tuple(points[name])
+        point = list[int](original)
+        step = STEPS[name]
+        print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
+        point[index] += step * times
+        print(f"return point: {point}")
+        assert original != point, f"point after step hasn't been changed: {point}"
+        return tuple[int, int](point)
+
+    def close_ad(self):
+        print("Closing ad...")
+        while not screen_states.main_menu():
+            coords = get_coords.x() or points["close"]
+            click(coords)
+            print(f"x find: {not coords == points["close"]}, {coords} pressed")
+            sleep(1)
+        print("Ad closed.")
+
+    def gather_mine(self):
+        wait_and_click(points["gather"])
+        wait_and_click(points["go"])
+        wait_and_click(points["back"])
+
+    def loading(self):
+        sleep(1)
+        while screen_states.loading():
+            print("loading")
+        print("loaded")
+
+    def lord_skills(self):
+        print("Harvesting...")
+        wait_and_click(points["lord"])
+        wait_and_click(points["harvest"])
+        wait_and_click(points["use"])
+        print("end harvest")
+        wait_and_click(points["recall_all"])
+        wait_and_click(points["use"])
+        print("end recall_all")
+        wait_and_click(points["close"])
+        wait_and_click(points["close"])
+
+    def inside(self):
+        self.loading()
+        print("running inside")  # Inside the castle
+        self.close_ad()
+        self.lord_skills()
+        click(points["map"])
+        print("finished inside")
+        
 
     def outside(self):
         sleep(3)
@@ -120,13 +115,13 @@ class Farm:
                     print("somehow I'm not at the map.\npanic")
         wait_and_click(points["mine"])
         sleep(2)
-        gather_mine()
+        self.gather_mine()
 
     def find_another_mine(self):  # to find another mine if not found
-        wait_and_click(point_step("mine_type", 0, self.mine_type))
-        repeat_click(points["minus"], 5)
-        repeat_click(points["plus"], self.mine_lv - 1)
-        repeat_click(points["go_mine"], 3)
+        wait_and_click(self.point_step("mine_type", 0, self.mine_type))
+        self.repeat_click(points["minus"], 5)
+        self.repeat_click(points["plus"], self.mine_lv - 1)
+        self.repeat_click(points["go_mine"], 3)
 
     def get_elite(self):
         print("Elite")
@@ -142,8 +137,8 @@ class Farm:
             sleep(1)
             click(points["alliance_elite"])
             sleep(1)
-            if screen_states.is_blue(point_step("elite_blue", 1, 1)):  # color of blue
-                click(point_step("elite_blue", 1, which_blue))
+            if screen_states.is_blue(self.point_step("elite_blue", 1, 1)):  # color of blue
+                click(self.point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
                 click(points["gather_elite"])
                 sleep(1)
@@ -156,44 +151,28 @@ class Farm:
                 click(points["favourites_back"])
                 return False  # if there is no elites
 
-    def second_farm(self):
+    def second_farm(self, second):
         print("running second_farm")
         wait_and_click(points["avatar"])
         wait_and_click(points["account"])
         wait_and_click(points["switch"])
         wait_and_click(points["login"], 1)
-        print(f"step google, {self.google}")
-        wait_and_click(point_step("google", 1, self.google), 2)
-        print(f"step acc: {self.account}")
-        wait_and_click(point_step("castle", 1, self.account), 3)
+        print(f"step google, {second.google}")
+        wait_and_click(self.point_step("google", 1, second.google), 2)
+        print(f"step acc: {second.account}")
+        wait_and_click(self.point_step("castle", 1, second.account), 3)
         wait_and_click(points["confirm"], 1)  # go inside
         print("end second farm")
 
-    def farm_castle(self):
-        inside()
-        self.outside()
-        self.second_farm()
-
-# gow to minimalize connection between modules and max them kol-vo
 
 # fix get_elite excludes
-
-# where to put general fns
 
 """"
 8. Предлагаемый по-шаговый план работы (практический, 9 шагов)
 
-Добавить my_packages/core/adb_device.py и заменить ключевые вызовы ADB (в adb_console, game_actions) на AdbDevice. (малый коммит)
-
-Исправить adb_run и парсинг subprocess. (маленький)
-
 Сделать safe screenshot в image_actions. (маленький)
 
-Вынести wait_and_click, repeat_click в utils и типизировать. (малый)
-
 Создать models/castle.py dataclass и переписать farm_castle/farming на объекты. (средний)
-
-Убрать глобали и перенести state в объекты (Castle). (средний)
 
 Добавить logging и заменить print на logger. (малый)
 
