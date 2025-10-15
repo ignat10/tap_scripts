@@ -24,7 +24,7 @@ def _cut_screen(x0, x1, y0, y1):
     return cutted
 
 
-def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple[int, int] | None:
+def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple | None:
     fullscreen = _read_temp_screen() if fullscreen is not None else _get_cv2_screen()
 
     max_val: float = 0.0
