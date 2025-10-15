@@ -1,6 +1,5 @@
 from .adb_console import adb_run
 from .adb_device import device
-from ..data.paths import screen_state_path
 
 
 def adb_s(arguments: str, **kwargs) -> None:
@@ -13,4 +12,5 @@ def click(cords: tuple[int, int]) -> None:
 
 
 def make_screen() -> None:
-    adb_s(f"exec-out screencap -p > {screen_state_path}", shell=True)
+    from ..data.paths import path
+    adb_s(f"exec-out screencap -p > {path.screen_state_path}", shell=True)

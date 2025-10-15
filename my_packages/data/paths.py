@@ -1,27 +1,15 @@
 import os.path
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__)) # packages
-SCREENS_DIR = os.path.join(BASE_DIR, 'image_tools', 'screens')
-screen_state_path = os.path.join(BASE_DIR, 'local', 'screen.png')
+
+class Path:
+    def __init__(self):
+        self._BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # packages
+        self._SCREENS_DIR = os.path.join(self._BASE_DIR, 'image_tools', 'screens')
+        self.screen_state_path = os.path.join(self._BASE_DIR, 'local', 'screen.png')
+        self.folder_names: frozenset[str] = frozenset(os.listdir(self._SCREENS_DIR))
+        self.folder_paths: dict[str, str] = {folder_name: os.path.join(self._SCREENS_DIR, folder_name) for folder_name in self.folder_names}
+        self.image_names: dict[str, frozenset[str]] = {folder_name: frozenset(os.listdir(folder_path)) for folder_name, folder_path in self.folder_paths.items()}
+        self.image_paths: dict[str, frozenset[str]] = {folder_name: frozenset(os.path.join(folder_path, image_name) for image_name in self.image_names[folder_name]) for folder_name, folder_path in self.folder_paths.items()}
 
 
-
-def build_image_paths() -> dict[str, list[str]]:
-    result = {}
-    for folder in os.listdir(SCREENS_DIR):
-        result[folder] = []
-        for image in os.listdir(os.path.join(SCREENS_DIR, folder)):
-            result[folder].append(image)
-    return result
-
-
-def build_full_paths(key: str) -> list[str]:
-    result = []
-    for image in _path[key]:
-        full_path = os.path.join(SCREENS_DIR, key, image)
-        result.append(full_path)
-    return result
-
-
-_path = build_image_paths()
-print(_path)
+path = Path()
