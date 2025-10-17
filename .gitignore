@@ -34,3 +34,5 @@ times.py
 tap_scripts
 half.py
 __pycache__/
+my_packages/local/
+my_packages/data/client_secret.json
