@@ -1,3 +1,3 @@
-accounts = [1, 2, 2, 2, 2]
+from pandas import read_excel
 
 leo = ("leo", 19, "MIA")
