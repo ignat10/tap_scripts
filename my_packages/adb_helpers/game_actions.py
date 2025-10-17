@@ -94,7 +94,7 @@ class Farm:
         click(points["search"])
         while True:
             self.find_another_mine()
-            sleep(1)
+            sleep(2)
             match screen_states.search_state():
                 case screen_states.Mine.FOUND_VISIBLE:
                     print("gather is visible")
