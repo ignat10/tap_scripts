@@ -26,19 +26,21 @@ class Farm:
         for _ in range(times):
             click(coords)
 
+
     def point_step(self,
                    name: str,
                    index: int,
                    times: int,
                    ) -> tuple[int, int]:
         original = tuple(points[name])
-        point = list[int](original)
+        point = list(original)
         step = STEPS[name]
         print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
         point[index] += step * times
         print(f"return point: {point}")
         assert original != point, f"point after step hasn't been changed: {point}"
         return tuple[int, int](point)
+
 
     def close_ad(self):
         print("Closing ad...")
@@ -125,13 +127,7 @@ class Farm:
 
     def get_elite(self):
         print("Elite")
-        match self.number:
-            case 0 | 0:
-                which_blue = self.blue
-                second_blue = False
-            case _:
-                which_blue = 0
-                second_blue = True
+        which_blue = self.blue
         while True:
             click(points["favorites"])
             sleep(1)
@@ -143,8 +139,7 @@ class Farm:
                 click(points["gather_elite"])
                 sleep(1)
                 click(points["go"])  # regularly I should be there
-                if second_blue:
-                    which_blue += 1
+                which_blue += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
