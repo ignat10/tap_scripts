@@ -8,15 +8,16 @@ from my_packages.utils.setup import make_castles
 def farming():
     connect_adb()
     castles = make_castles()
-    for number, castle in enumerate(castles):
+    for castle in castles:
+        print(f"switching to {castle.name}")
+        castle.switch_farm()
         castle.inside()
         castle.outside()
-        castle.second_farm(castles[number + 1])
 
 
 def seconds():
     connect_adb()
     castles = make_castles()
-    for number, castle in enumerate(castles):
-        castle.second_farm(castles[number + 1])
+    for castle in castles:
+        castle.switch_farm()
         sleep(15)
