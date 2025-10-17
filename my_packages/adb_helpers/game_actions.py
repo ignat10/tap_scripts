@@ -11,8 +11,7 @@ def wait_and_click(coords: tuple[int, int], delay=0.5):
 
 
 class Farm:
-    def __init__(self, number: int, name: str, google: int, account: int, lv: int, alliance: str):
-        self.number = number
+    def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
         self.name = name
         self.google = google
         self.account = account
@@ -21,6 +20,7 @@ class Farm:
         self.mine_lv = 6
         self.mine_type = 0
         self.blue = 0
+
 
     def repeat_click(self, coords: tuple[int, int], times: int):
         for _ in range(times):
