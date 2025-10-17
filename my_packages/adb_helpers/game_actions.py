@@ -151,18 +151,19 @@ class Farm:
                 click(points["favourites_back"])
                 return False  # if there is no elites
 
-    def second_farm(self, second):
-        print("running second_farm")
+
+    def switch_farm(self):
+        print(f"running second_farm {self.name}")
         wait_and_click(points["avatar"])
         wait_and_click(points["account"])
         wait_and_click(points["switch"])
         wait_and_click(points["login"], 1)
-        print(f"step google, {second.google}")
-        wait_and_click(self.point_step("google", 1, second.google), 2)
-        print(f"step acc: {second.account}")
-        wait_and_click(self.point_step("castle", 1, second.account), 3)
+        print(f"step google, {self.google}")
+        wait_and_click(self.point_step("google", 1, self.google), 2)
+        print(f"step acc: {self.account}")
+        wait_and_click(self.point_step("castle", 1, self.account), 3)
         wait_and_click(points["confirm"], 1)  # go inside
-        print("end second farm")
+        print(f"logged in to {self.name}")
 
 
 # fix get_elite excludes
