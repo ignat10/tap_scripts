@@ -15,15 +15,17 @@ def main_menu(gap=0.8) -> bool:
 
 
 def is_city() -> bool:
-    gap = 0.7
+    gap = 0.6
     folder_name = "cities"
-    return bool(search_part(folder_name, gap, True))
+    result = search_part(folder_name, gap, True)
+    return bool(result)
 
 
 def is_menu() -> bool:
     folder_name = "search_menus"
     gap = 0.9
-    return bool(search_part(folder_name, gap))
+    result = search_part(folder_name, gap)
+    return bool(result)
 
 
 class Mine(Enum):
@@ -49,8 +51,9 @@ def search_state() -> Mine:
 
 def is_visible_gather() -> bool:
     folder_name = "gather"
-    gap = 0.8
-    return bool(search_part(folder_name, gap, True))
+    gap = 0.6
+    result = search_part(folder_name, gap, True)
+    return bool(result)
 
 
 def is_blue(coords: tuple[int, int]) -> bool:
