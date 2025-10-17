@@ -1,7 +1,7 @@
 from time import sleep
 
 from my_packages.adb_helpers.adb_config import connect_adb
-from my_packages.utils.setup import make_castles
+from my_packages.loaders.castle_loader import make_castles
 
 
 

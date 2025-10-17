@@ -3,7 +3,7 @@ from skimage.metrics import structural_similarity as ssim
 
 from my_packages.core.adb_utils import make_screen
 from my_packages.data.paths import path
-from my_packages.utils.setup import read_images
+from my_packages.loaders.image_loader import read_images
 
 
 images = read_images()
