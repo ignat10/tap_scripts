@@ -21,7 +21,7 @@ def _get_cv2_screen():
 def _cut_screen(x0, x1, y0, y1):
     screen = _read_temp_screen()
     cutted = screen[y0:y1, x0:x1]
-    return cutted
+    cv2.imwrite(path.cutted_screen, cutted)
 
 
 def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple | None:
@@ -41,14 +41,17 @@ def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple | None:
 
 def check_part_screen(folder: str, coords: tuple[int, int], gap: float) -> bool:
     make_screen()
-    for image in images[folder]:
-        shaped = image.shape
-        size = (shaped[1], shaped[0])
-        x_half, y_half = size[0] // 2, size[1] // 2
+    for origin in images[folder]:
+        origin_shaped = origin.shape
+        origin_size = (origin_shaped[1], origin_shaped[0])
+        x_half, y_half = origin_size[0] // 2, origin_size[1] // 2
         section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
-        cutted = _cut_screen(*section)
-        resized = cv2.resize(cutted, size)
-        result = ssim(resized, image, win_size=size[1])
+
+        _cut_screen(*section)
+        cutted = cv2.imread(path.cutted_screen)
+        print(f"size of: origin: {origin_size} cutted: {cutted.shape}")
+        resized_screen = cv2.resize(cutted, origin_size)
+        result = ssim(origin, resized_screen, win_size=min(origin_size))
         print(f"ssim result: {result}")
         if result > gap:
             return True
