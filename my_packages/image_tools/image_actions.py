@@ -1,7 +1,8 @@
 import cv2
+from numpy import ndarray, frombuffer, uint8
 from skimage.metrics import structural_similarity as ssim
 
-from my_packages.core.adb_utils import make_screen
+from my_packages.core.adb_utils import make_screen, adb_screencap
 from my_packages.data.paths import path
 from my_packages.loaders.image_loader import read_images
 
@@ -9,13 +10,20 @@ from my_packages.loaders.image_loader import read_images
 images = read_images()
 
 
+def _transform_image2np(console_output: str) -> ndarray:
+    image_bytes = frombuffer(console_output, uint8)
+    image = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return gray_image
+
+
 def _read_temp_screen():
     return cv2.imread(path.screen_state_path)
 
 
-def _get_cv2_screen():
-    make_screen()
-    return _read_temp_screen()
+def _get_cv2_screen() -> ndarray:
+    gray_image = _transform_image2np(adb_screencap())
+    return gray_image
 
 
 def _cut_screen(x0, x1, y0, y1):
