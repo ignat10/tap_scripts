@@ -59,13 +59,11 @@ def check_part_screen(folder: str, coords: tuple[int, int], gap: float) -> bool:
 
 
 def is_full(folder_name: str, gap: float, fullscreen=None) -> bool:
-    fullscreen = _read_temp_screen() if fullscreen is not None else _get_cv2_screen()
+    gray_fullscreen = _read_temp_screen() if fullscreen is not None else _get_cv2_screen()
 
-    gray_fullscreen = cv2.cvtColor(fullscreen, cv2.COLOR_BGR2GRAY)
     max_val: float = 0
     for image in images[folder_name]:
-        gray_origin = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        result = ssim(gray_fullscreen, gray_origin)
+        result = ssim(gray_fullscreen, image)
         if result >= gap:
             print(f"is full. {result}/{gap}")
             return True
