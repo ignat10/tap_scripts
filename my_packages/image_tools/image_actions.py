@@ -2,7 +2,7 @@ import cv2
 from numpy import ndarray, frombuffer, uint8
 from skimage.metrics import structural_similarity as ssim
 
-from my_packages.core.adb_utils import make_screen, adb_screencap
+from my_packages.core.adb_utils import screencap
 from my_packages.data.paths import path
 from my_packages.loaders.image_loader import read_images
 
@@ -22,14 +22,13 @@ def _read_temp_screen():
 
 
 def _get_cv2_screen() -> ndarray:
-    gray_image = _transform_image2np(adb_screencap())
+    gray_image = _transform_image2np(screencap())
     return gray_image
 
 
-def _cut_screen(x0, x1, y0, y1):
-    screen = _read_temp_screen()
-    cutted = screen[y0:y1, x0:x1]
-    cv2.imwrite(path.cutted_screen, cutted)
+def _cut_screen(fullscreen: ndarray, x0, x1, y0, y1) -> ndarray:
+    cutted = fullscreen[y0:y1, x0:x1]
+    return cutted
 
 
 def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple | None:
@@ -48,15 +47,14 @@ def search_part(folder_name: str, gap: float, fullscreen=None) -> tuple | None:
 
 
 def check_part_screen(folder: str, coords: tuple[int, int], gap: float) -> bool:
-    make_screen()
+    gray_fullscreen = _transform_image2np(screencap())
     for origin in images[folder]:
         origin_shaped = origin.shape
         origin_size = (origin_shaped[1], origin_shaped[0])
         x_half, y_half = origin_size[0] // 2, origin_size[1] // 2
         section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
 
-        _cut_screen(*section)
-        cutted = cv2.imread(path.cutted_screen)
+        cutted = _cut_screen(gray_fullscreen, *section)
         print(f"size of: origin: {origin_size} cutted: {cutted.shape}")
         resized_screen = cv2.resize(cutted, origin_size)
         result = ssim(origin, resized_screen, win_size=min(origin_size))
