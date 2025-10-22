@@ -7,7 +7,7 @@ class AdbDevice:
         self.is_connected = False
 
 
-    def find_device(self):
+    def find(self):
         output = adb_run("devices", capture_output=True, text=True)
         if output is not None:
             lines: list[str] = output.splitlines()
@@ -22,11 +22,14 @@ class AdbDevice:
                     break
         print(f"find adb devices self.device: {self.device}")
 
-
-    def connect_device(self, dev: str) -> None:
+    def connect(self, dev: str) -> None:
         output = adb_run(f"connect {dev}", capture_output=True, text=True)
         success: bool = f"connected to {dev}" in output
         print(f"success connection: {success}")
         self.is_connected = success
+
+    def action(self, arguments: str, **kwargs) -> str:
+        command = f"-s {self.device} {arguments}"
+        return adb_run(command, **kwargs)
 
 device = AdbDevice()
