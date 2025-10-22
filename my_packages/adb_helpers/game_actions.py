@@ -22,13 +22,13 @@ class Farm:
         self.blue = 0
 
 
-    def repeat_click(self, coords: tuple[int, int], times: int):
+    @staticmethod
+    def repeat_click(coords: tuple[int, int], times: int):
         for _ in range(times):
             click(coords)
 
-
-    def point_step(self,
-                   name: str,
+    @staticmethod
+    def point_step(name: str,
                    index: int,
                    times: int,
                    ) -> tuple[int, int]:
@@ -41,8 +41,8 @@ class Farm:
         assert original != point, f"point after step hasn't been changed: {point}"
         return tuple[int, int](point)
 
-
-    def close_ad(self):
+    @staticmethod
+    def close_ad():
         print("Closing ad...")
         while not screen_states.main_menu():
             coords = get_coords.x() or points["close"]
@@ -51,18 +51,21 @@ class Farm:
             sleep(1)
         print("Ad closed.")
 
-    def gather_mine(self):
+    @staticmethod
+    def gather_mine():
         wait_and_click(points["gather"])
         wait_and_click(points["go"])
         wait_and_click(points["back"])
 
-    def loading(self):
+    @staticmethod
+    def loading():
         sleep(1)
         while screen_states.loading():
             print("loading")
         print("loaded")
 
-    def lord_skills(self):
+    @staticmethod
+    def lord_skills():
         print("Harvesting...")
         wait_and_click(points["lord"])
         wait_and_click(points["harvest"])
@@ -165,10 +168,6 @@ class Farm:
 
 """"
 8. Предлагаемый по-шаговый план работы (практический, 9 шагов)
-
-Сделать safe screenshot в image_actions. (маленький)
-
-Создать models/castle.py dataclass и переписать farm_castle/farming на объекты. (средний)
 
 Добавить logging и заменить print на logger. (малый)
 
