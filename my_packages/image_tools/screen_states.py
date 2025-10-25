@@ -1,31 +1,6 @@
 from enum import Enum
 
-from my_packages.image_tools.image_actions import search_part, is_full, check_part_screen
-
-
-def loading() -> bool:
-    gap = 0.6
-    folder = "ads"
-    return not is_full(folder, gap)
-
-
-def main_menu(gap=0.8) -> bool:
-    folder = "main_menus"
-    return is_full(folder, gap)
-
-
-def is_city() -> bool:
-    gap = 0.6
-    folder_name = "cities"
-    result = search_part(folder_name, gap, True)
-    return bool(result)
-
-
-def is_menu() -> bool:
-    folder_name = "search_menus"
-    gap = 0.9
-    result = search_part(folder_name, gap)
-    return bool(result)
+from my_packages.image_tools.image_actions import ImageAnalyzer
 
 
 class Mine(Enum):
@@ -35,28 +10,65 @@ class Mine(Enum):
     FOUND_NOT_VISIBLE = 3
 
 
-def search_state() -> Mine:
-    if not is_menu():
-        return Mine.NOT_MAP
+class ScreenState:
+    def __init__(self):
+        self.image_analyzer = ImageAnalyzer()
 
-    elif is_city():
-        return Mine.NOT_FOUND
+    def loading(self) -> bool:
+        gap = 0.6
+        folder = "ads"
+        return not self.image_analyzer.match_screen(folder, gap)
+    
+    
+    def main_menu(self, gap=0.8) -> bool:
+        folder = "main_menus"
+        return self.image_analyzer.match_screen(folder, gap)
+    
+    
+    def is_city(self) -> bool:
+        gap = 0.6
+        folder_name = "cities"
+        result = self.image_analyzer.find_part(folder_name, gap, True)
+        return bool(result)
+    
+    
+    def is_menu(self) -> bool:
+        folder_name = "search_menus"
+        gap = 0.9
+        result = self.image_analyzer.find_part(folder_name, gap)
+        return bool(result)
+    
+    def search_state(self) -> Mine:
+        if not self.is_menu():
+            return Mine.NOT_MAP
 
-    elif is_visible_gather():
-        return Mine.FOUND_VISIBLE
+        elif self.is_city():
+            return Mine.NOT_FOUND
 
-    else:
-        return Mine.FOUND_NOT_VISIBLE
+        elif self.is_visible_gather():
+            return Mine.FOUND_VISIBLE
+
+        else:
+            return Mine.FOUND_NOT_VISIBLE
+    
+    
+    def is_visible_gather(self) -> bool:
+        folder_name = "gather"
+        gap = 0.6
+        result = self.image_analyzer.find_part(folder_name, gap, False)
+        return bool(result)
+    
+    
+    def is_blue(self, coords: tuple[int, int]) -> bool:
+        folder_name = "blue"
+        gap = 0.8
+        return self.image_analyzer.compare_part(folder_name, coords, gap)
+
+    def x(self) -> tuple[int, int] | None:
+        folder_name = "xs"
+        gap = 0.9
+        coords = self.image_analyzer.find_part(folder_name, gap, False)
+        return coords
 
 
-def is_visible_gather() -> bool:
-    folder_name = "gather"
-    gap = 0.6
-    result = search_part(folder_name, gap, True)
-    return bool(result)
-
-
-def is_blue(coords: tuple[int, int]) -> bool:
-    folder = "blue"
-    gap = 0.8
-    return check_part_screen(folder, coords, gap)
+screen_state = ScreenState()

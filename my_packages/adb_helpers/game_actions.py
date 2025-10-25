@@ -1,13 +1,13 @@
 from time import sleep
 
-from my_packages.core.adb_utils import click
+from my_packages.core.adb_device import device
 from my_packages.data.poco_coordinates import points, STEPS
-from my_packages.image_tools import get_coords, screen_states
+from my_packages.image_tools.screen_states import screen_state
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
     sleep(delay)
-    click(coords)
+    device.click(coords)
 
 
 class Farm:
@@ -25,7 +25,7 @@ class Farm:
     @staticmethod
     def repeat_click(coords: tuple[int, int], times: int):
         for _ in range(times):
-            click(coords)
+            device.click(coords)
 
     @staticmethod
     def point_step(name: str,
@@ -44,9 +44,9 @@ class Farm:
     @staticmethod
     def close_ad():
         print("Closing ad...")
-        while not screen_states.main_menu():
-            coords = get_coords.x() or points["close"]
-            click(coords)
+        while not  screen_state.main_menu():
+            coords = screen_state.get_coords.x() or points["close"]
+            device.click(coords)
             print(f"x find: {not coords == points["close"]}, {coords} pressed")
             sleep(1)
         print("Ad closed.")
@@ -60,7 +60,7 @@ class Farm:
     @staticmethod
     def loading():
         sleep(1)
-        while screen_states.loading():
+        while  screen_state.loading():
             print("loading")
         print("loaded")
 
@@ -82,7 +82,7 @@ class Farm:
         print("running inside")  # Inside the castle
         self.close_ad()
         self.lord_skills()
-        click(points["map"])
+        device.click(points["map"])
         print("finished inside")
         
 
@@ -96,19 +96,19 @@ class Farm:
             self.get_mine()
 
     def get_mine(self):  # to go to basic mine from the map
-        click(points["search"])
+        device.click(points["search"])
         while True:
             self.find_another_mine()
             sleep(2)
-            match screen_states.search_state():
-                case screen_states.Mine.FOUND_VISIBLE:
+            match  screen_state.search_state():
+                case  screen_state.Mine.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case screen_states.Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case  screen_state.Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    click(points["gather"])
+                    device.click(points["gather"])
                     break
-                case screen_states.Mine.NOT_FOUND:  # if mine not found
+                case  screen_state.Mine.NOT_FOUND:  # if mine not found
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -116,7 +116,7 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case screen_states.Mine.NOT_MAP:
+                case  screen_state.Mine.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
         wait_and_click(points["mine"])
         sleep(2)
@@ -132,21 +132,21 @@ class Farm:
         print("Elite")
         which_blue = self.blue
         while True:
-            click(points["favorites"])
+            device.click(points["favorites"])
             sleep(1)
-            click(points["alliance_elite"])
+            device.click(points["alliance_elite"])
             sleep(1)
-            if screen_states.is_blue(self.point_step("elite_blue", 1, 1)):  # color of blue
-                click(self.point_step("elite_blue", 1, which_blue))
+            if  screen_state.is_blue(self.point_step("elite_blue", 1, 1)):  # color of blue
+                device.click(self.point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
-                click(points["gather_elite"])
+                device.click(points["gather_elite"])
                 sleep(1)
-                click(points["go"])  # regularly I should be there
+                device.click(points["go"])  # regularly I should be there
                 which_blue += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                click(points["favourites_back"])
+                device.click(points["favourites_back"])
                 return False  # if there is no elites
 
 
