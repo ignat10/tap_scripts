@@ -2,8 +2,7 @@ import cv2
 from numpy import ndarray, frombuffer, uint8
 from skimage.metrics import structural_similarity as ssim
 
-from my_packages.core.adb_utils import screencap
-from my_packages.data.paths import path
+from my_packages.core.adb_device import device
 from my_packages.loaders.image_loader import read_images
 
 

@@ -32,4 +32,12 @@ class AdbDevice:
         command = f"-s {self.device} {arguments}"
         return adb_run(command, **kwargs)
 
+    def click(self, cords: tuple[int, int]) -> None:
+        from subprocess import DEVNULL
+        self.action(f"shell input tap {cords[0]} {cords[1]}", stdout=DEVNULL)
+
+    def screencap(self) -> str:
+        from subprocess import PIPE
+        return self.action("exec-out screencap -p", stdout=PIPE)
+
 device = AdbDevice()
