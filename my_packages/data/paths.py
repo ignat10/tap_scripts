@@ -19,7 +19,7 @@ class Path:
             folder_name: frozenset(os.listdir(folder_path))
             for folder_name, folder_path in self.folder_paths.items()
         }
-        self.image_paths: dict[str: dict[str: str]] = {
+        self.image_paths: dict[str, dict[str, str]] = {
             folder_name: {
                 image_name: os.path.join(folder_path, image_name)
                 for image_name in self.image_names[folder_name]

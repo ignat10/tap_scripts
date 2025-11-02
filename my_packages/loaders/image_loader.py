@@ -4,7 +4,7 @@ from numpy import ndarray
 from my_packages.data.paths import path
 
 
-def read_images() -> dict[str: dict[str: ndarray]]:
+def read_images() -> dict[str, dict[str, ndarray]]:
     return {
         folder_name: {
             image_name: cvtColor(imread(image_path), COLOR_BGR2GRAY)
