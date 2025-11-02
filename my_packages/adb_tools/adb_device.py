@@ -1,10 +1,15 @@
-from .adb_console import adb_run
+from time import sleep
+
+import pyperclip
+
+from my_packages.core.adb_console import adb_run
+from my_packages.data.poco_coordinates import DEVICE_IP
 
 
 class AdbDevice:
     def __init__(self):
         self.device = None
-        self.is_connected = False
+        self.is_connected = None
 
 
     def find(self):
@@ -20,13 +25,33 @@ class AdbDevice:
                 if status == "device":
                     self.device = serial
                     break
-        print(f"find adb devices self.device: {self.device}")
 
     def connect(self, dev: str) -> None:
         output = adb_run(f"connect {dev}", capture_output=True, text=True)
-        success: bool = f"connected to {dev}" in output
+        success: bool = f"connected" in output
         print(f"success connection: {success}")
         self.is_connected = success
+
+    def connect_adb(self) -> None:
+        print("connecting adb")
+        while True:
+            self.find()
+            if self.device is not None:
+                break
+            else:
+                clipboard = pyperclip.paste()
+                if DEVICE_IP in clipboard:
+                    print(f"connecting to device '{clipboard}'")
+                    self.connect(clipboard)
+                    if self.is_connected:
+                        continue
+                    else:
+                        print(f"error connecting to device '{clipboard}'\nreset clipboard")
+                        pyperclip.copy("")
+                else:
+                    print(f"clipboard is '{clipboard}'\ncopy your IP")
+            sleep(1)
+        print(f"connected to device '{self.device}'")
 
     def action(self, arguments: str, **kwargs) -> str:
         command = f"-s {self.device} {arguments}"

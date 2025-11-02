@@ -1,6 +1,6 @@
 from time import sleep
 
-from my_packages.core.adb_device import device
+from my_packages.adb_tools.adb_device import device
 from my_packages.data.poco_coordinates import points, STEPS
 from my_packages.image_tools.screen_states import screen_state
 

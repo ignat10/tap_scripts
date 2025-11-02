@@ -2,7 +2,7 @@ import cv2
 from numpy import ndarray, frombuffer, uint8
 from skimage.metrics import structural_similarity as ssim
 
-from my_packages.core.adb_device import device
+from my_packages.adb_tools.adb_device import device
 from my_packages.loaders.image_loader import read_images
 
 
@@ -38,7 +38,7 @@ class ImageAnalyzer:
                 print(f"matched {result}/{gap}")
                 return tuple(coords)
             max_val = max(max_val, result)
-        print(f"no matched {max_val}/{gap}")
+        print(f"no matched {max_val:.1f}/{gap}")
         return None
 
     def compare_part(self, folder_name: str, coords: tuple[int, int], gap: float, do_screen=True) -> bool:
@@ -63,8 +63,8 @@ class ImageAnalyzer:
         for image in self.images[folder_name]:
             result = ssim(screen, image)
             if result >= gap:
-                print(f"is full {folder_name}. {result}/{gap}")
+                print(f"is full {folder_name}. {result:.1f}/{gap}")
                 return True
             max_val = max(max_val, result)
-        print(f"no full {max_val}/{gap}")
+        print(f"no full {max_val:.1f}/{gap}")
         return False
