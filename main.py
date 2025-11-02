@@ -1,4 +1,4 @@
-from my_packages.models.farming import farming
+from my_packages.game_tools.strategies import farming
 
 def main():
     farming()

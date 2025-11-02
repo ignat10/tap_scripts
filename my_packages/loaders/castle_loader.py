@@ -1,4 +1,4 @@
-from my_packages.adb_helpers.game_actions import Farm
+from my_packages.game_tools.actions import Farm
 
 
 def make_castles() -> list[Farm]:

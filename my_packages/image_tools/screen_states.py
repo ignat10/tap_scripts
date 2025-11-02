@@ -19,19 +19,16 @@ class ScreenState:
         folder = "ads"
         return not self.image_analyzer.match_screen(folder, gap)
     
-    
     def main_menu(self, gap=0.8) -> bool:
         folder = "main_menus"
         return self.image_analyzer.match_screen(folder, gap)
-    
     
     def is_city(self) -> bool:
         gap = 0.6
         folder_name = "cities"
         result = self.image_analyzer.find_part(folder_name, gap, True)
         return bool(result)
-    
-    
+
     def is_menu(self) -> bool:
         folder_name = "search_menus"
         gap = 0.9
@@ -50,25 +47,27 @@ class ScreenState:
 
         else:
             return Mine.FOUND_NOT_VISIBLE
-    
-    
+
     def is_visible_gather(self) -> bool:
         folder_name = "gather"
         gap = 0.6
         result = self.image_analyzer.find_part(folder_name, gap, False)
         return bool(result)
-    
-    
+
     def is_blue(self, coords: tuple[int, int]) -> bool:
         folder_name = "blue"
         gap = 0.8
         return self.image_analyzer.compare_part(folder_name, coords, gap)
 
-    def x(self) -> tuple[int, int] | None:
+    def get_coords(self) -> tuple[int, int] | None:
         folder_name = "xs"
         gap = 0.9
         coords = self.image_analyzer.find_part(folder_name, gap, False)
         return coords
+
+    def is_avatar(self, castle_name: str):
+        gap = 0.8
+        return self.image_analyzer.find_part(castle_name, gap)
 
 
 screen_state = ScreenState()

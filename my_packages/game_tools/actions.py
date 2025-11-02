@@ -2,7 +2,7 @@ from time import sleep
 
 from my_packages.adb_tools.adb_device import device
 from my_packages.data.poco_coordinates import points, STEPS
-from my_packages.image_tools.screen_states import screen_state
+from my_packages.image_tools.screen_states import screen_state, Mine
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
@@ -45,7 +45,7 @@ class Farm:
     def close_ad():
         print("Closing ad...")
         while not  screen_state.main_menu():
-            coords = screen_state.get_coords.x() or points["close"]
+            coords = screen_state.get_coords() or points["close"]
             device.click(coords)
             print(f"x find: {not coords == points["close"]}, {coords} pressed")
             sleep(1)
@@ -63,6 +63,9 @@ class Farm:
         while  screen_state.loading():
             print("loading")
         print("loaded")
+
+    def is_current_castle(self) -> bool:
+        return bool(screen_state.is_avatar(self.name))
 
     @staticmethod
     def lord_skills():
@@ -101,14 +104,14 @@ class Farm:
             self.find_another_mine()
             sleep(2)
             match  screen_state.search_state():
-                case  screen_state.Mine.FOUND_VISIBLE:
+                case  Mine.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case  screen_state.Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case  Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
                     device.click(points["gather"])
                     break
-                case  screen_state.Mine.NOT_FOUND:  # if mine not found
+                case  Mine.NOT_FOUND:  # if mine not found
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -116,7 +119,7 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case  screen_state.Mine.NOT_MAP:
+                case  Mine.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
         wait_and_click(points["mine"])
         sleep(2)
@@ -149,8 +152,7 @@ class Farm:
                 device.click(points["favourites_back"])
                 return False  # if there is no elites
 
-
-    def switch_farm(self):
+    def second_farm(self):
         print(f"running second_farm {self.name}")
         wait_and_click(points["avatar"])
         wait_and_click(points["account"])
@@ -163,6 +165,11 @@ class Farm:
         wait_and_click(points["confirm"], 1)  # go inside
         print(f"logged in to {self.name}")
 
+    def switch_farm(self):
+        if not self.is_current_castle():
+            self.second_farm()
+        else:
+            print(f"already {self.name}")
 
 # fix get_elite excludes
 
