@@ -8,7 +8,7 @@ from my_packages.loaders.image_loader import read_images
 
 class ScreenManager:
     def __init__(self):
-        self.screen =  device.screencap()
+        self.screen: ndarray =  self.capture_gray()
 
     def capture_gray(self) -> ndarray:
         console_output =  device.screencap()
@@ -28,22 +28,31 @@ class ImageAnalyzer:
         self.images = read_images()
         self.screen_manager = ScreenManager()
 
-    def find_part(self, folder_name: str, gap: float, do_screen=True) -> tuple | None:
-        screen = self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
-        max_val: float = 0.0
-        for image in self.images[folder_name]:
-            matched = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
-            _, result, _, coords = cv2.minMaxLoc(matched)
-            if result >= gap:
-                print(f"matched {result}/{gap}")
-                return tuple(coords)
-            max_val = max(max_val, result)
-        print(f"no matched {max_val:.1f}/{gap}")
+    def _get_screen(self, do_screen) -> ndarray:
+        return self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
+
+    @staticmethod
+    def for_each_image(method):
+        def wrapper(self: ImageAnalyzer, folder_name: str, gap: float, do_screen=True, **kwargs):
+            screen = self._get_screen(do_screen)
+            for image in self.images[folder_name].values():
+                result = method(self, screen, image, gap, **kwargs)
+                if result is not False:
+                    return result
+            return None
+        return wrapper
+
+    @for_each_image
+    def find_part(self, screen, image, gap: float) -> tuple | None:
+        matched = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
+        _, result, _, coords = cv2.minMaxLoc(matched)
+        if result >= gap:
+            return tuple(coords)
         return None
 
     def compare_part(self, folder_name: str, coords: tuple[int, int], gap: float, do_screen=True) -> bool:
         screen = self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
-        for image in self.images[folder_name]:
+        for name, image in self.images[folder_name].items():
             image_shaped = image.shape
             image_size = (image_shaped[1], image_shaped[0])
             x_half, y_half = image_size[0] // 2, image_size[1] // 2
@@ -52,7 +61,7 @@ class ImageAnalyzer:
             print(f"size of: image: {image_size} cutted: {cutted.shape}")
             resized_screen = cv2.resize(cutted, image_size)
             result = ssim(image, resized_screen, win_size=min(image_size))
-            print(f"ssim result: {result}")
+            print(f"ssim {name}: {result}/{gap}")
             if result > gap:
                 return True
         return False
@@ -60,11 +69,11 @@ class ImageAnalyzer:
     def match_screen(self, folder_name: str, gap: float, do_screen=True) -> bool:
         screen = self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
         max_val: float = 0
-        for image in self.images[folder_name]:
+        for name, image in self.images[folder_name].items():
             result = ssim(screen, image)
             if result >= gap:
-                print(f"is full {folder_name}. {result:.1f}/{gap}")
+                print(f"is full {name}. {result:.1f}/{gap}")
                 return True
             max_val = max(max_val, result)
-        print(f"no full {max_val:.1f}/{gap}")
+        print(f"no {folder_name}, {max_val:.1f}/{gap}")
         return False
