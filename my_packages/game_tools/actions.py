@@ -2,12 +2,31 @@ from time import sleep
 
 from my_packages.adb_tools.adb_device import device
 from my_packages.data.poco_coordinates import points, STEPS
-from my_packages.image_tools.screen_states import screen_state, Mine
+from my_packages.image_tools.screen_states import screen_state, ScreenStatus
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
     sleep(delay)
     device.click(coords)
+    
+
+def repeat_click(coords: tuple[int, int], times: int):
+    for _ in range(times):
+        device.click(coords)
+
+
+def point_step(name: str,
+               index: int,
+               times: int,
+               ) -> tuple[int, int]:
+    original = tuple(points[name])
+    point = list(original)
+    step = STEPS[name]
+    print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
+    point[index] += step * times
+    print(f"return point: {point}")
+    assert original != point, f"point after step hasn't been changed: {point}"
+    return tuple[int, int](point)
 
 
 class Farm:
@@ -21,41 +40,8 @@ class Farm:
         self.mine_type = 0
         self.blue = 0
 
-
-    @staticmethod
-    def repeat_click(coords: tuple[int, int], times: int):
-        for _ in range(times):
-            device.click(coords)
-
-    @staticmethod
-    def point_step(name: str,
-                   index: int,
-                   times: int,
-                   ) -> tuple[int, int]:
-        original = tuple(points[name])
-        point = list(original)
-        step = STEPS[name]
-        print(f"point: {point}, index: {index} step: {step}, times: {times}, name: [{name}]")
-        point[index] += step * times
-        print(f"return point: {point}")
-        assert original != point, f"point after step hasn't been changed: {point}"
-        return tuple[int, int](point)
-
-    @staticmethod
-    def close_ad():
-        print("Closing ad...")
-        while not  screen_state.main_menu():
-            coords = screen_state.get_coords() or points["close"]
-            device.click(coords)
-            print(f"x find: {not coords == points["close"]}, {coords} pressed")
-            sleep(1)
-        print("Ad closed.")
-
-    @staticmethod
-    def gather_mine():
-        wait_and_click(points["gather"])
-        wait_and_click(points["go"])
-        wait_and_click(points["back"])
+    def is_current_castle(self) -> bool:
+        return bool(screen_state.is_avatar(self.name))
 
     @staticmethod
     def loading():
@@ -64,8 +50,16 @@ class Farm:
             print("loading")
         print("loaded")
 
-    def is_current_castle(self) -> bool:
-        return bool(screen_state.is_avatar(self.name))
+    @staticmethod
+    def close_ad():
+        print("Closing ad...")
+        repeat_click(points["map"], 5)
+        while not  screen_state.map() or screen_state.main_menu():
+            coords = screen_state.get_coords() or points["close"]
+            device.click(coords)
+            print(f"x find: {not coords == points["close"]}, {coords} pressed")
+            sleep(1)
+        print("Ad closed.")
 
     @staticmethod
     def lord_skills():
@@ -87,31 +81,33 @@ class Farm:
         self.lord_skills()
         device.click(points["map"])
         print("finished inside")
+
+    def find_another_mine(self):  # to find another mine if not found
+        wait_and_click(point_step("mine_type", 0, self.mine_type))
+        repeat_click(points["minus"], 5)
+        repeat_click(points["plus"], self.mine_lv - 1)
+        repeat_click(points["go_mine"], 3)
+
+    @staticmethod
+    def gather_mine():
+        wait_and_click(points["gather"])
+        wait_and_click(points["go"])
+        wait_and_click(points["back"])
         
-
-    def outside(self):
-        sleep(3)
-        print("running outside")
-        for mine in range(4):
-            if mine == 2:
-                if self.get_elite():
-                    continue
-            self.get_mine()
-
     def get_mine(self):  # to go to basic mine from the map
         device.click(points["search"])
         while True:
             self.find_another_mine()
             sleep(2)
             match  screen_state.search_state():
-                case  Mine.FOUND_VISIBLE:
+                case  ScreenStatus.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case  Mine.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case  ScreenStatus.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
                     device.click(points["gather"])
                     break
-                case  Mine.NOT_FOUND:  # if mine not found
+                case  ScreenStatus.NOT_FOUND:
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -119,17 +115,11 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case  Mine.NOT_MAP:
+                case  ScreenStatus.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
         wait_and_click(points["mine"])
         sleep(2)
         self.gather_mine()
-
-    def find_another_mine(self):  # to find another mine if not found
-        wait_and_click(self.point_step("mine_type", 0, self.mine_type))
-        self.repeat_click(points["minus"], 5)
-        self.repeat_click(points["plus"], self.mine_lv - 1)
-        self.repeat_click(points["go_mine"], 3)
 
     def get_elite(self):
         print("Elite")
@@ -139,8 +129,8 @@ class Farm:
             sleep(1)
             device.click(points["alliance_elite"])
             sleep(1)
-            if  screen_state.is_blue(self.point_step("elite_blue", 1, 1)):  # color of blue
-                device.click(self.point_step("elite_blue", 1, which_blue))
+            if screen_state.is_blue(point_step("elite_blue", 1, self.blue)):  # color of blue
+                device.click(point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
                 device.click(points["gather_elite"])
                 sleep(1)
@@ -152,6 +142,15 @@ class Farm:
                 device.click(points["favourites_back"])
                 return False  # if there is no elites
 
+    def outside(self):
+        sleep(3)
+        print("running outside")
+        for mine in range(4):
+            if mine == 2:
+                if self.get_elite():
+                    continue
+            self.get_mine()
+            
     def second_farm(self):
         print(f"running second_farm {self.name}")
         wait_and_click(points["avatar"])
@@ -159,9 +158,9 @@ class Farm:
         wait_and_click(points["switch"])
         wait_and_click(points["login"], 1)
         print(f"step google, {self.google}")
-        wait_and_click(self.point_step("google", 1, self.google), 2)
+        wait_and_click(point_step("google", 1, self.google), 2)
         print(f"step acc: {self.account}")
-        wait_and_click(self.point_step("castle", 1, self.account), 3)
+        wait_and_click(point_step("castle", 1, self.account), 3)
         wait_and_click(points["confirm"], 1)  # go inside
         print(f"logged in to {self.name}")
 

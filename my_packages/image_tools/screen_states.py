@@ -3,7 +3,7 @@ from enum import Enum
 from my_packages.image_tools.image_actions import ImageAnalyzer
 
 
-class Mine(Enum):
+class ScreenStatus(Enum):
     NOT_MAP = 0
     NOT_FOUND = 1
     FOUND_VISIBLE = 2
@@ -35,18 +35,18 @@ class ScreenState:
         result = self.image_analyzer.find_part(folder_name, gap)
         return bool(result)
     
-    def search_state(self) -> Mine:
+    def check_status(self) -> ScreenStatus:
         if not self.is_menu():
-            return Mine.NOT_MAP
+            return ScreenStatus.NOT_MAP
 
         elif self.is_city():
-            return Mine.NOT_FOUND
+            return ScreenStatus.NOT_FOUND
 
         elif self.is_visible_gather():
-            return Mine.FOUND_VISIBLE
+            return ScreenStatus.FOUND_VISIBLE
 
         else:
-            return Mine.FOUND_NOT_VISIBLE
+            return ScreenStatus.FOUND_NOT_VISIBLE
 
     def is_visible_gather(self) -> bool:
         folder_name = "gather"
