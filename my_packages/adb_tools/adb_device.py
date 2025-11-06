@@ -10,6 +10,7 @@ class AdbDevice:
     def __init__(self):
         self.device = None
         self.is_connected = None
+        self.config()
 
 
     def find(self):
@@ -32,7 +33,7 @@ class AdbDevice:
         print(f"success connection: {success}")
         self.is_connected = success
 
-    def connect_adb(self) -> None:
+    def config(self) -> None:
         print("connecting adb")
         while True:
             self.find()
