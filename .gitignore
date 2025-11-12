@@ -6,6 +6,7 @@ __pycache__/
 
 # IDE's trash
 .idea/
+.vscode/
 
 # screens
 *.png
