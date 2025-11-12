@@ -19,8 +19,14 @@ class ScreenManager:
         return gray_screen
 
     @staticmethod
-    def cut(fullscreen: ndarray, x0, x1, y0, y1) -> ndarray:
-        return fullscreen[y0:y1, x0:x1]
+    def _cut(screen: ndarray, image: ndarray, coords: tuple[int, int]) -> ndarray:
+        image_shaped = image.shape
+        image_size = (image_shaped[1], image_shaped[0])
+        x_half, y_half = image_size[0] // 2, image_size[1] // 2
+        section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
+        x0, x1, y0, y1 = section
+        print(f"section: {x1 - x0, y1 - y0}, shape: {image_size} should be same")
+        return screen[y0:y1, x0:x1]
 
 
 class ImageAnalyzer:
@@ -32,48 +38,31 @@ class ImageAnalyzer:
         return self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
 
     @staticmethod
-    def for_each_image(method):
-        def wrapper(self: ImageAnalyzer, folder_name: str, gap: float, do_screen=True, **kwargs):
+    def loop_images(method):
+        def wrapper(self: ImageAnalyzer, folder_name: str, gap: float, do_screen=True, **kwargs) -> bool | tuple | None:
             screen = self._get_screen(do_screen)
             for image in self.images[folder_name].values():
-                result = method(self, screen, image, gap, **kwargs)
-                if result is not False:
-                    return result
+                result = method(screen, image, gap, **kwargs)
+                match result:
+                    case float() as similarity if similarity >= gap:
+                        return similarity
+                    case (similarity, coords) if similarity >= gap:
+                        return coords
             return None
         return wrapper
 
-    @for_each_image
-    def find_part(self, screen, image, gap: float) -> tuple | None:
+    @loop_images
+    def find_part(self, screen, image) -> (float, tuple):
         matched = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
         _, result, _, coords = cv2.minMaxLoc(matched)
-        if result >= gap:
-            return tuple(coords)
-        return None
+        return result, tuple(coords)
 
-    def compare_part(self, folder_name: str, coords: tuple[int, int], gap: float, do_screen=True) -> bool:
-        screen = self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
-        for name, image in self.images[folder_name].items():
-            image_shaped = image.shape
-            image_size = (image_shaped[1], image_shaped[0])
-            x_half, y_half = image_size[0] // 2, image_size[1] // 2
-            section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
-            cutted = self.screen_manager.cut(screen, *section)
-            print(f"size of: image: {image_size} cutted: {cutted.shape}")
-            resized_screen = cv2.resize(cutted, image_size)
-            result = ssim(image, resized_screen, win_size=min(image_size))
-            print(f"ssim {name}: {result}/{gap}")
-            if result > gap:
-                return True
-        return False
+    @loop_images
+    def compare_part(self, screen, image, coords: tuple[int, int]) -> float:
+        cutted = self.screen_manager._cut(screen, image, coords)
+        result = ssim(image, cutted, win_size=min(image.shape))
+        return result
 
-    def match_screen(self, folder_name: str, gap: float, do_screen=True) -> bool:
-        screen = self.screen_manager.capture_gray() if do_screen else self.screen_manager.screen
-        max_val: float = 0
-        for name, image in self.images[folder_name].items():
-            result = ssim(screen, image)
-            if result >= gap:
-                print(f"is full {name}. {result:.1f}/{gap}")
-                return True
-            max_val = max(max_val, result)
-        print(f"no {folder_name}, {max_val:.1f}/{gap}")
-        return False
+    @loop_images
+    def match_screen(self, screen, image) -> float:
+        return float(ssim(screen, image))
