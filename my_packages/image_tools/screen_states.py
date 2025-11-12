@@ -27,13 +27,12 @@ class ScreenState:
         gap = 0.6
         folder_name = "cities"
         result = self.image_analyzer.find_part(folder_name, gap, True)
-        return bool(result)
+        return result
 
     def is_menu(self) -> bool:
         folder_name = "search_menus"
         gap = 0.9
-        result = self.image_analyzer.find_part(folder_name, gap)
-        return bool(result)
+        return self.image_analyzer.find_part(folder_name, gap)
     
     def check_status(self) -> ScreenStatus:
         if not self.is_menu():
@@ -57,17 +56,17 @@ class ScreenState:
     def is_blue(self, coords: tuple[int, int]) -> bool:
         folder_name = "blue"
         gap = 0.8
-        return self.image_analyzer.compare_part(folder_name, coords, gap)
+        return self.image_analyzer.compare_part(folder_name, gap, coords)
 
     def get_coords(self) -> tuple[int, int] | None:
         folder_name = "xs"
         gap = 0.9
-        coords = self.image_analyzer.find_part(folder_name, gap, False)
-        return coords
+        return self.image_analyzer.find_part(folder_name, gap, False)
 
-    def is_avatar(self, castle_name: str):
+    def is_avatar(self, castle_name: str) -> bool:
         gap = 0.8
-        return self.image_analyzer.find_part(castle_name, gap)
+        ava = self.image_analyzer.find_part(castle_name, gap)
+        return bool(ava)
 
 
 screen_state = ScreenState()

@@ -45,14 +45,14 @@ class ImageAnalyzer:
                 result = method(screen, image, gap, **kwargs)
                 match result:
                     case float() as similarity if similarity >= gap:
-                        return similarity
+                        return True
                     case (similarity, coords) if similarity >= gap:
                         return coords
             return None
         return wrapper
 
     @loop_images
-    def find_part(self, screen, image) -> (float, tuple):
+    def find_part(self, screen, image) -> tuple[float, tuple]:
         matched = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
         _, result, _, coords = cv2.minMaxLoc(matched)
         return result, tuple(coords)
@@ -64,5 +64,5 @@ class ImageAnalyzer:
         return result
 
     @loop_images
-    def match_screen(self, screen, image) -> float:
+    def match_screen(self, screen: ndarray, image: ndarray) -> float:
         return float(ssim(screen, image))
