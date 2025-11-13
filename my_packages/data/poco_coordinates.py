@@ -10,49 +10,48 @@
 #     print(int(round(step * POCO_X7_PRO_RESOLUTION(index))))
 
 
+class PointData(tuple):
+    def __new__(cls, coords: tuple, gap: float | None=None):
+        obj = super().__new__(cls, coords)
+        obj.gap = gap
+        return obj
+    
+
 DEVICE_IP = "192.168.0.192"
+class Point:
+    take = PointData((587, 1910))
+    close = PointData((226, 2175))
+    lord = PointData((1130, 2068))
+    recall_all = PointData((1000, 1000))
+    harvest = PointData((226, 1763))
+    use = PointData((599, 2633))
+    map = PointData((113, 2599))
+    search = PointData((1130, 2239))
+    mine_type = PointData((678, 2345), gap=-200)
+    stone = PointData((480, 2345))
+    wood = PointData((289, 2345))
+    food = PointData((113, 2345))
+    plus = PointData((762, 2610))
+    minus = PointData((130, 2610))
+    go_mine = PointData((1017, 2627))
+    search_back = PointData((890, 2150))
+    mine = PointData((616, 1339), gap=-183)
+    gather = PointData((875, 1309))
+    go = PointData((1017, 2616))
+    back = PointData((892, 2397))
+    favorites = PointData((79, 2060))
+    favourites_back = PointData((79, 170))
+    alliance_elite = PointData((791, 300))
+    elite_blue = PointData((421, 757), gap=259)
+    elite_mine1 = PointData((429, 757))
+    gather_elite = PointData((881, 1051))
+    vip = PointData((1006, 1594))
+    avatar = PointData((100, 100))
+    account = PointData((203, 1243))
+    switch = PointData((621, 1808))
+    login = PointData((633, 1492))
+    google = PointData((164, 840), gap=200)
+    castle = PointData((452, 1067), gap=135)
+    confirm = PointData((354, 1550))
 
-points = {
-    "take": (587, 1910),
-    "close": (226, 2175),
-    "lord": (1130, 2068),
-    "recall_all": (1000, 1000),
-    "harvest": (226, 1763),
-    "use": (599, 2633),
-    "map": (113, 2599),
-    "search": (1130, 2239),
-    "mine_type": (678, 2345),
-    "stone": (480, 2345),
-    "wood": (289, 2345),
-    "food": (113, 2345),
-    "plus": (762, 2610),
-    "minus": (130, 2610),
-    "go_mine": (1017, 2627),
-    "search_back": (890, 2150),
-    "mine": (616, 1339),
-    "gather": (875, 1309),
-    "go": (1017, 2616),
-    "back": (892, 2397),
-    "favorites": (79, 2060),
-    "favourites_back": (79, 170),
-    "alliance_elite": (791, 300),
-    "elite_blue": (421, 757),
-    "elite_mine1": (429, 757),
-    "gather_elite": (881, 1051),
-    "vip": (1006, 1594),
-    "avatar": (100, 100),
-    "account": (203, 1243),
-    "switch": (621, 1808),
-    "login": (633, 1492),
-    "google": (164, 840),
-    "castle": (452, 1067),
-    "confirm": (354, 1550),
-}
-
-STEPS = {
-    "mine": -183,
-    "mine_type": -200,
-    "elite_blue": 259,
-    "google": 200,
-    "castle": 135,
-}
+print(Point.vip.gap)
