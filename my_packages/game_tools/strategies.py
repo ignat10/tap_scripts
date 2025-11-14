@@ -1,6 +1,6 @@
 from time import sleep
 
-from my_packages.loaders.castle_loader import make_castles
+from ..utils.loaders import make_castles
 
 
 
