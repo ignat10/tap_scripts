@@ -2,7 +2,7 @@ from time import sleep
 
 from my_packages.adb_tools.device_actions import click
 from my_packages.data.poco_coordinates import Point, PointData
-from my_packages.image_tools import screen_state
+from my_packages.image_tools import screen_states
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
@@ -40,21 +40,20 @@ class Farm:
         self.blue = 0
 
     def is_current_castle(self) -> bool:
-        return bool(screen_state.is_avatar(self.name))
+        return bool(screen_states.is_avatar(self.name))
 
-    @staticmethod
-    def loading():
+    def loading(self):
         sleep(1)
-        while  screen_state.loading():
-            print("loading")
+        while  screen_states.loading():
+            print(f"loading {self.name}")
         print("loaded")
 
     @staticmethod
     def close_ad():
         print("Closing ad...")
         repeat_click(Point.map, 5)
-        while not  screen_state.map() or screen_state.main_menu():
-            coords = screen_state.get_coords() or Point.close
+        while not  screen_states.map() or screen_states.main_menu():
+            coords = screen_states.get_coords() or Point.close
             click(coords)
             print(f"x find: {not coords == Point.close}, {coords} pressed")
             sleep(1)
@@ -98,15 +97,15 @@ class Farm:
         while True:
             self.find_another_mine()
             sleep(2)
-            match  search_state():
-                case  ScreenStatus.FOUND_VISIBLE:
+            match  screen_states.check_status():
+                case  screen_states.Status.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case  ScreenStatus.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case  screen_states.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
                     click(Point.gather)
                     break
-                case  ScreenStatus.NOT_FOUND:
+                case  screen_states.Status.NOT_FOUND:
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -114,7 +113,7 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case  ScreenStatus.NOT_MAP:
+                case  screen_states.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
         wait_and_click(Point.mine)
         sleep(2)
@@ -128,7 +127,7 @@ class Farm:
             sleep(1)
             click(Point.alliance_elite)
             sleep(1)
-            if screen_state.is_blue(point_step("elite_blue", 1, self.blue)):  # color of blue
+            if screen_states.is_blue(point_step("elite_blue", 1, self.blue)):  # color of blue
                 click(point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
                 click(Point.gather_elite)
