@@ -1,18 +1,18 @@
 from time import sleep
 
-from my_packages.adb_tools.adb_device import device
+from my_packages.adb_tools.device_actions import click
 from my_packages.data.poco_coordinates import Point, PointData
-from my_packages.image_tools.screen_states import screen_state, ScreenStatus
+from my_packages.image_tools import screen_state
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
     sleep(delay)
-    device.click(coords)
+    click(coords)
 
 
 def repeat_click(coords: tuple[int, int], times: int):
     for _ in range(times):
-        device.click(coords)
+        click(coords)
 
 
 def point_step(point: PointData,
@@ -55,7 +55,7 @@ class Farm:
         repeat_click(Point.map, 5)
         while not  screen_state.map() or screen_state.main_menu():
             coords = screen_state.get_coords() or Point.close
-            device.click(coords)
+            click(coords)
             print(f"x find: {not coords == Point.close}, {coords} pressed")
             sleep(1)
         print("Ad closed.")
@@ -78,7 +78,7 @@ class Farm:
         print("running inside")  # Inside the castle
         self.close_ad()
         self.lord_skills()
-        device.click(Point.map)
+        click(Point.map)
         print("finished inside")
 
     def find_another_mine(self):  # to find another mine if not found
@@ -94,17 +94,17 @@ class Farm:
         wait_and_click(Point.back)
         
     def get_mine(self):  # to go to basic mine from the map
-        device.click(Point.search)
+        click(Point.search)
         while True:
             self.find_another_mine()
             sleep(2)
-            match  screen_state.search_state():
+            match  search_state():
                 case  ScreenStatus.FOUND_VISIBLE:
                     print("gather is visible")
                     break
                 case  ScreenStatus.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    device.click(Point.gather)
+                    click(Point.gather)
                     break
                 case  ScreenStatus.NOT_FOUND:
                     if self.mine_type < 4:
@@ -124,21 +124,21 @@ class Farm:
         print("Elite")
         which_blue = self.blue
         while True:
-            device.click(Point.favorites)
+            click(Point.favorites)
             sleep(1)
-            device.click(Point.alliance_elite)
+            click(Point.alliance_elite)
             sleep(1)
             if screen_state.is_blue(point_step("elite_blue", 1, self.blue)):  # color of blue
-                device.click(point_step("elite_blue", 1, which_blue))
+                click(point_step("elite_blue", 1, which_blue))
                 sleep(3)  # too much but should work
-                device.click(Point.gather_elite)
+                click(Point.gather_elite)
                 sleep(1)
-                device.click(Point.go)  # regularly I should be there
+                click(Point.go)  # regularly I should be there
                 which_blue += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                device.click(Point.favourites_back)
+                click(Point.favourites_back)
                 return False  # if there is no elites
 
     def outside(self):
