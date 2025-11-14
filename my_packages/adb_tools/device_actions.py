@@ -1,11 +1,11 @@
-from .adb_config import config
+from .device_config import config
 
 
 serial: str = config()
 
 
 def action(arguments: str, **kwargs) -> str:
-    from my_packages.core.adb_console import adb_run
+    from .console_runner import adb_run
     command = f"-s {serial} {arguments}"
     return adb_run(command, **kwargs)
 
