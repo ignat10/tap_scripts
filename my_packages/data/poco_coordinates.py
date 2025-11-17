@@ -40,7 +40,7 @@ class Point:
     go = PointData((1017, 2616))
     back = PointData((892, 2397))
     favorites = PointData((79, 2060))
-    favourites_back = PointData((79, 170))
+    favorites_back = PointData((79, 170))
     alliance_elite = PointData((791, 300))
     elite_blue = PointData((421, 757), gap=259)
     elite_mine1 = PointData((429, 757))
@@ -53,5 +53,3 @@ class Point:
     google = PointData((164, 840), gap=200)
     castle = PointData((452, 1067), gap=135)
     confirm = PointData((354, 1550))
-
-print(Point.vip.gap)
