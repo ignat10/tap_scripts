@@ -16,5 +16,11 @@ def _capture_gray() -> ndarray:
     return gray_screen
 
 
-def get_screen( do_screen=True) -> ndarray:
-    return _capture_gray() if do_screen else temp_screen if temp_screen is not None else exit("No temp screen captured") 
+def get_screen(do_screen=True) -> ndarray:
+    if do_screen:
+        return _capture_gray()
+    
+    if temp_screen is not None:
+        return temp_screen
+    
+    exit("No temp screen captured")
