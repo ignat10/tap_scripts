@@ -1,40 +1,56 @@
 from time import sleep
 
-import pyperclip
-
 from .console_runner import adb_run
-from ..data.poco_coordinates import DEVICE_IP
 
 
 
 def config() -> str:
     print("connecting adb")
-    while not scan():
-        clipboard = pyperclip.paste()
-        if DEVICE_IP in clipboard:
-            print(f"connecting to device '{clipboard}'")
-            if connect(clipboard):
-                continue
-            else:
-                print(f"error connecting to device '{clipboard}'\nreset clipboard")
-                pyperclip.copy("")
-        else:
-            print(f"clipboard is '{clipboard}'\ncopy your IP")
+    while True:
         sleep(1)
 
+        if device := _scan():
+            print(f"device found: '{device}'")
+            return device
 
-def scan() -> str | None:
+        ip = _get_clipboard_ip()
+        if not ip:
+            continue
+
+        if _connect(ip):
+            print(f"connected to device '{ip}'")
+            return ip
+
+        print(f"error connecting to device '{ip}'\nretrying...")
+
+
+def _scan() -> str | None:
     output = adb_run("devices", capture_output=True, text=True)
     lines: list[str] = output.splitlines()
     for line in lines[1::]:
-        if line.strip():
-            name, status = line.split()
-            if status == "device":
-                return name
+        if not line.strip():
+            continue
+
+        name, status = line.split()
+        if status == "device":
+            return name
+        
     return None
 
 
-def connect(device: str) -> bool:
+def _get_clipboard_ip() -> str | None:
+    import pyperclip
+    from ..data.poco_coordinates import DEVICE_IP
+
+    clipboard = pyperclip.paste()
+    
+    if DEVICE_IP not in clipboard:
+        print(f"copy your ip:port to clipboard (current: '{clipboard}')")
+        return None
+    
+    return clipboard
+
+
+def _connect(device: str) -> bool:
     output = adb_run(f"connect {device}", capture_output=True, text=True)
-    success: bool = f"connected" in output
-    return success
+    return "connected" in output
