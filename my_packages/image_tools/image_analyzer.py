@@ -3,8 +3,20 @@ from skimage.metrics import structural_similarity as ssim
 from numpy import ndarray
 
 
-from ..utils.loaders import read_images
 from .screen_manager import get_screen
+
+
+
+def read_images() -> dict[str, dict[str, ndarray]]:
+    from cv2 import imread, cvtColor, COLOR_BGR2GRAY
+    from ..data.paths import path
+    return {
+        folder_name: {
+            image_name: cvtColor(imread(image_path), COLOR_BGR2GRAY)
+            for image_name, image_path in image_paths.items()
+        }
+        for folder_name, image_paths in path.image_paths.items()
+    }
 
 
 images = read_images()
@@ -14,7 +26,7 @@ def loop_images(method):
     def wrapper(folder_name: str, gap: float, do_screen=True, **kwargs) -> bool | tuple | None:
         screen = get_screen(do_screen)
         for image in images[folder_name].values():
-            result = method(screen, image, gap, **kwargs)
+            result = method(screen, image, **kwargs)
             match result:
                 case float() as similarity if similarity >= gap:
                     return True

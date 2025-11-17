@@ -19,8 +19,9 @@ def point_step(point: PointData,
                index: int,
                times: int,
                ) -> tuple[int, int]:
-    original = tuple(point)
-    step = float(point.gap) if point.gap is not None else exit("There's no step!")
+    original = point.copy()
+    print(f"original point: {original}, original step: {point.gap}")
+    step = float(point.gap) if (point.gap is not None) else exit("There's no step!")
     point = list(original)
     print(f"(point: {point}, index: {index}) (step: {step}, times: {times})")
     point[index] += step * times
@@ -163,10 +164,18 @@ class Farm:
         print(f"logged in to {self.name}")
 
     def switch_farm(self):
-        if not self.is_current_castle():
-            self.second_farm()
-        else:
+        if self.is_current_castle():
             print(f"already {self.name}")
+        else:
+            self.second_farm()
+
+
+def make_castles() -> list[Farm]:
+    from my_packages.data.farms import farms_sheet
+    from my_packages.utils.inputter import farm_number
+
+    return [Farm(*row) for row in farms_sheet.values[farm_number(0)::]]
+
 
 # fix get_elite excludes
 
