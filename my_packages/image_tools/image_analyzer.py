@@ -1,30 +1,28 @@
 import cv2
 from skimage.metrics import structural_similarity as ssim
 from numpy import ndarray
+from enum import Enum
 
 
 from .screen_manager import get_screen
-
-
-
-def read_images() -> dict[str, dict[str, ndarray]]:
-    from cv2 import imread, cvtColor, COLOR_BGR2GRAY
-    from ..data.paths import path
-    return {
-        folder_name: {
-            image_name: cvtColor(imread(image_path), COLOR_BGR2GRAY)
-            for image_name, image_path in image_paths.items()
-        }
-        for folder_name, image_paths in path.image_paths.items()
-    }
-
+from .image_manager import read_images, get_image_gaps
 
 images = read_images()
+gaps = get_image_gaps()
+
+
+class Status(Enum):
+    NOT_MAP = 0
+    NOT_FOUND = 1
+    FOUND_VISIBLE = 2
+    FOUND_NOT_VISIBLE = 3
+
 
 
 def loop_images(method):
-    def wrapper(folder_name: str, gap: float, do_screen=True, **kwargs) -> bool | tuple | None:
+    def wrapper(folder_name: str, do_screen=True, **kwargs) -> bool | tuple | None:
         screen = get_screen(do_screen)
+        gap = gaps[folder_name]
         for image in images[folder_name].values():
             result = method(screen, image, **kwargs)
             match result:
@@ -45,8 +43,8 @@ def find_part(screen, image) -> tuple[float, tuple]:
 
 @loop_images
 def compare_part(screen, image, coords: tuple[int, int]) -> float:
-    cutted = _cut(screen, image, coords)
-    result = ssim(image, cutted, win_size=min(image.shape))
+    cut = _cut(screen, image, coords)
+    result = ssim(image, cut, win_size=min(image.shape))
     return result
 
 
@@ -63,3 +61,17 @@ def _cut(screen: ndarray, image: ndarray, coords: tuple[int, int]) -> ndarray:
     x0, x1, y0, y1 = section
     print(f"section: {x1 - x0, y1 - y0}, shape: {image_size} should be same")
     return screen[y0:y1, x0:x1]
+
+
+def check_status() -> Status:
+    if not find_part("map"):
+        return Status.NOT_MAP
+
+    if not find_part("cities"):
+        return Status.NOT_FOUND
+
+    if find_part("gather"):
+        return Status.FOUND_VISIBLE
+
+    else:
+        return Status.FOUND_NOT_VISIBLE

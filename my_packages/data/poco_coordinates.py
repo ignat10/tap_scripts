@@ -10,46 +10,58 @@
 #     print(int(round(step * POCO_X7_PRO_RESOLUTION(index))))
 
 
-class PointData(tuple):
-    def __new__(cls, coords: tuple, gap: float | None=None):
+class Point(tuple):
+    def __new__(cls, coords: tuple, gap: int=0):
         obj = super().__new__(cls, coords)
         obj.gap = gap
         return obj
-    
+
+    def __call__(self, index: int | None = None, times: int = 0):
+        match index:
+            case None:
+                return tuple(self)
+            case 0:
+                return (self[0] + self.gap * times, self[1])
+            case 1:
+                return (self[0], self[1] + self.gap * times)
+            case _:
+                exit("Index must be 0 or 1!")
+        
+
 
 DEVICE_IP = "192.168.0.192"
-class Point:
-    take = PointData((587, 1910))
-    close = PointData((226, 2175))
-    lord = PointData((1130, 2068))
-    recall_all = PointData((1000, 1000))
-    harvest = PointData((226, 1763))
-    use = PointData((599, 2633))
-    map = PointData((113, 2599))
-    search = PointData((1130, 2239))
-    mine_type = PointData((678, 2345), gap=-200)
-    stone = PointData((480, 2345))
-    wood = PointData((289, 2345))
-    food = PointData((113, 2345))
-    plus = PointData((762, 2610))
-    minus = PointData((130, 2610))
-    go_mine = PointData((1017, 2627))
-    search_back = PointData((890, 2150))
-    mine = PointData((616, 1339), gap=-183)
-    gather = PointData((875, 1309))
-    go = PointData((1017, 2616))
-    back = PointData((892, 2397))
-    favorites = PointData((79, 2060))
-    favorites_back = PointData((79, 170))
-    alliance_elite = PointData((791, 300))
-    elite_blue = PointData((421, 757), gap=259)
-    elite_mine1 = PointData((429, 757))
-    gather_elite = PointData((881, 1051))
-    vip = PointData((1006, 1594))
-    avatar = PointData((100, 100))
-    account = PointData((203, 1243))
-    switch = PointData((621, 1808))
-    login = PointData((633, 1492))
-    google = PointData((164, 840), gap=200)
-    castle = PointData((452, 1067), gap=135)
-    confirm = PointData((354, 1550))
+class Points:
+    take = Point((587, 1910))
+    close = Point((226, 2175))
+    lord = Point((1130, 2068))
+    recall_all = Point((1000, 1000))
+    harvest = Point((226, 1763))
+    use = Point((599, 2633))
+    map = Point((113, 2599))
+    search = Point((1130, 2239))
+    mine_type = Point((678, 2345), gap= -200)
+    stone = Point((480, 2345))
+    wood = Point((289, 2345))
+    food = Point((113, 2345))
+    plus = Point((762, 2610))
+    minus = Point((130, 2610))
+    go_mine = Point((1017, 2627))
+    search_back = Point((890, 2150))
+    mine = Point((616, 1339), gap= -183)
+    gather = Point((875, 1309))
+    go = Point((1017, 2616))
+    back = Point((892, 2397))
+    favorites = Point((79, 2060))
+    favorites_back = Point((79, 170))
+    alliance_elite = Point((791, 300))
+    elite_blue = Point((421, 757), gap=259)
+    elite_mine1 = Point((429, 757))
+    gather_elite = Point((881, 1051))
+    vip = Point((1006, 1594))
+    avatar = Point((100, 100))
+    account = Point((203, 1243))
+    switch = Point((621, 1808))
+    login = Point((633, 1492))
+    google = Point((164, 840), gap=200)
+    castle = Point((452, 1067), gap=135)
+    confirm = Point((354, 1550))

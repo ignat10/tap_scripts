@@ -1,5 +1,7 @@
 from time import sleep
 
+import pyperclip
+
 from .console_runner import adb_run
 
 
@@ -22,6 +24,7 @@ def config() -> str:
             return ip
 
         print(f"error connecting to device '{ip}'\nretrying...")
+        pyperclip.copy("")
 
 
 def _scan() -> str | None:
@@ -39,7 +42,6 @@ def _scan() -> str | None:
 
 
 def _get_clipboard_ip() -> str | None:
-    import pyperclip
     from ..data.poco_coordinates import DEVICE_IP
 
     clipboard = pyperclip.paste()

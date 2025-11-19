@@ -1,8 +1,8 @@
 from time import sleep
 
 from my_packages.adb_tools.device_actions import click
-from my_packages.data.poco_coordinates import Point, PointData
-from my_packages.image_tools import screen_states
+from my_packages.data.poco_coordinates import Points
+from my_packages.image_tools import image_analyzer
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
@@ -13,20 +13,6 @@ def wait_and_click(coords: tuple[int, int], delay=0.5):
 def repeat_click(coords: tuple[int, int], times: int):
     for _ in range(times):
         click(coords)
-
-
-def point_step(point: PointData,
-               index: int,
-               times: int,
-               ) -> tuple[int, int]:
-    original = point.copy()
-    print(f"original point: {original}, original step: {point.gap}")
-    step = float(point.gap) if (point.gap is not None) else exit("There's no step!")
-    point = list(original)
-    print(f"(point: {point}, index: {index}) (step: {step}, times: {times})")
-    point[index] += step * times
-    print(f"return point: {point}")
-    return tuple(point)
 
 
 class Farm:
@@ -41,72 +27,72 @@ class Farm:
         self.blue = 0
 
     def is_current_castle(self) -> bool:
-        return bool(screen_states.is_avatar(self.name))
+        return bool(image_analyzer.find_part(self.name))
 
     def loading(self):
         sleep(1)
-        while  screen_states.loading():
+        while  image_analyzer.loading():
             print(f"loading {self.name}")
         print("loaded")
 
     @staticmethod
     def close_ad():
         print("Closing ad...")
-        repeat_click(Point.map, 5)
-        while not  screen_states.map() or screen_states.main_menu():
-            coords = screen_states.get_coords() or Point.close
+        repeat_click(Points.map, 5)
+        while not  image_analyzer.map() or image_analyzer.main_menu():
+            coords = image_analyzer.get_coords() or Points.close
             click(coords)
-            print(f"x find: {not coords == Point.close}, {coords} pressed")
+            print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
         print("Ad closed.")
 
     @staticmethod
     def lord_skills():
         print("Harvesting...")
-        wait_and_click(Point.lord)
-        wait_and_click(Point.harvest)
-        wait_and_click(Point.use)
+        wait_and_click(Points.lord)
+        wait_and_click(Points.harvest)
+        wait_and_click(Points.use)
         print("end harvest")
-        wait_and_click(Point.recall_all)
-        wait_and_click(Point.use)
+        wait_and_click(Points.recall_all)
+        wait_and_click(Points.use)
         print("end recall_all")
-        wait_and_click(Point.close)
-        wait_and_click(Point.close)
+        wait_and_click(Points.close)
+        wait_and_click(Points.close)
 
     def inside(self):
         self.loading()
         print("running inside")  # Inside the castle
         self.close_ad()
         self.lord_skills()
-        click(Point.map)
+        click(Points.map)
         print("finished inside")
 
     def find_another_mine(self):  # to find another mine if not found
-        wait_and_click(point_step("mine_type", 0, self.mine_type))
-        repeat_click(Point.minus, 5)
-        repeat_click(Point.plus, self.mine_lv - 1)
-        repeat_click(Point.go_mine, 3)
+        wait_and_click(Points.mine_type(index=0, times=self.mine_type))
+        repeat_click(Points.minus, 5)
+        repeat_click(Points.plus, self.mine_lv - 1)
+        repeat_click(Points.go_mine, 3)
 
     @staticmethod
     def gather_mine():
-        wait_and_click(Point.gather)
-        wait_and_click(Point.go)
-        wait_and_click(Point.back)
+        wait_and_click(Points.gather)
+        wait_and_click(Points.go)
+        wait_and_click(Points.back)
         
     def get_mine(self):  # to go to basic mine from the map
-        click(Point.search)
+        click(Points.search)
         while True:
             self.find_another_mine()
             sleep(2)
-            match  screen_states.check_status():
-                case  screen_states.Status.FOUND_VISIBLE:
+            match  image_analyzer.check_status():
+                case  image_analyzer.Status.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case  screen_states.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case  image_analyzer.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    click(Point.gather)
+                    click(Points.gather)
                     break
-                case  screen_states.Status.NOT_FOUND:
+                case  image_analyzer.Status.NOT_FOUND:
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -114,9 +100,9 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case  screen_states.Status.NOT_MAP:
+                case  image_analyzer.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
-        wait_and_click(Point.mine)
+        wait_and_click(Points.mine)
         sleep(2)
         self.gather_mine()
 
@@ -124,21 +110,21 @@ class Farm:
         print("Elite")
         which_blue = self.blue
         while True:
-            click(Point.favorites)
+            click(Points.favorites)
             sleep(1)
-            click(Point.alliance_elite)
+            click(Points.alliance_elite)
             sleep(1)
-            if screen_states.is_blue(point_step("elite_blue", 1, self.blue)):  # color of blue
-                click(point_step("elite_blue", 1, which_blue))
+            if image_analyzer.is_blue(Points.elite_blue(index=1, times=self.blue)):  # color of blue
+                click(Points.elite_blue(index=1, times=which_blue))
                 sleep(3)  # too much but should work
-                click(Point.gather_elite)
+                click(Points.gather_elite)
                 sleep(1)
-                click(Point.go)  # regularly I should be there
+                click(Points.go)  # regularly I should be there
                 which_blue += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                click(Point.favourites_back)
+                click(Points.favorites_back)
                 return False  # if there is no elites
 
     def outside(self):
@@ -152,15 +138,15 @@ class Farm:
             
     def second_farm(self):
         print(f"running second_farm {self.name}")
-        wait_and_click(Point.avatar)
-        wait_and_click(Point.account)
-        wait_and_click(Point.switch)
-        wait_and_click(Point.login, 1)
-        print(f"step google, {self.google}")
-        wait_and_click(point_step("google", 1, self.google), 2)
-        print(f"step acc: {self.account}")
-        wait_and_click(point_step("castle", 1, self.account), 3)
-        wait_and_click(Point.confirm, 1)  # go inside
+        wait_and_click(Points.avatar)
+        wait_and_click(Points.account)
+        wait_and_click(Points.switch)
+        wait_and_click(Points.login, 1)
+        print(f"google account, {self.google}")
+        wait_and_click(Points.google(index=1, times=self.google), 2)
+        print(f"castle account: {self.account}")
+        wait_and_click(Points.castle(index=1, times=self.account), 3)
+        wait_and_click(Points.confirm, 1)  # go inside
         print(f"logged in to {self.name}")
 
     def switch_farm(self):
