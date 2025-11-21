@@ -1,6 +1,8 @@
 from os import path, listdir
 from enum import Enum
 from numpy import ndarray
+from cv2 import imread, cvtColor, COLOR_BGR2GRAY
+
 
 
 class Folders(Enum):
@@ -59,13 +61,10 @@ image_paths: dict[Folders, dict[str, str]] = {
 }
 
 
-def read_images() -> dict[Folders, dict[str, ndarray]]:
-    from cv2 import imread, cvtColor, COLOR_BGR2GRAY
-
-    return {
-        folder: {
-            image_name: cvtColor(imread(image_path), COLOR_BGR2GRAY)
-            for image_name, image_path in image_paths.items()
-        }
-        for folder, image_paths in image_paths.items()
+images: dict[Folders, dict[str, ndarray]] = {
+    folder: {
+        image_name: cvtColor(imread(image_path), COLOR_BGR2GRAY)
+        for image_name, image_path in image_paths.items()
     }
+    for folder, image_paths in image_paths.items()
+}
