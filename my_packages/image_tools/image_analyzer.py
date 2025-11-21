@@ -1,7 +1,7 @@
 import cv2
 from skimage.metrics import structural_similarity as ssim
 from numpy import ndarray
-from enum import Enum
+from enum import Enum, auto
 
 
 from .screen_manager import get_screen
@@ -12,11 +12,10 @@ gaps = get_image_gaps()
 
 
 class Status(Enum):
-    NOT_MAP = 0
-    NOT_FOUND = 1
-    FOUND_VISIBLE = 2
-    FOUND_NOT_VISIBLE = 3
-
+    NOT_MAP = auto()
+    NOT_FOUND = auto()
+    FOUND_VISIBLE = auto()
+    FOUND_NOT_VISIBLE = auto()
 
 
 def loop_images(method):
@@ -49,7 +48,7 @@ def compare_part(screen, image, coords: tuple[int, int]) -> float:
 
 
 @loop_images
-def match_screen(screen: ndarray, image: ndarray) -> float:
+def compare_screen(screen: ndarray, image: ndarray) -> float:
     return float(ssim(screen, image))
 
 
