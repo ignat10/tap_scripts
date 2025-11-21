@@ -5,10 +5,8 @@ from enum import Enum, auto
 
 
 from .screen_manager import get_screen
-from .image_manager import read_images, get_image_gaps
+from .image_manager import Folders, images, THRESHOLDS
 
-images = read_images()
-gaps = get_image_gaps()
 
 
 class Status(Enum):
@@ -19,15 +17,15 @@ class Status(Enum):
 
 
 def loop_images(method):
-    def wrapper(folder_name: str, do_screen=True, **kwargs) -> bool | tuple | None:
+    def wrapper(folder: Folders, do_screen=True, **kwargs) -> bool | tuple | None:
         screen = get_screen(do_screen)
-        gap = gaps[folder_name]
-        for image in images[folder_name].values():
+        threshold = THRESHOLDS[folder]
+        for image in images[folder].values():
             result = method(screen, image, **kwargs)
             match result:
-                case float() as similarity if similarity >= gap:
+                case float() as similarity if similarity >= threshold:
                     return True
-                case (similarity, coords) if similarity >= gap:
+                case (similarity, coords) if similarity >= threshold:
                     return coords
         return None
     return wrapper
