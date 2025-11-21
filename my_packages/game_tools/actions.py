@@ -3,6 +3,7 @@ from time import sleep
 from my_packages.adb_tools.device_actions import click
 from my_packages.data.poco_coordinates import Points
 from my_packages.image_tools import image_analyzer
+from my_packages.image_tools.image_manager import Folders
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
@@ -29,9 +30,9 @@ class Farm:
     def is_current_castle(self) -> bool:
         return bool(image_analyzer.find_part(self.name))
 
-    def loading(self):
+    def load(self):
         sleep(1)
-        while  image_analyzer.loading():
+        while image_analyzer.compare_screen():
             print(f"loading {self.name}")
         print("loaded")
 
@@ -60,7 +61,7 @@ class Farm:
         wait_and_click(Points.close)
 
     def inside(self):
-        self.loading()
+        self.load()
         print("running inside")  # Inside the castle
         self.close_ad()
         self.lord_skills()
@@ -114,7 +115,7 @@ class Farm:
             sleep(1)
             click(Points.alliance_elite)
             sleep(1)
-            if image_analyzer.is_blue(Points.elite_blue(index=1, times=self.blue)):  # color of blue
+            if image_analyzer.compare_part(Points.elite_blue(index=1, times=self.blue)):  # color of blue
                 click(Points.elite_blue(index=1, times=which_blue))
                 sleep(3)  # too much but should work
                 click(Points.gather_elite)
