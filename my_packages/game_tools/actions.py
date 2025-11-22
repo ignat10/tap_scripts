@@ -3,7 +3,7 @@ from time import sleep
 from my_packages.adb_tools.device_actions import click
 from my_packages.data.poco_coordinates import Points
 from my_packages.image_tools import image_analyzer
-from my_packages.image_tools.image_manager import Folders
+from my_packages.image_tools.image_manager import Templates
 
 
 def wait_and_click(coords: tuple[int, int], delay=0.5):
@@ -114,7 +114,7 @@ class Farm:
 
     def load(self):
         sleep(1)
-        while image_analyzer.compare_screen(Folders.LOAD):
+        while image_analyzer.compare_screen(Templates.LOAD):
             print(f"loading {self.name}")
         print("loaded.")
 
@@ -122,8 +122,8 @@ class Farm:
     def to_map():
         print("Going to the map...")
         repeat_click(Points.map, 5)
-        while not image_analyzer.find_part(Folders.CITIES):
-            coords = image_analyzer.find_part(Folders.XS) or Points.map
+        while not image_analyzer.find_part(Templates.CITIES):
+            coords = image_analyzer.find_part(Templates.XS) or Points.map
             click(coords)
             print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
