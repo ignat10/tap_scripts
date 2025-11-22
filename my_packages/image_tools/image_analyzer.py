@@ -1,5 +1,5 @@
 import cv2
-from skimage.metrics import structural_similarity as ssim
+from cv2.quality import QualitySSIM as ssim
 from numpy import ndarray
 from enum import Enum, auto
 
