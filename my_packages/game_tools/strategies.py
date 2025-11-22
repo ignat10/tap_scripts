@@ -9,7 +9,7 @@ def farming() -> None:
     for castle in castles:
         castle.switch_farm()
         castle.inside()
-        castle.outside()
+        castle.mining()
 
 
 def seconds():

@@ -32,20 +32,23 @@ class Farm:
 
     def load(self):
         sleep(1)
-        while image_analyzer.compare_screen():
+        while image_analyzer.compare_screen(Folders.LOAD):
             print(f"loading {self.name}")
-        print("loaded")
+        print("loaded.")
 
     @staticmethod
-    def close_ad():
-        print("Closing ad...")
+    def to_map():
+        print("Going to the map...")
         repeat_click(Points.map, 5)
-        while not  image_analyzer.map() or image_analyzer.main_menu():
-            coords = image_analyzer.get_coords() or Points.close
+        while not image_analyzer.find_part(Folders.CITIES):
+            coords = image_analyzer.find_part(Folders.XS) or Points.map
             click(coords)
             print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
-        print("Ad closed.")
+        print("at the map. lord skills...")
+        Farm.lord_skills()
+        print("lord skills done.")
+
 
     @staticmethod
     def lord_skills():
@@ -53,20 +56,12 @@ class Farm:
         wait_and_click(Points.lord)
         wait_and_click(Points.harvest)
         wait_and_click(Points.use)
-        print("end harvest")
+        print("harvested. recalling...")
         wait_and_click(Points.recall_all)
         wait_and_click(Points.use)
         print("end recall_all")
         wait_and_click(Points.close)
         wait_and_click(Points.close)
-
-    def inside(self):
-        self.load()
-        print("running inside")  # Inside the castle
-        self.close_ad()
-        self.lord_skills()
-        click(Points.map)
-        print("finished inside")
 
     def find_another_mine(self):  # to find another mine if not found
         wait_and_click(Points.mine_type(index=0, times=self.mine_type))
@@ -128,9 +123,8 @@ class Farm:
                 click(Points.favorites_back)
                 return False  # if there is no elites
 
-    def outside(self):
-        sleep(3)
-        print("running outside")
+    def mining(self):
+        print("mining...")
         for mine in range(4):
             if mine == 2:
                 if self.get_elite():
