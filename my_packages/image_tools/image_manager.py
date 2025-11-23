@@ -5,7 +5,7 @@ from cv2 import imread, cvtColor, COLOR_BGR2GRAY
 
 
 
-class Folders(Enum):
+class Templates(Enum):
     ADS = "ads"
     BLUE = "blue"
     CITIES = "cities"
@@ -60,7 +60,7 @@ image_names: dict[Folders, frozenset[str]] = {
     for folder, folder_path in folder_paths.items()
 }
 
-image_paths: dict[Folders, dict[str, str]] = {
+image_paths: dict[Templates, dict[str, str]] = {
     folder: {
         image_name: path.join(folder_path, image_name)
         for image_name in image_names[folder]
@@ -69,7 +69,7 @@ image_paths: dict[Folders, dict[str, str]] = {
 }
 
 
-images: dict[Folders, dict[str, ndarray]] = {
+images: dict[Templates, dict[str, ndarray]] = {
     folder: {
         image_name: cvtColor(imread(image_path), COLOR_BGR2GRAY)
         for image_name, image_path in image_paths.items()

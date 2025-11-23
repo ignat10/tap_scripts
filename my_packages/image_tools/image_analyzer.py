@@ -1,11 +1,11 @@
 import cv2
-from skimage.metrics import structural_similarity as ssim
+from cv2.quality import QualitySSIM as ssim
 from numpy import ndarray
 from enum import Enum, auto
 
 
 from .screen_manager import get_screen
-from .image_manager import Folders, images, THRESHOLDS
+from .image_manager import Templates, images, THRESHOLDS
 
 
 
@@ -17,7 +17,7 @@ class Status(Enum):
 
 
 def loop_images(method):
-    def wrapper(folder: Folders, do_screen=True, **kwargs) -> bool | tuple | None:
+    def wrapper(folder: Templates, do_screen=True, **kwargs) -> bool | tuple | None:
         screen = get_screen(do_screen)
         threshold = THRESHOLDS[folder]
         for image in images[folder].values():
