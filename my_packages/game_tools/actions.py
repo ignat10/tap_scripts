@@ -99,7 +99,7 @@ class Farm:
                 return False  # if there is no elites
     
     def is_current_castle(self) -> bool:
-        return bool(image_analyzer.find_part(self.name))
+        return bool(image_analyzer.find_part(Templates[self.name.upper()]))
     
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")

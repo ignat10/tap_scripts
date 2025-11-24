@@ -5,7 +5,7 @@ from enum import Enum, auto
 
 
 from .screen_manager import get_screen
-from .image_manager import Templates, images, THRESHOLDS
+from .image_manager import Templates, get_images, THRESHOLDS
 
 
 
@@ -20,7 +20,7 @@ def loop_images(method):
     def wrapper(folder: Templates, do_screen=True, **kwargs) -> bool | tuple | None:
         screen = get_screen(do_screen)
         threshold = THRESHOLDS[folder]
-        for image in images[folder].values():
+        for image in get_images(folder).values():
             result = method(screen, image, **kwargs)
             match result:
                 case float() as similarity if similarity >= threshold:
