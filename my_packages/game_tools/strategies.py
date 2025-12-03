@@ -8,7 +8,7 @@ castles = make_castles()
 def farming() -> None:
     for castle in castles:
         castle.switch_farm()
-        castle.to_map
+        castle.to_map()
         castle.mining()
 
 

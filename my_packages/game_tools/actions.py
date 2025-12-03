@@ -76,6 +76,7 @@ class Farm:
                         self.mine_type = 0
                 case  image_analyzer.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
+                    continue
         wait_and_click(Points.mine)
         sleep(2)
         self.gather_mine()
@@ -87,7 +88,7 @@ class Farm:
             click(Points.favorites)
             wait_and_click(Points.alliance_elite)
             sleep(1)
-            if image_analyzer.compare_part(Points.elite_blue(index=1, times=self.blue)):  # color of blue
+            if image_analyzer.compare_part(Templates.BLUE, Points.elite_blue(index=1, times=self.blue)):  # color of blue
                 click(Points.elite_blue(index=1, times=which_blue))
                 wait_and_click(Points.gather_elite, 3)
                 wait_and_click(Points.go, 1)  # regularly I should be there
@@ -122,6 +123,7 @@ class Farm:
     def to_map():
         print("Going to the map...")
         repeat_click(Points.map, 5)
+        sleep(2)
         while not image_analyzer.find_part(Templates.CITIES):
             coords = image_analyzer.find_part(Templates.XS) or Points.map
             click(coords)
