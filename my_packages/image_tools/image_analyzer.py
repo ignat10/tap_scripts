@@ -1,5 +1,5 @@
 import cv2
-from cv2.quality import QualitySSIM as ssim
+from cv2.quality import QualitySSIM_compute as ssim
 from numpy import ndarray
 from enum import Enum, auto
 
@@ -41,7 +41,10 @@ def find_part(screen, image) -> tuple[float, tuple]:
 @loop_images
 def compare_part(screen, image, coords: tuple[int, int]) -> float:
     cut = _cut(screen, image, coords)
-    result = ssim(image, cut, win_size=min(image.shape))
+    result = ssim(image, cut)[0]
+    from skimage.metrics import structural_similarity as ssimm
+    old = ssimm(image, cut)
+    print(f"ssim cv2 result: {result} old structural ssim: {old}")
     return result
 
 
@@ -53,21 +56,22 @@ def compare_screen(screen: ndarray, image: ndarray) -> float:
 def _cut(screen: ndarray, image: ndarray, coords: tuple[int, int]) -> ndarray:
     image_shaped = image.shape
     image_size = (image_shaped[1], image_shaped[0])
-    x_half, y_half = image_size[0] // 2, image_size[1] // 2
+    x_half = image_size[0] // 2
+    y_half = image_size[1] // 2
     section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
     x0, x1, y0, y1 = section
-    print(f"section: {x1 - x0, y1 - y0}, shape: {image_size} should be same")
-    return screen[y0:y1, x0:x1]
+    crop_screen = screen[y0:y1, x0:x1]
+    return crop_screen
 
 
 def check_status() -> Status:
-    if not find_part("map"):
+    if not compare_part(Templates.BOOK, coords=(80, 2050)):  # book icon position
         return Status.NOT_MAP
 
-    if not find_part("cities"):
+    if not find_part(Templates.CITIES):
         return Status.NOT_FOUND
 
-    if find_part("gather"):
+    if find_part(Templates.GATHER):
         return Status.FOUND_VISIBLE
 
     else:
