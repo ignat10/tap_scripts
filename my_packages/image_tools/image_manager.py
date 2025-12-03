@@ -17,6 +17,7 @@ farms_sheet_path = path.join(_DATA_DIR, 'WAO_farms_data.xlsx')
 class Templates(Enum):
     ADS = "ads"
     BLUE = "blue"
+    BOOK = "book"
     CITIES = "cities"
     FAVOURITES = "favourites"
     GATHER = "gather"
@@ -35,6 +36,7 @@ class Templates(Enum):
 THRESHOLDS: dict[Templates, float] = {
     Templates.ADS: 0.9,
     Templates.BLUE: 0.8,
+    Templates.BOOK: 0.8,
     Templates.CITIES: 0.8,
     Templates.FAVOURITES: 0.8,
     Templates.GATHER: 0.8,
