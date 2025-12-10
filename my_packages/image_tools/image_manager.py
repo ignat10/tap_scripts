@@ -14,12 +14,12 @@ class Template:
         self.threshold = threshold
         self.coords = coords
 
-    def __call__(self):
+    def get(self):
         if self.images is None:
-            self.images: list[ndarray] = [
-                cvtColor(imread(path.join(TEMPLATES_DIR, self.path, file_name)), COLOR_BGR2GRAY)
+            self.images: dict[str, ndarray] = {
+                file_name: cvtColor(imread(path.join(TEMPLATES_DIR, self.path, file_name)), COLOR_BGR2GRAY)
                 for file_name in listdir(path.join(TEMPLATES_DIR, self.path))
-            ]
+            }
         return self.images
     
 
@@ -34,8 +34,8 @@ class Templates(Enum):
     MAIN_MENUS = Template("main_menus", 0.9)
     SEARCH_BAR = Template("search_menus", 0.9)
     XS = Template("xs", 0.8)
-    LEO = Template(path.join("avatars", "leo"), 0.8)
-    LORD = Template(path.join("avatars", "lord"), 0.8)
+    LEO = Template("avatars\\leo", 0.8)
+    LORD = Template("avatars\\lord", 0.8)
 
 
 def get_paths(local_path: str = "") -> set[str]:

@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 
 from .screen_manager import get_screen
-from .image_manager import Templates, get_images, THRESHOLDS, COORDS
+from .image_manager import Templates
 
 
 
@@ -17,16 +17,17 @@ class Status(Enum):
 
 def ssim(screen: ndarray, image: ndarray) -> float:
     """"Wrapper for SSIM function."""
-    from cv2.quality import QualitySSIM
-    return QualitySSIM(screen, image)
+    from cv2.quality import QualitySSIM_compute
+    return QualitySSIM_compute(screen, image)[0][0]
 
 
 def loop_images(method):
-    def wrapper(folder: Templates, do_screen=True) -> bool | tuple:
+    def wrapper(templates: Templates, do_screen=True) -> bool | tuple:
+        template = templates.value
         screen = get_screen(do_screen)
-        threshold = THRESHOLDS[folder]
-        for image in get_images(folder).values():
-            similarity, coords = method(screen, image, folder)
+        threshold = template.threshold
+        for image in template.get().values():
+            similarity, coords = method(screen, image, templates)
             if similarity >= threshold:
                 return coords or True
         return False
@@ -42,9 +43,10 @@ def find_part(screen, image, template: Templates) -> tuple[float, tuple[int, int
 
 @loop_images
 def compare_part(screen, image, template: Templates) -> tuple[float, None]:
-    cut = _cut(screen, image, COORDS[template])
+    cut = _cut(screen, image, template.value.coords)
     result = ssim(image, cut)
     return result, None
+
 
 @loop_images
 def compare_screen(screen: ndarray, image: ndarray, template: Templates) -> tuple[float, None]:
@@ -66,7 +68,7 @@ def check_status() -> Status:
     if not compare_part(Templates.BOOK):  # book icon position
         return Status.NOT_MAP
 
-    if not find_part(Templates.CITIES, do_screen=False):
+    if find_part(Templates.CITIES, do_screen=False):
         return Status.NOT_FOUND
 
     if find_part(Templates.GATHER, do_screen=False):
