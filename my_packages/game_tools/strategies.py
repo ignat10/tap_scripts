@@ -1,18 +1,17 @@
 from time import sleep
 
-from .actions import make_castles
+from ..data.farms import farms
 
-castles = make_castles()
 
 
 def farming() -> None:
-    for castle in castles:
+    for castle in farms:
         castle.switch_farm()
         castle.to_map()
         castle.mining()
 
 
 def seconds():
-    for castle in castles:
+    for castle in farms:
         castle.switch_farm()
         sleep(15)
