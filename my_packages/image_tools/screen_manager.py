@@ -1,11 +1,11 @@
 import cv2
-from numpy import ndarray, frombuffer, uint8, array
+from numpy import ndarray, frombuffer, uint8
 
 
 from ..adb_tools.device_actions import screencap
 
 
-temp_screen: ndarray = array([])
+temp_screen: ndarray = None
 
 def _capture_gray() -> ndarray:
     global temp_screen
