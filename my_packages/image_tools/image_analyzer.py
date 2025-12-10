@@ -1,11 +1,10 @@
 import cv2
-from cv2.quality import QualitySSIM_compute as ssim
 from numpy import ndarray
 from enum import Enum, auto
 
 
 from .screen_manager import get_screen
-from .image_manager import Templates, get_images, THRESHOLDS
+from .image_manager import Templates, get_images, THRESHOLDS, COORDS
 
 
 
@@ -16,48 +15,47 @@ class Status(Enum):
     FOUND_NOT_VISIBLE = auto()
 
 
+def ssim(screen: ndarray, image: ndarray) -> float:
+    """"Wrapper for SSIM function."""
+    from cv2.quality import QualitySSIM
+    return QualitySSIM(screen, image)
+
+
 def loop_images(method):
-    def wrapper(folder: Templates, do_screen=True, **kwargs) -> bool | tuple | None:
+    def wrapper(folder: Templates, do_screen=True) -> bool | tuple:
         screen = get_screen(do_screen)
         threshold = THRESHOLDS[folder]
         for image in get_images(folder).values():
-            result = method(screen, image, **kwargs)
-            match result:
-                case float() as similarity if similarity >= threshold:
-                    return True
-                case (similarity, coords) if similarity >= threshold:
-                    return coords
-        return None
+            similarity, coords = method(screen, image, folder)
+            if similarity >= threshold:
+                return coords or True
+        return False
     return wrapper
 
 
 @loop_images
-def find_part(screen, image) -> tuple[float, tuple]:
+def find_part(screen, image, template: Templates) -> tuple[float, tuple[int, int]]:
     matched = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
     _, result, _, coords = cv2.minMaxLoc(matched)
     return result, tuple(coords)
 
 
 @loop_images
-def compare_part(screen, image, coords: tuple[int, int]) -> float:
-    cut = _cut(screen, image, coords)
-    result = ssim(image, cut)[0]
-    from skimage.metrics import structural_similarity as ssimm
-    old = ssimm(image, cut)
-    print(f"ssim cv2 result: {result} old structural ssim: {old}")
-    return result
-
+def compare_part(screen, image, template: Templates) -> tuple[float, None]:
+    cut = _cut(screen, image, COORDS[template])
+    result = ssim(image, cut)
+    return result, None
 
 @loop_images
-def compare_screen(screen: ndarray, image: ndarray) -> float:
-    return float(ssim(screen, image))
+def compare_screen(screen: ndarray, image: ndarray, template: Templates) -> tuple[float, None]:
+    return ssim(screen, image), None
 
 
 def _cut(screen: ndarray, image: ndarray, coords: tuple[int, int]) -> ndarray:
     image_shaped = image.shape
-    image_size = (image_shaped[1], image_shaped[0])
-    x_half = image_size[0] // 2
-    y_half = image_size[1] // 2
+    h, w = image_shaped[:2]
+    x_half = w // 2
+    y_half = h // 2
     section = (coords[0] - x_half, coords[0] + x_half, coords[1] - y_half, coords[1] + y_half)
     x0, x1, y0, y1 = section
     crop_screen = screen[y0:y1, x0:x1]
@@ -65,13 +63,13 @@ def _cut(screen: ndarray, image: ndarray, coords: tuple[int, int]) -> ndarray:
 
 
 def check_status() -> Status:
-    if not compare_part(Templates.BOOK, coords=(80, 2050)):  # book icon position
+    if not compare_part(Templates.BOOK):  # book icon position
         return Status.NOT_MAP
 
-    if not find_part(Templates.CITIES):
+    if not find_part(Templates.CITIES, do_screen=False):
         return Status.NOT_FOUND
 
-    if find_part(Templates.GATHER):
+    if find_part(Templates.GATHER, do_screen=False):
         return Status.FOUND_VISIBLE
 
     else:

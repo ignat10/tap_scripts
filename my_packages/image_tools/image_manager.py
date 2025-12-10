@@ -49,6 +49,11 @@ THRESHOLDS: dict[Templates, float] = {
     Templates.LORD: 0.8,
 }
 
+
+COORDS: dict[Templates, tuple[int, int]] = {
+    Templates.BOOK: (88, 2069),
+}
+
 def get_paths(local_path: str = "") -> set[str] | None:
     full_path = path.join(_TEMPLATES_DIR, local_path)
     tree = set()
