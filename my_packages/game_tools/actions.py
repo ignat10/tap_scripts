@@ -59,14 +59,14 @@ class Farm:
             self.find_another_mine()
             sleep(2)
             match image_analyzer.check_status():
-                case  image_analyzer.Status.FOUND_VISIBLE:
+                case image_analyzer.Status.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case  image_analyzer.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case image_analyzer.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
                     click(Points.gather)
                     break
-                case  image_analyzer.Status.NOT_FOUND:
+                case image_analyzer.Status.NOT_FOUND:
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -74,7 +74,7 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case  image_analyzer.Status.NOT_MAP:
+                case image_analyzer.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
                     continue
         wait_and_click(Points.mine)
@@ -88,7 +88,8 @@ class Farm:
             click(Points.favorites)
             wait_and_click(Points.alliance_elite)
             sleep(1)
-            if image_analyzer.compare_part(Templates.BLUE, Points.elite_blue(index=1, times=self.blue)):  # color of blue
+            Templates.BLUE.value.coords = Points.elite_blue(index=1, times=self.blue)
+            if image_analyzer.compare_part(Templates.BLUE):  # color of blue
                 click(Points.elite_blue(index=1, times=which_blue))
                 wait_and_click(Points.gather_elite, 3)
                 wait_and_click(Points.go, 1)  # regularly I should be there
@@ -147,13 +148,6 @@ class Farm:
         else:
             self.second_farm()
             self.load()
-
-
-def make_castles() -> list[Farm]:
-    from my_packages.data.farms import farms_sheet
-    from my_packages.utils.inputter import farm_number
-
-    return [Farm(*row) for row in farms_sheet.values[farm_number(0)::]]
 
 
 # fix get_elite excludes
