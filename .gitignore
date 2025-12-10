@@ -10,7 +10,3 @@ __pycache__/
 
 # screens
 *.png
-
-# local
-local/
-colors.py
