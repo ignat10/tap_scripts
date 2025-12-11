@@ -36,6 +36,7 @@ class Templates(Enum):
     XS = Template("xs", 0.8)
     LEO = Template("avatars\\leo", 0.8)
     LORD = Template("avatars\\lord", 0.8)
+    MINE = Template("mines", 0.8, coords=(614, 1324))
 
 
 def get_paths(local_path: str = "") -> set[str]:

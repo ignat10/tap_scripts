@@ -49,9 +49,8 @@ class Farm:
         print("harvested. recalling...")
         wait_and_click(Points.recall_all)
         wait_and_click(Points.use)
-        print("end recall_all")
         wait_and_click(Points.close)
-        wait_and_click(Points.close)
+        print("skilled.")
 
     def get_mine(self):  # to go to basic mine from the map
         click(Points.search)
@@ -120,8 +119,8 @@ class Farm:
             print(f"loading {self.name}")
         print("loaded.")
 
-    @staticmethod
-    def to_map():
+    @classmethod
+    def to_map(cls):
         print("Going to the map...")
         repeat_click(Points.map, 5)
         sleep(2)
@@ -131,7 +130,7 @@ class Farm:
             print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
         print("at the map. lord skills...")
-        Farm.lord_skills()
+        cls.lord_skills()
         print("lord skills done.")
 
     def mining(self):
