@@ -3,7 +3,6 @@ from numpy import ndarray
 from enum import Enum, auto
 
 
-from .screen_manager import get_screen
 from .image_manager import Templates
 
 
@@ -23,6 +22,7 @@ def ssim(screen: ndarray, image: ndarray) -> float:
 
 def loop_images(method):
     def wrapper(templates: Templates, do_screen=True) -> bool | tuple:
+        from .screen_manager import get_screen
         template = templates.value
         screen = get_screen(do_screen)
         threshold = template.threshold
