@@ -6,10 +6,10 @@ from my_packages.image_tools.image_analyzer import _cut
 
 
 screen = cvtColor(imread("screen.png"), COLOR_BGR2GRAY)
-template = Templates.MINE.value.get()["new_one.png"]
+template = Templates.MINE.value.get()["night_farm.png"]
 
-center = (610, 1320)
-radius = 10
+center = (570, 1280)
+radius = 20
 
 matrix: list[list[tuple[tuple[int, int], float]]] = []
 
@@ -31,3 +31,8 @@ for row in matrix:
             max_result = item
         
 print(max_result)
+
+
+from cv2 import imwrite
+
+imwrite("cut_at_max.png", _cut(screen, template, coords=max_result[0]))
