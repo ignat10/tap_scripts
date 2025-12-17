@@ -11,5 +11,5 @@ __pycache__/
 # screens
 *.png
 
-!my_package/data/templates/**
+!my_package/data/**
 !my_package/data/templates/**
