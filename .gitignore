@@ -12,3 +12,4 @@ __pycache__/
 *.png
 
 !my_package/data/templates/**
+!my_package/data/templates/**
