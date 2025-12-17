@@ -10,5 +10,5 @@ __pycache__/
 
 # screens
 
-!my_package/data/**
+!my_package/data/templates/
 !my_package/data/templates/**
