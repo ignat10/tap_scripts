@@ -9,7 +9,6 @@ __pycache__/
 .vscode/
 
 # screens
-*.png
 
 !my_package/data/**
 !my_package/data/templates/**
