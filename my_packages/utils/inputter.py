@@ -1,7 +1,7 @@
-def farm_number(base_val: int) -> int:
-    
-    value = input("enter from which google do we start: ")
+def inputter(msg: str, base):
+    type_ = type(base)
+    string = input(msg)
     try:
-        return int(value)
+        return type_(string)
     except ValueError:
-        return base_val
+        return base

@@ -12,8 +12,8 @@ max_row = sheet.max_row
 max_column = sheet.max_column
 
 
-from my_packages.utils.inputter import farm_number
+from my_packages.utils.inputter import inputter
 farms = [
     Farm(*row)
     for row in sheet.iter_rows(max_row=max_row, max_col=max_column, values_only=True)
-    ][farm_number(1)::]
+    ][inputter("enter from which google do we start: ", 1)::]

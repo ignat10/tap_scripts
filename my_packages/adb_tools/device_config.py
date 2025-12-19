@@ -1,30 +1,30 @@
 from time import sleep
 
-import pyperclip
 
 from .console_runner import adb_run
 
 
 
 def config() -> str:
-    print("connecting adb")
+    print("connecting adb device...")
     while True:
         sleep(1)
 
-        if device := _scan():
-            print(f"device found: '{device}'")
-            return device
 
-        ip = _get_clipboard_ip()
-        if not ip:
+        if serial := _scan():
+            break
+
+        if (serial := _input_ip()) is None:
             continue
 
-        if _connect(ip):
-            print(f"connected to device '{ip}'")
-            return ip
+        if _connect(serial):
+            continue
 
-        print(f"error connecting to device '{ip}'\nretrying...")
-        pyperclip.copy("")
+        print(f"error connecting to device \nretrying...")
+        
+    print(f"connected to device '{serial}'")
+    return serial
+
 
 
 def _scan() -> str | None:
@@ -41,18 +41,18 @@ def _scan() -> str | None:
     return None
 
 
-def _get_clipboard_ip() -> str | None:
+def _input_ip() -> str | None:
     from ..data.poco_coordinates import DEVICE_IP
+    from ..utils.inputter import inputter
 
-    clipboard = pyperclip.paste()
-    
-    if DEVICE_IP not in clipboard:
-        print(f"copy your ip:port to clipboard (current: '{clipboard}')")
-        return None
-    
-    return clipboard
+    port = str(inputter("enter device port: ", 0))
+    if len(port) == 5:
+        return f"{DEVICE_IP}:{port}"
+
+    return None
 
 
 def _connect(device: str) -> bool:
+    print(f"connecting to {device}...")
     output = adb_run(f"connect {device}", capture_output=True, text=True)
     return "connected" in output

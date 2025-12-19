@@ -1,3 +1,2 @@
 openCV-contrib-python
-pyperclip
 openPyXL
