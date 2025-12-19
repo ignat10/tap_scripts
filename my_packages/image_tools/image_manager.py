@@ -34,8 +34,8 @@ class Templates(Enum):
     MAIN_MENUS = Template("main_menus", 0.9)
     SEARCH_BAR = Template("search_menus", 0.9)
     XS = Template("xs", 0.8)
-    LEO = Template("avatars\\leo", 0.8)
-    LORD = Template("avatars\\lord", 0.8)
+    LEO = Template("avatars/leo", 0.8)
+    LORD = Template("avatars/lord", 0.8)
     MINE = Template("mines", 0.8, coords=(614, 1324))
 
 
