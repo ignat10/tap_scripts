@@ -49,7 +49,7 @@ class Farm:
         print("harvested. recalling...")
         wait_and_click(Points.recall_all)
         wait_and_click(Points.use)
-        wait_and_click(Points.close)
+        wait_and_click(Points.close, 1)
         print("skilled.")
 
     def get_mine(self):  # to go to basic mine from the map
