@@ -157,6 +157,4 @@ class Farm:
 Добавить logging и заменить print на logger. (малый)
 
 Настроить flake8/ruff/black и pre-commit. (малый)
-
-Добавить базовые unit-tests и workflow CI. (средний)
 """

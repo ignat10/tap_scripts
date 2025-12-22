@@ -1,8 +1,10 @@
-from os import path
+from pathlib import Path
 
 
-_BASE_DIR = path.dirname(path.dirname(__file__))  # packages
-_DATA_DIR = path.join(_BASE_DIR, 'data')
 
-TEMPLATES_DIR = path.join(_DATA_DIR, 'templates')
-FARMS_SHEET_PATH = path.join(_DATA_DIR, 'WAO_farms_data.xlsx')
+_BASE_DIR = Path(__file__).parent.parent  # my_packages
+_DATA_DIR = _BASE_DIR / 'data'
+
+
+TEMPLATES_DIR = _DATA_DIR / 'templates'
+FARMS_SHEET_PATH = _DATA_DIR / 'WAO_farms_data.xlsx'
