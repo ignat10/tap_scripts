@@ -2,7 +2,11 @@ from time import sleep
 
 
 from .console_runner import adb_run
+from ..utils.inputter import inputter
 
+
+
+DEVICE_IP = "192.168.0.192"
 
 
 def config() -> str:
@@ -42,13 +46,9 @@ def _scan() -> str | None:
 
 
 def _input_ip() -> str | None:
-    from ..data.poco_coordinates import DEVICE_IP
-    from ..utils.inputter import inputter
-
     port = str(inputter("enter device port: ", 0))
     if len(port) == 5:
         return f"{DEVICE_IP}:{port}"
-
     return None
 
 

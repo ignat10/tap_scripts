@@ -10,7 +10,7 @@ def action(arguments: str, **kwargs) -> str:
     return adb_run(command, **kwargs)
 
 
-def click(cords: tuple[int, int]) -> None:
+def input_tap(cords: tuple[int, int]) -> None:
     from subprocess import DEVNULL
     action(f"shell input tap {cords[0]} {cords[1]}", stdout=DEVNULL)
 

@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 
 from my_packages.data.paths import TEMPLATES_DIR
-from my_packages.image_tools.image_manager import Templates
+from my_packages.image_tools.template_manager import Templates
 
 
 

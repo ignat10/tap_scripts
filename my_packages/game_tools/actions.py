@@ -1,19 +1,8 @@
 from time import sleep
 
-from my_packages.adb_tools.device_actions import click
 from my_packages.data.poco_coordinates import Points
-from my_packages.image_tools import image_analyzer
-from my_packages.image_tools.image_manager import Templates
+from my_packages.image_tools.template_manager import Templates, Status, check_status
 
-
-def wait_and_click(coords: tuple[int, int], delay=0.5):
-    sleep(delay)
-    click(coords)
-
-
-def repeat_click(coords: tuple[int, int], times: int):
-    for _ in range(times):
-        click(coords)
 
 
 class Farm:
@@ -29,43 +18,43 @@ class Farm:
 
 
     def find_another_mine(self):  # to find another mine if not found
-        wait_and_click(Points.mine_type(index=0, times=self.mine_type))
-        repeat_click(Points.minus, 5)
-        repeat_click(Points.plus, self.mine_lv - 1)
-        repeat_click(Points.go_mine, 3)
+        Points.mine_type(index=0, times=self.mine_type).click()
+        Points.minus.repeat_click(5)
+        Points.plus.repeat_click(self.mine_lv - 1)
+        Points.go_mine.repeat_click(3)
 
     @staticmethod
     def gather_mine():
-        wait_and_click(Points.gather)
-        wait_and_click(Points.go)
-        wait_and_click(Points.back)
+        Points.gather.wait_and_click()
+        Points.go.wait_and_click()
+        Points.back.wait_and_click()
 
     @staticmethod
     def lord_skills():
         print("Harvesting...")
-        wait_and_click(Points.lord)
-        wait_and_click(Points.harvest)
-        wait_and_click(Points.use)
+        Points.lord.wait_and_click()
+        Points.harvest.wait_and_click()
+        Points.use.wait_and_click()
         print("harvested. recalling...")
-        wait_and_click(Points.recall_all)
-        wait_and_click(Points.use)
-        wait_and_click(Points.close, 1)
+        Points.recall_all.wait_and_click()
+        Points.use.wait_and_click()
+        Points.close.wait_and_click(1)
         print("skilled.")
 
     def get_mine(self):  # to go to basic mine from the map
-        click(Points.search)
+        Points.search.click()
         while True:
             self.find_another_mine()
             sleep(2)
-            match image_analyzer.check_status():
-                case image_analyzer.Status.FOUND_VISIBLE:
+            match check_status():
+                case Status.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case image_analyzer.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    click(Points.gather)
+                    Points.gather.click()
                     break
-                case image_analyzer.Status.NOT_FOUND:
+                case Status.NOT_FOUND:
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -73,10 +62,10 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case image_analyzer.Status.NOT_MAP:
+                case Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
                     continue
-        wait_and_click(Points.mine)
+        Points.mine.wait_and_click()
         sleep(2)
         self.gather_mine()
 
@@ -84,49 +73,49 @@ class Farm:
         print("Elite")
         which_blue = self.blue
         while True:
-            click(Points.favorites)
-            wait_and_click(Points.alliance_elite)
+            Points.favorites.click()
+            Points.alliance_elite.wait_and_click()
             sleep(1)
             Templates.BLUE.value.coords = Points.elite_blue(index=1, times=self.blue)
-            if image_analyzer.compare_part(Templates.BLUE):  # color of blue
-                click(Points.elite_blue(index=1, times=which_blue))
-                wait_and_click(Points.gather_elite, 3)
-                wait_and_click(Points.go, 1)  # regularly I should be there
+            if Templates.BLUE.value.compare_part():  # color of blue
+                Points.elite_blue(index=1, times=which_blue).click()
+                Points.gather_elite.wait_and_click(3)
+                Points.go.wait_and_click(1)  # regularly I should be there
                 which_blue += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                click(Points.favorites_back)
+                Points.favorites_back.click()
                 return False  # if there is no elites
     
     def is_current_castle(self) -> bool:
-        return bool(image_analyzer.find_part(Templates[self.name.upper()]))
+        return bool(Templates[self.name.upper()].value.find_part())
     
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        wait_and_click(Points.avatar)
-        wait_and_click(Points.account)
-        wait_and_click(Points.switch)
-        wait_and_click(Points.login, 1)
-        wait_and_click(Points.google(index=1, times=self.google), 2)
-        wait_and_click(Points.castle(index=1, times=self.account), 3)
-        wait_and_click(Points.confirm, 1)  # go inside
+        Points.avatar.wait_and_click()
+        Points.account.wait_and_click()
+        Points.switch.wait_and_click(1)
+        Points.login.wait_and_click(1)
+        Points.google(index=1, times=self.google).wait_and_click(2)
+        Points.castle(index=1, times=self.account).wait_and_click(3)
+        Points.confirm.wait_and_click(1)  # go inside
         print(f"logged into {self.name}")
 
     def load(self):
         sleep(1)
-        while image_analyzer.compare_screen(Templates.LOAD):
+        while Templates.LOAD.value.compare_full():
             print(f"loading {self.name}")
         print("loaded.")
 
     @classmethod
     def to_map(cls):
         print("Going to the map...")
-        repeat_click(Points.map, 5)
+        Points.map.repeat_click(5)
         sleep(2)
-        while not image_analyzer.find_part(Templates.CITIES):
-            coords = image_analyzer.find_part(Templates.XS) or Points.map
-            click(coords)
+        while not Templates.CITIES.value.find_part():
+            coords = Templates.XS.value.find_part() or Points.map
+            coords.click()
             print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
         print("at the map. lord skills...")

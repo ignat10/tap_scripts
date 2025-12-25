@@ -1,13 +1,7 @@
-# from float_coordinates import float_points, float_steps
-#
-# POCO_X7_PRO_RESOLUTION: tuple = (1220,  2712)
-#
-# for point in float_points:
-#         print((int(round(point(0) * POCO_X7_PRO_RESOLUTION(0))), int(round(point(1) * POCO_X7_PRO_RESOLUTION(1)))))
-# print("")
-# for step in float_steps:
-#     index = int(input(f"{step}: "))
-#     print(int(round(step * POCO_X7_PRO_RESOLUTION(index))))
+from time import sleep
+
+
+from my_packages.adb_tools.device_actions import input_tap
 
 
 class Point(tuple):
@@ -21,15 +15,24 @@ class Point(tuple):
             case None:
                 return tuple(self)
             case 0:
-                return (self[0] + self.gap * times, self[1])
+                return Point(self[0] + self.gap * times, self[1])
             case 1:
-                return (self[0], self[1] + self.gap * times)
+                return Point(self[0], self[1] + self.gap * times)
             case _:
                 exit("Index must be 0 or 1!")
-        
+    
+    def click(self) -> None:
+        input_tap(self)
 
+    def wait_and_click(self, delay=0.5):
+        sleep(delay)
+        self.click()
 
-DEVICE_IP = "192.168.0.192"
+    def repeat_click(self, times: int):
+        for _ in range(times):
+            self.click()
+                
+            
 class Points:
     take = Point((587, 1910))
     close = Point((226, 2175))
