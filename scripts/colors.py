@@ -2,11 +2,11 @@ import os
 import time
 from cv2 import quality, imwrite, matchTemplate, TM_CCOEFF_NORMED, minMaxLoc
 
-from my_packages.image_tools.image_manager import Templates
+from my_packages.image_tools.template_manager import Templates
 from my_packages.image_tools.screen_manager import _capture_gray
 from my_packages.image_tools.image_analyzer import _cut
 
-template = Templates.MINE.value.get()["farmstead_macro.png"]
+template = Templates.MINE.value.get_images()["farmstead_macro.png"]
 screen = _capture_gray()
 cut = _cut(screen, template, coords=(614, 1324))
 

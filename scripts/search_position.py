@@ -1,12 +1,12 @@
 from cv2.quality import QualitySSIM_compute
 from cv2 import imread, cvtColor, COLOR_BGR2GRAY, imshow, waitKey
 
-from my_packages.image_tools.image_manager import Templates
+from my_packages.image_tools.template_manager import Templates
 from my_packages.image_tools.image_analyzer import _cut
 
 
 screen = cvtColor(imread("screen.png"), COLOR_BGR2GRAY)
-template = Templates.MINE.value.get()["night_farm.png"]
+template = Templates.MINE.value.get_images()["night_farm.png"]
 
 center = (570, 1280)
 radius = 20
