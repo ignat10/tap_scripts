@@ -4,7 +4,7 @@ from typing import Callable
 
 
 from numpy import ndarray
-from cv2 import quality, matchTemplate, minMaxLoc, TM_CCOEFF_NORMED
+from cv2 import imread, cvtColor, COLOR_BGR2GRAY, quality, matchTemplate, minMaxLoc, TM_CCOEFF_NORMED
 
 from ..data.poco_coordinates import Point
 from ..data.paths import TEMPLATES_DIR
@@ -12,12 +12,12 @@ from .screen_manager import get_screen
 
 
 
-def ssim(screen: ndarray, image: ndarray) -> float:
+def ssim(screen: ndarray, image: ndarray) -> tuple[float, None]:
     """"Wrapper for SSIM function."""
     return quality.QualitySSIM_compute(screen, image)[0][0], None
 
 
-def match_template(screen: ndarray, image: ndarray) -> float:
+def match_template(screen: ndarray, image: ndarray) -> tuple[float, Point]:
     """Wrapper for cv2.matchTemplate function."""
     matched = matchTemplate(screen, image, TM_CCOEFF_NORMED)
     _, result, _, coords = minMaxLoc(matched)
@@ -47,7 +47,7 @@ class Template:
     def get_images(self):
         if self.images is None:
             self.images: dict[str, ndarray] = {
-                file_path.name: cv2.cvtColor(cv2.imread(file_path), cv2.COLOR_BGR2GRAY)
+                file_path.name: cvtColor(imread(file_path), COLOR_BGR2GRAY)
                 for file_path in (TEMPLATES_DIR / self.path).iterdir()
             }
         return self.images
@@ -61,17 +61,17 @@ class Template:
     
     @compare_loop
     @staticmethod
-    def find_part(screen: ndarray) -> tuple[ndarray, function]:
+    def find_part(screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, Point]]]:
         return screen, match_template
 
     @compare_loop
-    def compare_part(self,screen: ndarray) -> tuple[ndarray, function]:
+    def compare_part(self, screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, None]]]:
         cropped_screen = self.crop_screen(screen)
         return cropped_screen, ssim
     
     @compare_loop
     @staticmethod
-    def compare_full(screen: ndarray) -> tuple[ndarray, function]:
+    def compare_full(screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, None]]]:
         return screen, ssim
 
     
