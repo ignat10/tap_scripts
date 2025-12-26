@@ -4,7 +4,7 @@ from typing import Callable
 
 
 from numpy import ndarray
-import cv2
+from cv2 import quality, matchTemplate, minMaxLoc, TM_CCOEFF_NORMED
 
 from ..data.poco_coordinates import Point
 from ..data.paths import TEMPLATES_DIR
@@ -14,13 +14,13 @@ from .screen_manager import get_screen
 
 def ssim(screen: ndarray, image: ndarray) -> float:
     """"Wrapper for SSIM function."""
-    return cv2.quality.QualitySSIM_compute(screen, image)[0][0], None
+    return quality.QualitySSIM_compute(screen, image)[0][0], None
 
 
 def match_template(screen: ndarray, image: ndarray) -> float:
     """Wrapper for cv2.matchTemplate function."""
-    matched = cv2.matchTemplate(screen, image, cv2.TM_CCOEFF_NORMED)
-    _, result, _, coords = cv2.minMaxLoc(matched)
+    matched = matchTemplate(screen, image, TM_CCOEFF_NORMED)
+    _, result, _, coords = minMaxLoc(matched)
     return result, Point(coords)
 
 

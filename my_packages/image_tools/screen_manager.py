@@ -1,4 +1,4 @@
-import cv2
+from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
 from numpy import ndarray, frombuffer, uint8
 
 
@@ -11,8 +11,8 @@ def _capture_gray() -> ndarray:
     global temp_screen
     console_output =  screencap()
     screen_bytes = frombuffer(console_output, uint8)
-    screen = cv2.imdecode(screen_bytes, cv2.IMREAD_COLOR)
-    gray_screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+    screen = imdecode(screen_bytes, IMREAD_COLOR)
+    gray_screen = cvtColor(screen, COLOR_BGR2GRAY)
     temp_screen = gray_screen
     return gray_screen
 

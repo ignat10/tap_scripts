@@ -1,7 +1,7 @@
 from time import sleep
 
 
-from my_packages.adb_tools.device_actions import input_tap
+from ..adb_tools.device_actions import input_tap
 
 
 class Point(tuple):

@@ -1,7 +1,7 @@
 from time import sleep
 
-from my_packages.data.poco_coordinates import Points
-from my_packages.image_tools.template_manager import Templates, Status, check_status
+from ..data.poco_coordinates import Points
+from ..image_tools.template_manager import Templates, Status, check_status
 
 
 

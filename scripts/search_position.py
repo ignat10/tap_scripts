@@ -1,8 +1,6 @@
-from cv2.quality import QualitySSIM_compute
-from cv2 import imread, cvtColor, COLOR_BGR2GRAY, imshow, waitKey
+from cv2 import imread, imwrite, cvtColor, COLOR_BGR2GRAY, quality
 
 from my_packages.image_tools.template_manager import Templates
-from my_packages.image_tools.image_analyzer import _cut
 
 
 screen = cvtColor(imread("screen.png"), COLOR_BGR2GRAY)
@@ -33,6 +31,5 @@ for row in matrix:
 print(max_result)
 
 
-from cv2 import imwrite
 
 imwrite("cut_at_max.png", _cut(screen, template, coords=max_result[0]))
