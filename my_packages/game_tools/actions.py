@@ -38,7 +38,8 @@ class Farm:
         print("harvested. recalling...")
         Points.recall_all.wait_and_click()
         Points.use.wait_and_click()
-        Points.close.wait_and_click(1)
+        Points.close.click()
+        Points.close.click()
         print("skilled.")
 
     def get_mine(self):  # to go to basic mine from the map
@@ -89,6 +90,7 @@ class Farm:
                 return False  # if there is no elites
     
     def is_current_castle(self) -> bool:
+        print(f"checking is current castle: {self.name}")
         return bool(Templates[self.name.upper()].value.find_part())
     
     def second_farm(self):
