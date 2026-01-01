@@ -1,7 +1,7 @@
 from time import sleep
 
 
-from .console_runner import adb_run
+from ..adb_tools.console_runner import adb_run
 from ..utils.inputter import inputter
 
 
@@ -28,7 +28,6 @@ def config() -> str:
         
     print(f"connected to device '{serial}'")
     return serial
-
 
 
 def _scan() -> str | None:

@@ -1,7 +1,7 @@
 from subprocess import DEVNULL, PIPE
 
 
-from .device_config import config
+from ..device.config import config
 from .console_runner import adb_run
 
 
