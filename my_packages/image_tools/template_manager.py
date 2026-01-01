@@ -1,6 +1,6 @@
 from enum import Enum, auto
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Self
 
 
 from numpy import ndarray
@@ -21,12 +21,12 @@ def match_template(screen: ndarray, image: ndarray) -> tuple[float, Point]:
     """Wrapper for cv2.matchTemplate function."""
     matched = matchTemplate(screen, image, TM_CCOEFF_NORMED)
     _, result, _, coords = minMaxLoc(matched)
-    return result, Point(coords)
+    return result, Point(tuple(coords))
 
 
 def compare_loop(compare_method: Callable[[ndarray], tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, Point | None]]]]):
-    def wrapper(self: Template, do_screen=True) -> bool | Point:
-        screen, method = compare_method(get_screen(do_screen))
+    def wrapper(self, do_screen=True) -> bool | Point:
+        screen, method = compare_method(self, get_screen(do_screen))
         templates = self.get_images()
         threshold = self.threshold
         for image in templates.values():
@@ -54,14 +54,13 @@ class Template:
     
     def crop_screen(self, screen: ndarray) -> ndarray:
         corner = self.coords
-        y, x = next(self.get_images().values()).shape
+        y, x = self.get_images().values().__iter__().__next__().shape
         opposite_corner = (corner[0] + x, corner[1] + y)
         crop_screen = screen[corner[1]:opposite_corner[1], corner[0]:opposite_corner[0]]
         return crop_screen
-    
+
     @compare_loop
-    @staticmethod
-    def find_part(screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, Point]]]:
+    def find_part(self, screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, Point]]]:
         return screen, match_template
 
     @compare_loop
@@ -70,8 +69,7 @@ class Template:
         return cropped_screen, ssim
     
     @compare_loop
-    @staticmethod
-    def compare_full(screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, None]]]:
+    def compare_full(self, screen: ndarray) -> tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, None]]]:
         return screen, ssim
 
     
