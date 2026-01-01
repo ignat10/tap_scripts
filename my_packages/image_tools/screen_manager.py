@@ -2,7 +2,7 @@ from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
 from numpy import ndarray, frombuffer, uint8
 
 
-from ..adb_tools.device_actions import screencap
+from ..adb_tools.adb_actions import screencap
 
 
 temp_screen: ndarray = None
