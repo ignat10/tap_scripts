@@ -1,8 +1,6 @@
 from time import sleep
 
 
-from ..adb_tools.adb_actions import input_tap
-
 
 class Point(tuple):
     def __new__(cls, coords: tuple, offstep: int=0):
@@ -16,6 +14,7 @@ class Point(tuple):
         return Point(tuple(lst))
 
     def click(self) -> None:
+        from ..adb_tools.adb_actions import input_tap
         input_tap(self)
 
     def wait_and_click(self, delay=0.5):
