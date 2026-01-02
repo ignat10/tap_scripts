@@ -1,10 +1,10 @@
 from time import perf_counter
 from cv2 import quality, imwrite
 
-from my_packages.image_tools.template_manager import Templates
+from my_packages.image_tools import templates
 from my_packages.image_tools.screen_manager import get_screen
 
-template = Templates.MINE.value
+template = templates.MINE.value
 screen = get_screen()
 cut = template.crop_screen(screen)
 

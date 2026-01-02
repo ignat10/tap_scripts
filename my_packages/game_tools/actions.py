@@ -1,7 +1,8 @@
 from time import sleep
 
 from ..data.poco_coordinates import Points
-from ..image_tools.template_manager import Templates, Status, check_status
+from ..image_tools import templates
+from . import status
 
 
 
@@ -47,15 +48,15 @@ class Farm:
         while True:
             self.find_another_mine()
             sleep(2)
-            match check_status():
-                case Status.FOUND_VISIBLE:
+            match status.check_status():
+                case status.Status.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case status.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
                     Points.gather.click()
                     break
-                case Status.NOT_FOUND:
+                case status.Status.NOT_FOUND:
                     if self.mine_type < 4:
                         print("second mine type")
                         self.mine_type += 1
@@ -63,7 +64,7 @@ class Farm:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = 0
-                case Status.NOT_MAP:
+                case status.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
                     continue
         Points.mine.wait_and_click()
@@ -77,8 +78,8 @@ class Farm:
             Points.favorites.click()
             Points.alliance_elite.wait_and_click()
             sleep(1)
-            Templates.BLUE.value.coords = Points.elite_blue(index=1, times=self.blue)
-            if Templates.BLUE.value.compare_part():  # color of blue
+            templates.BLUE.coords = Points.elite_blue(index=1, times=self.blue)
+            if templates.BLUE.compare_part():  # color of blue
                 Points.elite_blue(index=1, times=which_blue).click()
                 Points.gather_elite.wait_and_click(3)
                 Points.go.wait_and_click(1)  # regularly I should be there
@@ -106,7 +107,7 @@ class Farm:
 
     def load(self):
         sleep(1)
-        while Templates.LOAD.value.compare_full():
+        while templates.LOAD.value.compare_full():
             print(f"loading {self.name}")
         print("loaded.")
 
@@ -115,8 +116,8 @@ class Farm:
         print("Going to the map...")
         Points.map.repeat_click(5)
         sleep(2)
-        while not Templates.CITIES.value.find_part():
-            coords = Templates.XS.value.find_part() or Points.map
+        while not templates.CITIES.value.find_part():
+            coords = templates.XS.value.find_part() or Points.map
             coords.click()
             print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
