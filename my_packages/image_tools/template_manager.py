@@ -24,33 +24,30 @@ def match_template(screen: ndarray, image: ndarray) -> tuple[float, Point]:
     return result, Point(tuple(coords))
 
 
-def compare_loop(compare_method: Callable[[ndarray], tuple[ndarray, Callable[[ndarray, ndarray], tuple[float, Point | None]]]]):
-    def wrapper(self, do_screen=True) -> bool | Point:
-        screen, method = compare_method(self, get_screen(do_screen))
-        templates = self.get_images()
-        threshold = self.threshold
-        for image in templates.values():
-            similarity, coords = method(screen, image)
-            if similarity >= threshold:
-                return coords or True
-        return False
-    return wrapper
-
-
 class Template:
     def __init__(self, relative_path: Path, threshold: float, coords: tuple[int, int] | None = None):
-        self.images = None
+        self.images: dict[str, ndarray] = {}
         self.path = relative_path
         self.threshold = threshold
         self.coords = coords
 
     def get_images(self):
-        if self.images is None:
-            self.images: dict[str, ndarray] = {
-                file_path.name: cvtColor(imread(file_path), COLOR_BGR2GRAY)
-                for file_path in (TEMPLATES_DIR / self.path).iterdir()
-            }
-        return self.images
+        for file_path in (TEMPLATES_DIR / self.path).iterdir():
+            file_name = file_path.name
+            if file_name not in self.images:
+                self.images[file_name] = cvtColor(imread(file_path), COLOR_BGR2GRAY)
+            yield self.images[file_name]
+
+    def compare_loop(self, compare_method: Callable[[ndarray, ndarray], tuple[tuple[float, Point | None]]]):
+        def wrapper(self, ) -> bool | Point:
+            screen, method = compare_method(self, get_screen(do_screen))
+            threshold = self.threshold
+            for image in self.get_images():
+                similarity, coords = method(screen, image)
+                if similarity >= threshold:
+                    return coords or True
+            return False
+        return wrapper
     
     def crop_screen(self, screen: ndarray) -> ndarray:
         corner = self.coords
