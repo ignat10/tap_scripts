@@ -143,9 +143,7 @@ class Farm:
 
 # fix get_elite excludes
 
-""""
-8. Предлагаемый по-шаговый план работы (практический, 9 шагов)
-
+""""TODO:
 Добавить logging и заменить print на logger. (малый)
 
 Настроить flake8/ruff/black и pre-commit. (малый)

@@ -3,14 +3,14 @@ from time import sleep
 
 
 class Point(tuple):
-    def __new__(cls, coords: tuple, offstep: int=0):
+    def __new__(cls, coords: tuple, offset: int=0):
         obj = super().__new__(cls, coords)
-        obj.offstep = offstep
+        obj.offset = offset
         return obj
 
     def __call__(self, index: int, times: int=0):
         lst = list(self)
-        lst[index] += self.offstep * times
+        lst[index] += self.offset * times
         return Point(tuple(lst))
 
     def click(self) -> None:
@@ -35,7 +35,7 @@ class Points:
     use = Point((599, 2633))
     map = Point((113, 2599))
     search = Point((1130, 2239))
-    mine_type = Point((678, 2345), offstep= -200)
+    mine_type = Point((678, 2345), offset= -200)
     stone = Point((480, 2345))
     wood = Point((289, 2345))
     food = Point((113, 2345))
@@ -43,14 +43,14 @@ class Points:
     minus = Point((130, 2610))
     go_mine = Point((1017, 2627))
     search_back = Point((890, 2150))
-    mine = Point((616, 1339), offstep= -183)
+    mine = Point((616, 1339), offset= -183)
     gather = Point((875, 1309))
     go = Point((1017, 2616))
     back = Point((892, 2397))
     favorites = Point((79, 2060))
     favorites_back = Point((79, 170))
     alliance_elite = Point((791, 300))
-    elite_blue = Point((421, 757), offstep=259)
+    elite_blue = Point((421, 757), offset=259)
     elite_mine1 = Point((429, 757))
     gather_elite = Point((881, 1051))
     vip = Point((1006, 1594))
@@ -58,6 +58,6 @@ class Points:
     account = Point((203, 1243))
     switch = Point((621, 1808))
     login = Point((633, 1492))
-    google = Point((164, 840), offstep=200)
-    castle = Point((452, 1067), offstep=135)
+    google = Point((164, 840), offset=200)
+    castle = Point((452, 1067), offset=135)
     confirm = Point((354, 1550))
