@@ -7,3 +7,9 @@ __pycache__/
 # IDE's trash
 .idea/
 .vscode/
+
+# images
+*.png
+*.svg
+
+!my_packages/data/templates/
