@@ -1,6 +1,7 @@
 from time import sleep
 
-from ..data.poco_coordinates import Points
+
+from ..data import points
 from ..image_tools import templates
 from . import status
 
@@ -19,32 +20,32 @@ class Farm:
 
 
     def find_another_mine(self):  # to find another mine if not found
-        Points.mine_type(index=0, times=self.mine_type).click()
-        Points.minus.repeat_click(5)
-        Points.plus.repeat_click(self.mine_lv - 1)
-        Points.go_mine.repeat_click(3)
+        points.MINE_TYPE(index=0, times=self.mine_type).click()
+        points.MINUS.repeat_click(5)
+        points.PLUS.repeat_click(self.mine_lv - 1)
+        points.GO_MINE.repeat_click(3)
 
     @staticmethod
     def gather_mine():
-        Points.gather.wait_and_click()
-        Points.go.wait_and_click()
-        Points.back.wait_and_click()
+        points.GATHER.wait_and_click()
+        points.GO.wait_and_click()
+        points.BACK.wait_and_click()
 
     @staticmethod
     def lord_skills():
         print("Harvesting...")
-        Points.lord.wait_and_click()
-        Points.harvest.wait_and_click()
-        Points.use.wait_and_click()
+        points.LORD.wait_and_click()
+        points.HARVEST.wait_and_click()
+        points.USE.wait_and_click()
         print("harvested. recalling...")
-        Points.recall_all.wait_and_click()
-        Points.use.wait_and_click()
-        Points.close.click()
-        Points.close.click()
+        points.RECALL_ALL.wait_and_click()
+        points.USE.wait_and_click()
+        points.CLOSE.click()
+        points.CLOSE.click()
         print("skilled.")
 
     def get_mine(self):  # to go to basic mine from the map
-        Points.search.click()
+        points.SEARCH.click()
         while True:
             self.find_another_mine()
             sleep(2)
@@ -54,7 +55,7 @@ class Farm:
                     break
                 case status.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    Points.gather.click()
+                    points.GATHER.click()
                     break
                 case status.Status.NOT_FOUND:
                     if self.mine_type < 4:
@@ -67,7 +68,7 @@ class Farm:
                 case status.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
                     continue
-        Points.mine.wait_and_click()
+        points.MINE.wait_and_click()
         sleep(2)
         self.gather_mine()
 
@@ -75,19 +76,19 @@ class Farm:
         print("Elite")
         which_blue = self.blue
         while True:
-            Points.favorites.click()
-            Points.alliance_elite.wait_and_click()
+            points.FAVORITES.click()
+            points.ALLIANCE_ELITE.wait_and_click()
             sleep(1)
-            templates.BLUE.coords = Points.elite_blue(index=1, times=self.blue)
+            templates.BLUE.coords = points.elite_blue(index=1, times=self.blue)
             if templates.BLUE.compare_part():  # color of blue
-                Points.elite_blue(index=1, times=which_blue).click()
-                Points.gather_elite.wait_and_click(3)
-                Points.go.wait_and_click(1)  # regularly I should be there
+                points.ELITE_BLUE(index=1, times=which_blue).click()
+                points.GATHER_ELITE.wait_and_click(3)
+                points.GO.wait_and_click(1)  # regularly I should be there
                 which_blue += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                Points.favorites_back.click()
+                points.FAVORITES_BACK.click()
                 return False  # if there is no elites
 
     def is_current_castle(self) -> bool:
@@ -96,13 +97,13 @@ class Farm:
 
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        Points.avatar.wait_and_click()
-        Points.account.wait_and_click()
-        Points.switch.wait_and_click(1)
-        Points.login.wait_and_click(1)
-        Points.google(index=1, times=self.google).wait_and_click(2)
-        Points.castle(index=1, times=self.account).wait_and_click(3)
-        Points.confirm.wait_and_click(1)  # go inside
+        points.AVATAR.wait_and_click()
+        points.ACCOUNT.wait_and_click()
+        points.SWITCH.wait_and_click(1)
+        points.LOGIN.wait_and_click(1)
+        points.GOOGLE(index=1, times=self.google).wait_and_click(2)
+        points.CASTLE(index=1, times=self.account).wait_and_click(3)
+        points.CONFIRM.wait_and_click(1)  # go inside
         print(f"logged into {self.name}")
 
     def load(self):
@@ -114,12 +115,12 @@ class Farm:
     @classmethod
     def to_map(cls):
         print("Going to the map...")
-        Points.map.repeat_click(5)
+        points.MAP.repeat_click(5)
         sleep(2)
         while not templates.CITIES.find_part():
-            coords = templates.XS.find_part() or Points.map
+            coords = templates.XS.find_part() or points.MAP
             coords.click()
-            print(f"x find: {coords != Points.close}, {coords} pressed")
+            print(f"x find: {coords != points.CLOSE}, {coords} pressed")
             sleep(1)
         print("at the map. lord skills...")
         cls.lord_skills()

@@ -6,7 +6,7 @@ from numpy import ndarray
 from cv2 import imread, cvtColor, COLOR_BGR2GRAY, quality, matchTemplate, minMaxLoc, TM_CCOEFF_NORMED
 
 
-from ..data.poco_coordinates import Point
+from ..data.point import Point
 from ..data.paths import TEMPLATES_DIR
 from .screen_manager import with_screen
 
