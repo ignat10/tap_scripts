@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, Iterator
+from typing import Callable, Iterator, overload
 
 
 from numpy import ndarray
@@ -8,7 +8,7 @@ from cv2 import imread, cvtColor, COLOR_BGR2GRAY, quality, matchTemplate, minMax
 
 from ..data.poco_coordinates import Point
 from ..data.paths import TEMPLATES_DIR
-from .screen_manager import get_screen
+from .screen_manager import with_screen
 
 
 
@@ -57,15 +57,22 @@ class Template:
         crop_screen = screen[corner[1]:opposite_corner[1], corner[0]:opposite_corner[0]]
         return crop_screen
 
-    def find_part(self, do_screen=True) -> bool | Point:
-        screen = get_screen(do_screen)
+    @overload
+    def find_part(self, *, do_screen: bool = True) -> bool | Point: ...
+    @overload
+    def compare_part(self, *, do_screen: bool = True) -> bool: ...
+    @overload
+    def compare_full(self, *, do_screen: bool = True) -> bool: ...
+    
+    @with_screen
+    def find_part(self, screen: ndarray) -> bool | Point:
         return self.compare_loop(screen, match_template)
-
-    def compare_part(self, do_screen=True) -> bool:
-        screen = get_screen(do_screen)
+    
+    @with_screen
+    def compare_part(self, screen: ndarray) -> bool:
         cropped_screen = self.crop_screen(screen)
         return self.compare_loop(cropped_screen, ssim)
 
-    def compare_full(self, do_screen=True) -> bool:
-        screen = get_screen(do_screen)
+    @with_screen
+    def compare_full(self, screen: ndarray) -> bool:
         return self.compare_loop(screen, ssim)

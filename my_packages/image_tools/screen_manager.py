@@ -1,3 +1,7 @@
+from functools import wraps
+from typing import Callable
+
+
 from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
 from numpy import ndarray, frombuffer, uint8
 
@@ -17,9 +21,12 @@ def _capture_gray() -> ndarray:
     return gray_screen
 
 
-def get_screen(do_screen: bool = True):
-    return (
-        _capture_gray() if do_screen 
-        else temp_screen if temp_screen is not None 
-        else exit("No temp screen captured")
-    )
+def with_screen(func):
+    def wrapper(self, do_screen: bool = True) -> ndarray:
+        return func(
+            self,
+            _capture_gray() if do_screen 
+            else temp_screen if temp_screen is not None 
+            else exit("No temp screen captured")
+        )
+    return wrapper
