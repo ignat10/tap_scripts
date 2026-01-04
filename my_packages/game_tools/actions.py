@@ -89,11 +89,11 @@ class Farm:
                 print("some chemistry error")
                 Points.favorites_back.click()
                 return False  # if there is no elites
-    
+
     def is_current_castle(self) -> bool:
         print(f"checking is current castle: {self.name}")
-        return bool(Templates[self.name.upper()].value.find_part())
-    
+        return bool(getattr(templates, self.name.upper()).find_part())
+
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
         Points.avatar.wait_and_click()
@@ -107,7 +107,7 @@ class Farm:
 
     def load(self):
         sleep(1)
-        while templates.LOAD.value.compare_full():
+        while templates.LOAD.compare_full():
             print(f"loading {self.name}")
         print("loaded.")
 
@@ -116,8 +116,8 @@ class Farm:
         print("Going to the map...")
         Points.map.repeat_click(5)
         sleep(2)
-        while not templates.CITIES.value.find_part():
-            coords = templates.XS.value.find_part() or Points.map
+        while not templates.CITIES.find_part():
+            coords = templates.XS.find_part() or Points.map
             coords.click()
             print(f"x find: {coords != Points.close}, {coords} pressed")
             sleep(1)
