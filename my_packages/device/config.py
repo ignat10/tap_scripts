@@ -5,15 +5,14 @@ from ..adb_tools.console_runner import adb_run
 from ..utils.inputter import inputter
 
 
-
+_ADB_PORT_LENGTH = 5
 DEVICE_IP = "192.168.0.192"
 
 
-def config() -> str:
+def configure_device() -> str:
     print("connecting adb device...")
     while True:
         sleep(1)
-
 
         if serial := _scan():
             break
@@ -46,7 +45,7 @@ def _scan() -> str | None:
 
 def _input_ip() -> str | None:
     port = str(inputter("enter device port: ", 0))
-    if len(port) == 5:
+    if len(port) == _ADB_PORT_LENGTH:
         return f"{DEVICE_IP}:{port}"
     return None
 

@@ -6,12 +6,13 @@ from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
 from numpy import ndarray, frombuffer, uint8
 
 
+from ..device.actions import screencap
+
 
 temp_screen: ndarray = None
 
 
 def _capture_gray() -> ndarray:
-    from ..adb_tools.adb_actions import screencap
     global temp_screen
     console_output =  screencap()
     screen_bytes = frombuffer(console_output, uint8)
@@ -23,10 +24,11 @@ def _capture_gray() -> ndarray:
 
 def with_screen(func):
     def wrapper(self, do_screen: bool = True) -> ndarray:
-        return func(
-            self,
-            _capture_gray() if do_screen 
-            else temp_screen if temp_screen is not None 
-            else exit("No temp screen captured")
-        )
+        if do_screen:
+            screen = _capture_gray()
+        elif temp_screen is not None:
+            screen = temp_screen
+        else:
+            raise RuntimeError("No temp screen captured")
+        return func(self, screen)
     return wrapper
