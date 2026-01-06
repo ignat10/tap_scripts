@@ -1,12 +1,11 @@
 from time import sleep
 
 
-from .actions import Farm
-from .farms import generator
+from .farms import farm_generator
 
 
 
-farms = generator(Farm)
+farms = farm_generator()
 
 
 def farming() -> None:
