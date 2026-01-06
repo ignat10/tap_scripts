@@ -15,6 +15,8 @@ def config_serial() -> None:
 
 
 def _action(arguments: str, **kwargs):
+    if serial is None:
+        config_serial()
     command = f"-s {serial} {arguments}"
     return adb_run(command, **kwargs)
 
