@@ -2,7 +2,7 @@ from time import sleep
 
 
 from .actions import Farm
-from ..utils.farms import generator
+from .farms import generator
 
 
 
