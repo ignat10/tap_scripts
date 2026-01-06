@@ -25,7 +25,7 @@ def match_template(screen: ndarray, image: ndarray) -> tuple[float, Point]:
 
 
 class Template:
-    def __init__(self, relative_path: Path, threshold: float, coords: tuple[int, int] | None = None):
+    def __init__(self, relative_path: Path, threshold: float, coords: Point | None = None):
         self.images: dict[str, ndarray] = {}
         self.path = relative_path
         self.threshold = threshold
