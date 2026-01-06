@@ -22,16 +22,16 @@ class Farm:
 
     @staticmethod
     def lord_skills():
-        print("Harvesting...")
-        points.LORD.wait_and_click()
+        print("lord skills...")
+        points.LORD.click()
         points.HARVEST.wait_and_click()
         points.USE.wait_and_click()
         print("harvested. recalling...")
-        points.RECALL_ALL.wait_and_click()
+        points.RECALL_ALL.click()
         points.USE.wait_and_click()
         points.CLOSE.click()
         points.CLOSE.click()
-        print("skilled.")
+        print("lord skills done.")
 
     def get_std_mine(self):  # to go to basic mine from the map
 
@@ -46,7 +46,7 @@ class Farm:
             points.GO.wait_and_click()
             points.BACK.wait_and_click()
 
-        points.SEARCH.click()
+        points.SEARCH.wait_and_click(1)
         while True:
             find_another_mine()
             sleep(2)
@@ -118,13 +118,9 @@ class Farm:
         points.MAP.repeat_click(5)
         sleep(2)
         while not templates.CITIES.find_part():
-            coords = templates.XS.find_part() or points.MAP
-            coords.click()
-            print(f"x find: {coords != points.CLOSE}, {coords} pressed")
+            (templates.XS.find_part() or points.MAP).click()
             sleep(1)
-        print("at the map. lord skills...")
         cls.lord_skills()
-        print("lord skills done.")
 
     def mining(self):
         print("mining...")
