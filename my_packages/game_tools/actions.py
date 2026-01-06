@@ -8,6 +8,8 @@ from . import status
 
 
 class Farm:
+    alliances_elite_mines: dict[str, list[int]] = {}
+
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
         self.name = name
         self.google = google
@@ -16,20 +18,7 @@ class Farm:
         self.alliance = alliance
         self.mine_lv = 6
         self.mine_type = 0
-        self.blue = 0
-
-
-    def find_another_mine(self):  # to find another mine if not found
-        points.MINE_TYPE(index=0, times=self.mine_type).click()
-        points.MINUS.repeat_click(5)
-        points.PLUS.repeat_click(self.mine_lv - 1)
-        points.GO_MINE.repeat_click(3)
-
-    @staticmethod
-    def gather_mine():
-        points.GATHER.wait_and_click()
-        points.GO.wait_and_click()
-        points.BACK.wait_and_click()
+        self.elite_ref = self.alliances_elite_mines.setdefault(alliance, [0])
 
     @staticmethod
     def lord_skills():
@@ -44,10 +33,22 @@ class Farm:
         points.CLOSE.click()
         print("skilled.")
 
-    def get_mine(self):  # to go to basic mine from the map
+    def get_std_mine(self):  # to go to basic mine from the map
+
+        def find_another_mine() -> None:  # to find another mine if not found
+            points.MINE_TYPE(index=0, times=self.mine_type).click()
+            points.MINUS.repeat_click(5)
+            points.PLUS.repeat_click(self.mine_lv - 1)
+            points.GO_MINE.repeat_click(3)
+
+        def gather_std_mine() -> None:
+            points.GATHER.wait_and_click()
+            points.GO.wait_and_click()
+            points.BACK.wait_and_click()
+
         points.SEARCH.click()
         while True:
-            self.find_another_mine()
+            find_another_mine()
             sleep(2)
             match status.check_status():
                 case status.Status.FOUND_VISIBLE:
@@ -70,21 +71,20 @@ class Farm:
                     continue
         points.MINE.wait_and_click()
         sleep(2)
-        self.gather_mine()
+        gather_std_mine()
 
-    def get_elite(self):
+    def get_elite_mine(self):
         print("Elite")
-        which_blue = self.blue
         while True:
             points.FAVORITES.click()
             points.ALLIANCE_ELITE.wait_and_click()
             sleep(1)
-            templates.BLUE.coords = points.elite_blue(index=1, times=self.blue)
+            templates.BLUE.coords = points.ELITE_BLUE(index=1, times=self.elite_ref[0])
             if templates.BLUE.compare_part():  # color of blue
-                points.ELITE_BLUE(index=1, times=which_blue).click()
+                points.ELITE_BLUE(index=1, times=self.elite_ref[0]).click()
                 points.GATHER_ELITE.wait_and_click(3)
                 points.GO.wait_and_click(1)  # regularly I should be there
-                which_blue += 1
+                self.elite_ref[0] += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
@@ -130,9 +130,9 @@ class Farm:
         print("mining...")
         for mine in range(4):
             if mine == 2:
-                if self.get_elite():
+                if self.get_elite_mine():
                     continue
-            self.get_mine()
+            self.get_std_mine()
 
     def switch_farm(self):
         if self.is_current_castle():
@@ -140,9 +140,6 @@ class Farm:
         else:
             self.second_farm()
             self.load()
-
-
-# fix get_elite excludes
 
 """"TODO:
 Добавить logging и заменить print на logger. (малый)
