@@ -36,7 +36,7 @@ class Farm:
     def get_std_mine(self):  # to go to basic mine from the map
 
         def find_another_mine() -> None:  # to find another mine if not found
-            points.MINE_TYPE(index=0, times=self.mine_type).click()
+            points.MINE_TYPE(times=self.mine_type).click()
             points.MINUS.repeat_click(5)
             points.PLUS.repeat_click(self.mine_lv - 1)
             points.GO_MINE.repeat_click(3)
@@ -77,11 +77,11 @@ class Farm:
         print("Elite")
         while True:
             points.FAVORITES.click()
-            points.ALLIANCE_ELITE.wait_and_click()
+            points.ALLIANCE_ELITE_MINES.wait_and_click()
             sleep(1)
-            templates.BLUE.coords = points.ELITE_BLUE(index=1, times=self.elite_ref[0])
+            templates.BLUE.coords = points.ELITE_BLUE(times=self.elite_ref[0])
             if templates.BLUE.compare_part():  # color of blue
-                points.ELITE_BLUE(index=1, times=self.elite_ref[0]).click()
+                points.ELITE_BLUE(times=self.elite_ref[0]).click()
                 points.GATHER_ELITE.wait_and_click(3)
                 points.GO.wait_and_click(1)  # regularly I should be there
                 self.elite_ref[0] += 1
@@ -101,8 +101,8 @@ class Farm:
         points.ACCOUNT.wait_and_click()
         points.SWITCH.wait_and_click(1)
         points.LOGIN.wait_and_click(1)
-        points.GOOGLE(index=1, times=self.google).wait_and_click(2)
-        points.CASTLE(index=1, times=self.account).wait_and_click(3)
+        points.GOOGLE(times=self.google).wait_and_click(2)
+        points.CASTLE(times=self.account).wait_and_click(3)
         points.CONFIRM.wait_and_click(1)  # go inside
         print(f"logged into {self.name}")
 
@@ -117,7 +117,7 @@ class Farm:
         print("Going to the map...")
         points.MAP.repeat_click(5)
         sleep(2)
-        while not templates.CITIES.find_part():
+        while not templates.BOOK.compare_part():
             (templates.XS.find_part() or points.MAP).click()
             sleep(1)
         cls.lord_skills()
