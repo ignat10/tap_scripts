@@ -1,8 +1,7 @@
 from enum import Enum, auto
 
 
-from ..image_tools import templates
-
+from ..data import objects
 
 class Status(Enum):
     NOT_MAP = auto()
@@ -12,13 +11,13 @@ class Status(Enum):
 
 
 def check_status() -> Status:
-    if not templates.BOOK.compare_part():
+    if not objects.BOOK.compare_part():
         return Status.NOT_MAP
 
-    if templates.CITIES.find_part(do_screen=False):
+    if objects.CITIES.find_part(do_screen=False):
         return Status.NOT_FOUND
 
-    if templates.GATHER.find_part(do_screen=False):
+    if objects.GATHER.find_part(do_screen=False):
         return Status.FOUND_VISIBLE
 
     else:

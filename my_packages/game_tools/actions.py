@@ -1,14 +1,14 @@
 from time import sleep
+from typing import Self
 
 
-from ..data import points
-from ..image_tools import templates
+from ..data import objects
 from . import status
 
 
 
 class Farm:
-    alliances_elite_mines: dict[str, list[int]] = {}
+    alliances_elite_mines: dict[Self, int] = {}
 
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
         self.name = name
@@ -18,35 +18,34 @@ class Farm:
         self.alliance = alliance
         self.mine_lv = 6
         self.mine_type = 0
-        self.elite_ref = self.alliances_elite_mines.setdefault(alliance, [0])
 
     @staticmethod
     def lord_skills():
         print("lord skills...")
-        points.LORD.click()
-        points.HARVEST.wait_and_click()
-        points.USE.wait_and_click()
+        objects.LORD.click()
+        objects.HARVEST.click(delay=0.5)
+        objects.USE.click(delay=0.5)
         print("harvested. recalling...")
-        points.RECALL_ALL.click()
-        points.USE.wait_and_click()
-        points.CLOSE.click()
-        points.CLOSE.click()
+        objects.RECALL_ALL.click()
+        objects.USE.click(delay=0.5)
+        objects.CLOSE.click()
+        objects.CLOSE.click()
         print("lord skills done.")
 
     def get_std_mine(self):  # to go to basic mine from the map
 
         def find_another_mine() -> None:  # to find another mine if not found
-            points.MINE_TYPE(times=self.mine_type).click()
-            points.MINUS.repeat_click(5)
-            points.PLUS.repeat_click(self.mine_lv - 1)
-            points.GO_MINE.repeat_click(3)
+            objects.MINE_TYPE(times=self.mine_type).click()
+            objects.MINUS.click(repeat=5)
+            objects.PLUS.click(repeat=self.mine_lv - 1)
+            objects.GO_MINE.click(repeat=3)
 
         def gather_std_mine() -> None:
-            points.GATHER.wait_and_click()
-            points.GO.wait_and_click()
-            points.BACK.wait_and_click()
+            objects.GATHER.click(delay=0.5)
+            objects.GO.click(delay=0.5)
+            objects.BACK.click(delay=0.5)
 
-        points.SEARCH.wait_and_click(1)
+        objects.SEARCH.click(delay=1)
         while True:
             find_another_mine()
             sleep(2)
@@ -56,7 +55,7 @@ class Farm:
                     break
                 case status.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    points.GATHER.click()
+                    objects.GATHER.click()
                     break
                 case status.Status.NOT_FOUND:
                     if self.mine_type < 4:
@@ -69,56 +68,56 @@ class Farm:
                 case status.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
                     continue
-        points.MINE.wait_and_click()
+        objects.MINE.click(delay=0.5)
         sleep(2)
         gather_std_mine()
 
     def get_elite_mine(self):
         print("Elite")
         while True:
-            points.FAVORITES.click()
-            points.ALLIANCE_ELITE_MINES.wait_and_click()
+            objects.BOOK.click()
+            objects.ALLIANCE_ELITE_MINES.click(delay=0.5)
             sleep(1)
-            templates.BLUE.coords = points.ELITE_BLUE(times=self.elite_ref[0])
-            if templates.BLUE.compare_part():  # color of blue
-                points.ELITE_BLUE(times=self.elite_ref[0]).click()
-                points.GATHER_ELITE.wait_and_click(3)
-                points.GO.wait_and_click(1)  # regularly I should be there
-                self.elite_ref[0] += 1
+            objects.BLUE.coords = objects.BLUE.step(steps=self.alliances_elite_mines.setdefault(self, 0))
+            if objects.BLUE.compare_part():  # color of blue
+                objects.BLUE.click(steps=self.alliances_elite_mines[self])
+                objects.GATHER_ELITE_MINE.click(delay=3)
+                objects.GO.click(delay=1)  # regularly I should be there
+                self.alliances_elite_mines[self] += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                points.FAVORITES_BACK.click()
+                objects.FAVORITES_BACK.click()
                 return False  # if there is no elites
 
     def is_current_castle(self) -> bool:
         print(f"checking is current castle: {self.name}")
-        return bool(getattr(templates, self.name.upper()).find_part())
+        return bool(getattr(objects, self.name.upper()).find_part())
 
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        points.AVATAR.wait_and_click()
-        points.ACCOUNT.wait_and_click()
-        points.SWITCH.wait_and_click(1)
-        points.LOGIN.wait_and_click(1)
-        points.GOOGLE(times=self.google).wait_and_click(2)
-        points.CASTLE(times=self.account).wait_and_click(3)
-        points.CONFIRM.wait_and_click(1)  # go inside
+        objects.AVATAR.click(delay=0.5)
+        objects.ACCOUNT.click(delay=0.5)
+        objects.SWITCH.click(delay=1)
+        objects.LOGIN.click(delay=1)
+        objects.GOOGLE(times=self.google).click(delay=2)
+        objects.CASTLE(times=self.account).click(delay=3)
+        objects.CONFIRM.click(delay=1)  # go inside
         print(f"logged into {self.name}")
 
     def load(self):
         sleep(1)
-        while templates.LOAD.compare_full():
+        while objects.LOAD.compare_part():
             print(f"loading {self.name}")
         print("loaded.")
 
     @classmethod
     def to_map(cls):
         print("Going to the map...")
-        points.MAP.repeat_click(5)
+        objects.MAP.repeat_click(5)
         sleep(2)
-        while not templates.BOOK.compare_part():
-            (templates.XS.find_part() or points.MAP).click()
+        while not objects.BOOK.compare_part():
+            (objects.XS.find_part() or objects.MAP).click()
             sleep(1)
         cls.lord_skills()
 

@@ -1,0 +1,40 @@
+from pathlib import Path
+
+
+from ..game_tools.object import GameObject, Axis
+
+
+# Definition of points used in the game
+LOAD = GameObject(path=Path("load"), threshold=0.9)
+XS = GameObject(path=Path("xs"), threshold=0.8)
+CLOSE = GameObject((226, 2175))
+LORD = GameObject((1130, 2068))
+RECALL_ALL = GameObject((1000, 1000))
+HARVEST = GameObject((226, 1763))
+USE = GameObject((599, 2633))
+MAP = GameObject((113, 2599))
+CITIES = GameObject(path=Path("cities"), threshold=0.8)
+SEARCH = GameObject((1130, 2239))
+MINE_TYPE = GameObject((678, 2345), delta=-200, axis=Axis.X)
+PLUS = GameObject((762, 2610))
+MINUS = GameObject((130, 2610))
+GO_MINE = GameObject((1017, 2627))
+SEARCH_BACK = GameObject((890, 2150))
+MINE = GameObject((616, 1339), delta=-183, axis=Axis.X)
+GATHER = GameObject((875, 1309), path=Path("gather"), threshold=0.8)
+GO = GameObject((1017, 2616))
+BACK = GameObject((892, 2397))
+BOOK = GameObject((79, 2060), path=Path("book"), threshold=0.8)
+FAVORITES_BACK = GameObject((79, 170))
+ALLIANCE_ELITE_MINES = GameObject((791, 300))
+BLUE = GameObject((320, 755), delta=(258, Axis.Y), path=Path("blue"), threshold=1.0)
+GATHER_ELITE_MINE = GameObject((881, 1051))
+AVATAR = GameObject((100, 100))
+ACCOUNT = GameObject((203, 1243))
+SWITCH = GameObject((621, 1808))
+LOGIN = GameObject((633, 1492))
+GOOGLE = GameObject((164, 840), delta=(200, Axis.Y))
+CASTLE = GameObject((452, 1067), delta=(135, Axis.Y))
+CONFIRM = GameObject((354, 1550))
+LEO = GameObject(path=Path("avatars/leo"), threshold=0.8)
+LORD = GameObject(path=Path("avatars/lord"), threshold=0.8)
