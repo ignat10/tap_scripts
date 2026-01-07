@@ -2,14 +2,14 @@ from cv2 import imread, imwrite, cvtColor, COLOR_BGR2GRAY
 from numpy import ndarray
 from cv2.quality import QualitySSIM_compute as ssim
 
-from my_packages.image_tools import templates
+from my_packages.image_tools import templates, screen_manager
 
-corter = (152, 2000)
-radius = 150
-template = templates.BOOK
+corter = (321, 750)
+radius = 30
+template = templates.BLUE
 
 
-screen = cvtColor(imread("screen.png"), COLOR_BGR2GRAY)
+screen = screen_manager._capture_gray()
 image = template.get_images().__next__()
 
 X = corter[0]
