@@ -4,8 +4,8 @@ from cv2.quality import QualitySSIM_compute as ssim
 
 from my_packages.image_tools import templates, screen_manager
 
-corter = (321, 750)
-radius = 30
+corter = (321, 1300)
+radius = 70
 template = templates.BLUE
 
 
