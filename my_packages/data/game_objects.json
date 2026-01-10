@@ -1,0 +1,119 @@
+{
+  "LOAD": {
+    "path": "load",
+    "threshold": 0.9
+  },
+  "XS": {
+    "path": "xs",
+    "threshold": 0.8
+  },
+  "CLOSE": {
+    "coords": [226, 2175]
+  },
+  "LORD": {
+    "coords": [1130, 2068]
+  },
+  "RECALL_ALL": {
+    "coords": [1000, 1000]
+  },
+  "HARVEST": {
+    "coords": [226, 1763]
+  },
+  "USE": {
+    "coords": [599, 2633]
+  },
+  "MAP": {
+    "coords": [113, 2599]
+  },
+  "CITIES": {
+    "path": "cities",
+    "threshold": 0.8
+  },
+  "SEARCH": {
+    "coords": [1130, 2239]
+  },
+  "MINE_TYPE": {
+    "coords": [678, 2345],
+    "delta": [-200, "X"]
+  },
+  "PLUS": {
+    "coords": [762, 2610]
+  },
+  "MINUS": {
+    "coords": [130, 2610]
+  },
+  "GO_MINE": {
+    "coords": [1017, 2627]
+  },
+  "SEARCH_BACK": {
+    "coords": [890, 2150]
+  },
+  "MINE": {
+    "coords": [616, 1339],
+    "delta": [-183, "X"]
+  },
+  "GATHER": {
+    "coords": [875, 1309],
+    "path": "gather",
+    "threshold": 0.8
+  },
+  "GO": {
+    "coords": [1017, 2616]
+  },
+  "BACK": {
+    "coords": [892, 2397]
+  },
+  "BOOK": {
+    "coords": [79, 2060],
+    "path": "book",
+    "threshold": 0.8
+  },
+  "FAVORITES_BACK": {
+    "coords": [79, 170]
+  },
+  "ALLIANCE_ELITE_MINES": {
+    "coords": [791, 300]
+  },
+  "BLUE": {
+    "coords": [320, 755],
+    "delta": [258, "Y"],
+    "path": "blue",
+    "threshold": 1.0
+  },
+  "GATHER_ELITE_MINE": {
+    "coords": [881, 1051]
+  },
+  "AVATAR": {
+    "coords": [100, 100]
+  },
+  "ACCOUNT": {
+    "coords": [203, 1243]
+  },
+  "SWITCH": {
+    "coords": [621, 1808]
+  },
+  "LOGIN": {
+    "coords": [633, 1492]
+  },
+  "GOOGLE": {
+    "coords": [164, 840],
+    "delta": [200, "Y"]
+  },
+  "CASTLE": {
+    "coords": [452, 1067],
+    "delta": [135, "Y"]
+  },
+  "CONFIRM": {
+    "coords": [354, 1550]
+  },
+  "LEO": {
+    "coords": [10, 10],
+    "path": "avatars/leo",
+    "threshold": 0.8
+  },
+  "LORD_AVATAR": {
+    "coords": [10, 10],
+    "path": "avatars/lord",
+    "threshold": 0.8
+  }
+}

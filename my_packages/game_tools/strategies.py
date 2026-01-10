@@ -1,7 +1,7 @@
 from time import sleep
 
 
-from .farms import farm_generator
+from .loaders import farm_generator
 
 
 
