@@ -2,7 +2,7 @@ from time import sleep
 from typing import Self
 
 
-from ..data import objects
+from . import objects
 from . import status
 
 
@@ -35,7 +35,7 @@ class Farm:
     def get_std_mine(self):  # to go to basic mine from the map
 
         def find_another_mine() -> None:  # to find another mine if not found
-            objects.MINE_TYPE(times=self.mine_type).click()
+            objects.MINE_TYPE.click(repeat=self.mine_type)
             objects.MINUS.click(repeat=5)
             objects.PLUS.click(repeat=self.mine_lv - 1)
             objects.GO_MINE.click(repeat=3)
@@ -78,7 +78,6 @@ class Farm:
             objects.BOOK.click()
             objects.ALLIANCE_ELITE_MINES.click(delay=0.5)
             sleep(1)
-            objects.BLUE.coords = objects.BLUE.step(steps=self.alliances_elite_mines.setdefault(self, 0))
             if objects.BLUE.compare_part():  # color of blue
                 objects.BLUE.click(steps=self.alliances_elite_mines[self])
                 objects.GATHER_ELITE_MINE.click(delay=3)
@@ -92,7 +91,7 @@ class Farm:
 
     def is_current_castle(self) -> bool:
         print(f"checking is current castle: {self.name}")
-        return bool(getattr(objects, self.name.upper()).find_part())
+        return bool(getattr(objects, self.name.upper()).compare_part()) # replace with compare_part
 
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
@@ -114,10 +113,10 @@ class Farm:
     @classmethod
     def to_map(cls):
         print("Going to the map...")
-        objects.MAP.repeat_click(5)
+        objects.MAP.click(repeat=5)
         sleep(2)
         while not objects.BOOK.compare_part():
-            (objects.XS.find_part() or objects.MAP).click()
+            (objects.XS.find_and_click() or objects.MAP).click()
             sleep(1)
         cls.lord_skills()
 
