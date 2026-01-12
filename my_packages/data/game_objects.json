@@ -1,117 +1,117 @@
 {
-  "LOAD": {
+  "load": {
     "path": "load",
     "threshold": 0.9
   },
-  "XS": {
+  "xs": {
     "path": "xs",
     "threshold": 0.8
   },
-  "CLOSE": {
+  "close": {
     "coords": [226, 2175]
   },
-  "LORD": {
+  "lord": {
     "coords": [1130, 2068]
   },
-  "RECALL_ALL": {
+  "recall_all": {
     "coords": [1000, 1000]
   },
-  "HARVEST": {
+  "harvest": {
     "coords": [226, 1763]
   },
-  "USE": {
+  "use": {
     "coords": [599, 2633]
   },
-  "MAP": {
+  "map": {
     "coords": [113, 2599]
   },
-  "CITIES": {
+  "cities": {
     "path": "cities",
     "threshold": 0.8
   },
-  "SEARCH": {
+  "search": {
     "coords": [1130, 2239]
   },
-  "MINE_TYPE": {
+  "mine_type": {
     "coords": [678, 2345],
     "delta": [-200, "X"]
   },
-  "PLUS": {
+  "plus": {
     "coords": [762, 2610]
   },
-  "MINUS": {
+  "minus": {
     "coords": [130, 2610]
   },
-  "GO_MINE": {
+  "go_mine": {
     "coords": [1017, 2627]
   },
-  "SEARCH_BACK": {
+  "search_back": {
     "coords": [890, 2150]
   },
-  "MINE": {
+  "mine": {
     "coords": [616, 1339],
     "delta": [-183, "X"]
   },
-  "GATHER": {
+  "gather": {
     "coords": [875, 1309],
     "path": "gather",
     "threshold": 0.8
   },
-  "GO": {
+  "go": {
     "coords": [1017, 2616]
   },
-  "BACK": {
+  "back": {
     "coords": [892, 2397]
   },
-  "BOOK": {
+  "book": {
     "coords": [79, 2060],
     "path": "book",
     "threshold": 0.8
   },
-  "FAVORITES_BACK": {
+  "favorites_back": {
     "coords": [79, 170]
   },
-  "ALLIANCE_ELITE_MINES": {
+  "alliance_elite_mines": {
     "coords": [791, 300]
   },
-  "BLUE": {
+  "blue": {
     "coords": [320, 755],
     "delta": [258, "Y"],
     "path": "blue",
     "threshold": 1.0
   },
-  "GATHER_ELITE_MINE": {
+  "gather_elite_mine": {
     "coords": [881, 1051]
   },
-  "AVATAR": {
+  "avatar": {
     "coords": [100, 100]
   },
-  "ACCOUNT": {
+  "account": {
     "coords": [203, 1243]
   },
-  "SWITCH": {
+  "switch": {
     "coords": [621, 1808]
   },
-  "LOGIN": {
+  "login": {
     "coords": [633, 1492]
   },
-  "GOOGLE": {
+  "google": {
     "coords": [164, 840],
     "delta": [200, "Y"]
   },
-  "CASTLE": {
+  "castle": {
     "coords": [452, 1067],
     "delta": [135, "Y"]
   },
-  "CONFIRM": {
+  "confirm": {
     "coords": [354, 1550]
   },
-  "LEO": {
+  "leo": {
     "coords": [10, 10],
     "path": "avatars/leo",
     "threshold": 0.8
   },
-  "LORD_AVATAR": {
+  "lord_avatar": {
     "coords": [10, 10],
     "path": "avatars/lord",
     "threshold": 0.8

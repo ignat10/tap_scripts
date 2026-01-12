@@ -23,12 +23,17 @@ def _capture_gray() -> ndarray:
 
 
 def with_screen(func):
-    def wrapper(self, do_screen: bool = True) -> ndarray:
+    def wrapper(
+        self,
+        do_screen: bool = True,
+        *args,
+        **kwargs
+        ) -> ndarray:
         if do_screen:
             screen = _capture_gray()
         elif temp_screen is not None:
             screen = temp_screen
         else:
             raise RuntimeError("No temp screen captured")
-        return func(self, screen)
+        return func(self, screen=screen, *args, **kwargs)
     return wrapper

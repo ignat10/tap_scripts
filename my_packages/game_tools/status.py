@@ -1,7 +1,9 @@
 from enum import Enum, auto
 
 
-from . import objects
+from .objects import objects
+
+
 
 class Status(Enum):
     NOT_MAP = auto()
@@ -11,13 +13,13 @@ class Status(Enum):
 
 
 def check_status() -> Status:
-    if not objects.BOOK.compare_part():
+    if not objects['book'].compare_part():
         return Status.NOT_MAP
 
-    if objects.CITIES.find_and_click(do_screen=False):#replace with compare_part
+    if objects['cities'].compare_part(do_screen=False):#replace with compare_part
         return Status.NOT_FOUND
 
-    if objects.GATHER.find_and_click(do_screen=False):#replace with compare_part
+    if objects['gather'].compare_part(do_screen=False):#replace with compare_part
         return Status.FOUND_VISIBLE
 
     else:

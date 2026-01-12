@@ -2,9 +2,12 @@ from time import sleep
 from typing import Self
 
 
-from . import objects
-from . import status
+import openpyxl
 
+from .objects import objects
+from . import status
+from ..data.paths import FARMS_SHEET_PATH
+from ..utils.inputter import inputter
 
 
 class Farm:
@@ -21,31 +24,32 @@ class Farm:
 
     @staticmethod
     def lord_skills():
+        objects["account"].tap()
         print("lord skills...")
-        objects.LORD.click()
-        objects.HARVEST.click(delay=0.5)
-        objects.USE.click(delay=0.5)
+        objects["lord"].click()
+        objects["harvest"].click(delay=0.5)
+        objects["use"].click(delay=0.5)
         print("harvested. recalling...")
-        objects.RECALL_ALL.click()
-        objects.USE.click(delay=0.5)
-        objects.CLOSE.click()
-        objects.CLOSE.click()
+        objects["recall_all"].click()
+        objects["use"].click(delay=0.5)
+        objects["close"].click()
+        objects["close"].click()
         print("lord skills done.")
 
     def get_std_mine(self):  # to go to basic mine from the map
 
         def find_another_mine() -> None:  # to find another mine if not found
-            objects.MINE_TYPE.click(repeat=self.mine_type)
-            objects.MINUS.click(repeat=5)
-            objects.PLUS.click(repeat=self.mine_lv - 1)
-            objects.GO_MINE.click(repeat=3)
+            objects["mine_type"].click(repeat=self.mine_type)
+            objects["minus"].click(repeat=5)
+            objects["plus"].click(repeat=self.mine_lv - 1)
+            objects["go_mine"].click(repeat=3)
 
         def gather_std_mine() -> None:
-            objects.GATHER.click(delay=0.5)
-            objects.GO.click(delay=0.5)
-            objects.BACK.click(delay=0.5)
+            objects["gather"].click(delay=0.5)
+            objects["gather"].click(delay=0.5)
+            objects["back"].click(delay=0.5)
 
-        objects.SEARCH.click(delay=1)
+        objects["search"].click(delay=1)
         while True:
             find_another_mine()
             sleep(2)
@@ -55,7 +59,7 @@ class Farm:
                     break
                 case status.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
-                    objects.GATHER.click()
+                    objects["gather"].click()
                     break
                 case status.Status.NOT_FOUND:
                     if self.mine_type < 4:
@@ -68,55 +72,55 @@ class Farm:
                 case status.Status.NOT_MAP:
                     print("somehow I'm not at the map.\npanic")
                     continue
-        objects.MINE.click(delay=0.5)
+        objects["mine"].click(delay=0.5)
         sleep(2)
         gather_std_mine()
 
     def get_elite_mine(self):
         print("Elite")
         while True:
-            objects.BOOK.click()
-            objects.ALLIANCE_ELITE_MINES.click(delay=0.5)
+            objects["book"].click()
+            objects["alliance_elite_mines"].click(delay=0.5)
             sleep(1)
-            if objects.BLUE.compare_part():  # color of blue
-                objects.BLUE.click(steps=self.alliances_elite_mines[self])
-                objects.GATHER_ELITE_MINE.click(delay=3)
-                objects.GO.click(delay=1)  # regularly I should be there
+            if objects["blue"].compare_part():  # color of blue
+                objects["blue"].click(steps=self.alliances_elite_mines[self])
+                objects["gather_elite_mine"].click(delay=3)
+                objects["go"].click(delay=1)  # regularly I should be there
                 self.alliances_elite_mines[self] += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                objects.FAVORITES_BACK.click()
+                objects["favorites_back"].click()
                 return False  # if there is no elites
 
     def is_current_castle(self) -> bool:
         print(f"checking is current castle: {self.name}")
-        return bool(getattr(objects, self.name.upper()).compare_part()) # replace with compare_part
+        return objects[self.name].compare_part()
 
     def second_farm(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        objects.AVATAR.click(delay=0.5)
-        objects.ACCOUNT.click(delay=0.5)
-        objects.SWITCH.click(delay=1)
-        objects.LOGIN.click(delay=1)
-        objects.GOOGLE(times=self.google).click(delay=2)
-        objects.CASTLE(times=self.account).click(delay=3)
-        objects.CONFIRM.click(delay=1)  # go inside
+        objects["avatar"].click(delay=0.5)
+        objects["account"].click(delay=0.5)
+        objects["switch"].click(delay=1)
+        objects["login"].click(delay=1)
+        objects["google"](times=self.google).click(delay=2)
+        objects["castle"](times=self.account).click(delay=3)
+        objects["confirm"].click(delay=1)  # go inside
         print(f"logged into {self.name}")
 
     def load(self):
         sleep(1)
-        while objects.LOAD.compare_part():
-            print(f"loading {self.name}")
-        print("loaded.")
+        while objects["load"].compare_part():
+            print(f"loading {self.name}...")
+        print(f"loaded {self.name}")
 
     @classmethod
     def to_map(cls):
         print("Going to the map...")
-        objects.MAP.click(repeat=5)
+        objects["map"].click(repeat=5)
         sleep(2)
-        while not objects.BOOK.compare_part():
-            (objects.XS.find_and_click() or objects.MAP).click()
+        while not objects["book"].compare_part():
+            objects["xs"].find_and_click(base_object=objects['map'])
             sleep(1)
         cls.lord_skills()
 
@@ -134,6 +138,13 @@ class Farm:
         else:
             self.second_farm()
             self.load()
+
+def farm_generator():
+    from .actions import Farm
+    sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
+    for row in sheet.iter_rows(min_row=inputter("enter from which google do we start: ", 1) + 1, values_only=True):
+        yield Farm(*row)
+
 
 """"TODO:
 Добавить logging и заменить print на logger. (малый)

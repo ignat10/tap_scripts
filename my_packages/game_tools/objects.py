@@ -1,37 +1,62 @@
-from .object import GameObject
+from typing import Literal
+import json
 
 
-# Definition of points used in the game
-LOAD: GameObject
-XS: GameObject
-CLOSE: GameObject
-LORD: GameObject
-RECALL_ALL: GameObject
-HARVEST: GameObject
-USE: GameObject
-MAP: GameObject
-CITIES: GameObject
-SEARCH: GameObject
-MINE_TYPE: GameObject
-PLUS: GameObject
-MINUS: GameObject
-GO_MINE: GameObject
-SEARCH_BACK: GameObject
-MINE: GameObject
-GATHER: GameObject
-GO: GameObject
-BACK: GameObject
-BOOK: GameObject
-FAVORITES_BACK: GameObject
-ALLIANCE_ELITE_MINES: GameObject
-BLUE: GameObject
-GATHER_ELITE_MINE: GameObject
-AVATAR: GameObject
-ACCOUNT: GameObject
-SWITCH: GameObject
-LOGIN: GameObject
-GOOGLE: GameObject
-CASTLE: GameObject
-CONFIRM: GameObject
-LEO: GameObject
-LORD: GameObject
+from .game_object import GameObject
+from ..data.paths import GAME_OBJECTS
+
+
+GameObjectNames = Literal[
+    "load",
+    "xs",
+    "close",
+    "lord",
+    "recall_all",
+    "harvest",
+    "use",
+    "map",
+    "cities",
+    "search",
+    "mine_type",
+    "plus",
+    "minus",
+    "go_mine",
+    "search_back",
+    "mine",
+    "gather",
+    "go",
+    "back",
+    "book",
+    "favorites_back",
+    "alliance_elite_mines",
+    "blue",
+    "gather_elite_mine",
+    "avatar",
+    "account",
+    "switch",
+    "login",
+    "google",
+    "castle",
+    "confirm",
+    "leo",
+]
+
+
+objects: dict[GameObjectNames, GameObject]
+
+
+def load_game_objects():
+    global objects
+    with GAME_OBJECTS.open() as f:
+        raw_data: dict[str, dict[str, tuple[int, int] | int | str | float]] = json.load(f)
+
+    objects = {
+        object_name:
+        GameObject(
+            **{
+                argument_name: argument_val
+                for argument_name, argument_val in arguments.items()
+            }
+        )
+        for object_name, arguments in raw_data.items()
+    }
