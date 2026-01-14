@@ -2,15 +2,17 @@ from cv2 import imread, imwrite, cvtColor, COLOR_BGR2GRAY
 from numpy import ndarray
 from cv2.quality import QualitySSIM_compute as ssim
 
-from my_packages.image_tools import templates, screen_manager
+from my_packages.image_tools import screen_manager
+from my_packages.game_tools.objects import objects
 
-corter = (321, 1300)
+
+corter = (80, 2080)
 radius = 70
-template = templates.BLUE
+template = objects["book"]
 
 
 screen = screen_manager._capture_gray()
-image = template.get_images().__next__()
+image = next(template.images)
 
 X = corter[0]
 Y = corter[1]
