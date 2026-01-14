@@ -4,6 +4,7 @@ from typing import Self
 
 import openpyxl
 
+
 from .objects import objects
 from . import status
 from ..data.paths import FARMS_SHEET_PATH
@@ -24,7 +25,6 @@ class Farm:
 
     @staticmethod
     def lord_skills():
-        objects["account"].tap()
         print("lord skills...")
         objects["lord"].click()
         objects["harvest"].click(delay=0.5)
@@ -39,7 +39,7 @@ class Farm:
     def get_std_mine(self):  # to go to basic mine from the map
 
         def find_another_mine() -> None:  # to find another mine if not found
-            objects["mine_type"].click(repeat=self.mine_type)
+            objects["mine_type"].click(steps=self.mine_type)
             objects["minus"].click(repeat=5)
             objects["plus"].click(repeat=self.mine_lv - 1)
             objects["go_mine"].click(repeat=3)
@@ -93,54 +93,39 @@ class Farm:
                 objects["favorites_back"].click()
                 return False  # if there is no elites
 
-    def is_current_castle(self) -> bool:
-        print(f"checking is current castle: {self.name}")
-        return objects[self.name].compare_part()
-
-    def second_farm(self):
+    def switch_account(self):
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
         objects["avatar"].click(delay=0.5)
         objects["account"].click(delay=0.5)
         objects["switch"].click(delay=1)
         objects["login"].click(delay=1)
-        objects["google"](times=self.google).click(delay=2)
-        objects["castle"](times=self.account).click(delay=3)
+        objects["google"].click(delay=2, steps=self.google)
+        objects["castle"].click(delay=3, steps=self.account)
         objects["confirm"].click(delay=1)  # go inside
-        print(f"logged into {self.name}")
+        print(f"logged into {self.name}")        
 
-    def load(self):
-        sleep(1)
-        while objects["load"].compare_part():
-            print(f"loading {self.name}...")
-        print(f"loaded {self.name}")
+    def log_into_account(self):
+        print(f"checking is current castle: {self.name}")
+        if objects[self.name].compare_part():
+            print(f"already {self.name}")
+        else:
+            self.switch_account()            
+            while objects["load"].compare_part():
+                print(f"loading {self.name}...")
+            print(f"loaded {self.name}")
 
-    @classmethod
-    def to_map(cls):
+    @staticmethod
+    def go_outside():
         print("Going to the map...")
         objects["map"].click(repeat=5)
         sleep(2)
         while not objects["book"].compare_part():
             objects["xs"].find_and_click(base_object=objects['map'])
             sleep(1)
-        cls.lord_skills()
 
-    def mining(self):
-        print("mining...")
-        for mine in range(4):
-            if mine == 2:
-                if self.get_elite_mine():
-                    continue
-            self.get_std_mine()
 
-    def switch_farm(self):
-        if self.is_current_castle():
-            print(f"already {self.name}")
-        else:
-            self.second_farm()
-            self.load()
 
-def farm_generator():
-    from .actions import Farm
+def castle_generator():
     sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
     for row in sheet.iter_rows(min_row=inputter("enter from which google do we start: ", 1) + 1, values_only=True):
         yield Farm(*row)
