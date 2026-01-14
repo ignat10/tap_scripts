@@ -42,21 +42,16 @@ GameObjectNames = Literal[
 ]
 
 
-objects: dict[GameObjectNames, GameObject]
-
-
 def load_game_objects():
     global objects
     with GAME_OBJECTS.open() as f:
         raw_data: dict[str, dict[str, tuple[int, int] | int | str | float]] = json.load(f)
 
-    objects = {
+    return {
         object_name:
-        GameObject(
-            **{
-                argument_name: argument_val
-                for argument_name, argument_val in arguments.items()
-            }
-        )
+        GameObject(**arguments)
         for object_name, arguments in raw_data.items()
     }
+
+
+objects: dict[GameObjectNames, GameObject] = load_game_objects()
