@@ -6,9 +6,9 @@ from my_packages.image_tools import screen_manager
 from my_packages.game_tools.objects import objects
 
 
-corner = (800, 1160)
-radius = 40
-template = objects["gather"]
+corner = (506, 1022)
+radius = 10
+template = objects["cities"]
 
 
 screen = screen_manager._capture_gray()

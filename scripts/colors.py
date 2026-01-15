@@ -1,19 +1,8 @@
-from time import perf_counter
-from cv2 import quality, imwrite
-
-from my_packages.image_tools import templates
-from my_packages.image_tools.screen_manager import get_screen
-
-template = templates.MINE.value
-screen = get_screen()
-cut = template.crop_screen(screen)
+from my_packages.game_tools.objects import objects
 
 
-imwrite("cut.png", cut)
-imwrite("template.png", template)
+obj = objects["cities"]
 
-tim1 = perf_counter()
-result = quality.QualitySSIM_compute(template, cut)[0][0]
-tim2 = perf_counter()
+result = obj.compare_part()
+
 print(result)
-

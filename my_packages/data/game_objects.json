@@ -26,9 +26,9 @@
     "coords": [113, 2599]
   },
   "cities": {
-    "coords": [440, 899],
+    "coords": [505, 1016],
     "path": "cities",
-    "threshold": 0.8
+    "threshold": 0.6
   },
   "search": {
     "coords": [1130, 2239]
@@ -42,9 +42,6 @@
   },
   "minus": {
     "coords": [130, 2610]
-  },
-  "go_mine": {
-    "coords": [1017, 2627]
   },
   "search_back": {
     "coords": [890, 2150]
@@ -110,6 +107,36 @@
   "leo": {
     "coords": [10, 10],
     "path": "avatars/leo",
+    "threshold": 0.8
+  },
+  "haac": {
+    "coords": [10, 10],
+    "path": "avatars/haac",
+    "threshold": 0.8
+  },
+  "hac": {
+    "coords": [10, 10],
+    "path": "avatars/hac",
+    "threshold": 0.8
+  },
+  "farm,hacen": {
+    "coords": [10, 10],
+    "path": "avatars/farm,hacen",
+    "threshold": 0.8
+  },
+  "VIChac": {
+    "coords": [10, 10],
+    "path": "avatars/VIChac",
+    "threshold": 0.8
+  },
+  "kazuru_farm5": {
+    "coords": [10, 10],
+    "path": "avatars/kazuru_farm5",
+    "threshold": 0.8
+  },
+  "kazuru_farm6": {
+    "coords": [10, 10],
+    "path": "avatars/kazuru_farm6",
     "threshold": 0.8
   },
   "lord_avatar": {

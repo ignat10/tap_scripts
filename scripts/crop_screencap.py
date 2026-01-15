@@ -6,16 +6,16 @@ from numpy import ndarray
 
 
 from my_packages.device import actions
-from my_packages.game_tools import objects
-coords = (10, 10)
+from my_packages.game_tools.objects import objects
+coords = (505, 1016)
 
 
 actions.config_serial()
 system(f"adb -s {actions.serial} exec-out screencap -p > screen.png")
 
-avatar = objects.LEO
+avatar = objects["cities"]
 screen = imread("screen.png")
 
-crop = avatar.crop_screen(screen, coords)
+crop = avatar._crop_screen(screen, coords)
 
 imwrite("cropped_ava.png", crop)
