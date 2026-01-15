@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 
 from my_packages.data.paths import TEMPLATES_DIR
-from my_packages.image_tools import templates
+from my_packages.game_tools.objects import objects
 
 
 
@@ -27,9 +27,9 @@ def get_listdir_paths_fixture():
 @pytest.fixture
 def get_templates_path_fixture():
     return {
-        template.path
-        for attribute in dir(templates)
-        if isinstance((template := getattr(templates, attribute)), templates.Template)
+        path
+        for object in objects.values()
+        if (path := object.path) is not None
         }
 
 
@@ -40,3 +40,9 @@ def test_templates_enum_matches_dirs(
     listdir_paths: set[Path] = get_listdir_paths_fixture
     templates_path: set[Path] = get_templates_path_fixture
     assert listdir_paths == templates_path
+
+print({
+        path
+        for object in objects.values()
+        if (path := object.path) is not None
+        })

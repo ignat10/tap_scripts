@@ -6,16 +6,16 @@ from my_packages.image_tools import screen_manager
 from my_packages.game_tools.objects import objects
 
 
-corter = (80, 2080)
-radius = 70
-template = objects["book"]
+corner = (800, 1160)
+radius = 40
+template = objects["gather"]
 
 
 screen = screen_manager._capture_gray()
 image = next(template.images)
-
-X = corter[0]
-Y = corter[1]
+print("screncaped")
+X = corner[0]
+Y = corner[1]
 
 
 def crop_screen(screen: ndarray, image: ndarray, corner: tuple[int, int]) -> ndarray:

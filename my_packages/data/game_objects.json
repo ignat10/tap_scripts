@@ -26,6 +26,7 @@
     "coords": [113, 2599]
   },
   "cities": {
+    "coords": [440, 899],
     "path": "cities",
     "threshold": 0.8
   },
@@ -33,8 +34,8 @@
     "coords": [1130, 2239]
   },
   "mine_type": {
-    "coords": [678, 2345],
-    "delta": [-200, "X"]
+    "coords": [78, 2345],
+    "delta": [200, "X"]
   },
   "plus": {
     "coords": [762, 2610]
@@ -53,7 +54,7 @@
     "delta": [-183, "X"]
   },
   "gather": {
-    "coords": [875, 1309],
+    "coords": [786, 1151],
     "path": "gather",
     "threshold": 0.8
   },
