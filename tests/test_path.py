@@ -2,8 +2,8 @@ import pytest
 
 from pathlib import Path
 
-from my_packages.data.paths import TEMPLATES_DIR
-from my_packages.game_tools.objects import objects
+from src.paths import TEMPLATES_DIR
+from src.game_tools.objects import objects
 
 
 

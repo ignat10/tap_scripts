@@ -1,5 +1,5 @@
-from my_packages.game_tools import strategies
-from my_packages.device import actions
+from src.game_tools import strategies
+from src.device import actions
 
 
 
