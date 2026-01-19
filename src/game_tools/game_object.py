@@ -65,7 +65,7 @@ class GameObject:
     @overload
     def click(self, *, delay: float=0.0, steps: int=0, repeat: int=1) -> None: ...
     @overload
-    def find_and_click(self, *, do_screen: bool=True, base_object: Self | None = None) -> bool | tuple[int, int]: ...
+    def find_and_click(self, *, do_screen: bool=True) -> bool: ...
     @overload
     def compare_part(self, *, do_screen: bool=True, steps: int=0) -> bool: ...
 
@@ -98,12 +98,14 @@ class GameObject:
             actions.input_tap(coords)
 
     @screen_manager.with_screen
-    def find_and_click(self, screen, base_object) -> None:
-        coords = self._compare_loop(screen, compare_methods.match_template) or base_object.coords
-        actions.input_tap(coords)
-
+    def find_and_click(self, screen):
+        if coords := self._compare_loop(screen, compare_methods.match_template):
+            actions.input_tap(coords)
+            return True
+        return False
+    
     @screen_manager.with_screen
     @_step
-    def compare_part(self, screen, coords) -> bool:
+    def compare_part(self, screen, coords):
         cropped_screen = self._crop_screen(screen, coords=coords)
         return self._compare_loop(cropped_screen, compare_methods.ssim)

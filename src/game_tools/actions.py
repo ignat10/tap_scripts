@@ -1,13 +1,10 @@
 from time import sleep
-from typing import Self
-
 
 import openpyxl
 
-
 from .objects import objects
 from . import status
-from ..data.paths import FARMS_SHEET_PATH
+from ..paths import FARMS_SHEET_PATH
 from ..utils.inputter import inputter
 
 
@@ -24,7 +21,7 @@ class Farm:
         self.mine_type = 3
 
     @staticmethod
-    def lord_skills():
+    def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].click()
         objects["harvest"].click(delay=0.5)
@@ -36,9 +33,11 @@ class Farm:
         objects["cities"].click()
         print("lord skills done.")
 
-    def get_std_mine(self) -> None:  # to go to basic mine from the map
+    def get_std_mine(self) -> None:
+        """Go to standard mine from the map."""
 
-        def find_another_mine() -> None:  # to find another mine if not found
+        def find_another_mine() -> None:
+            """Find another mine if not found."""
             print(f"searching mine type: {self.mine_type}, lv: {self.mine_lv}")
             objects["mine_type"].click(steps=self.mine_type, delay=0.5)
             objects["minus"].click(repeat=5)
@@ -54,6 +53,7 @@ class Farm:
         while True:
             find_another_mine()
             sleep(2)
+
             match status.check_status():
                 case status.Status.FOUND_VISIBLE:
                     print("gather is visible")
@@ -71,7 +71,7 @@ class Farm:
                         self.mine_lv -= 1
                         self.mine_type = 3
                 case status.Status.NOT_MAP:
-                    print("somehow I'm not at the map.\npanic")
+                    print("Not on the map. Panic.")
                     continue
         objects["mine"].click(delay=0.5)
         gather_std_mine()
@@ -85,7 +85,7 @@ class Farm:
             if objects["blue"].compare_part(steps=self.alliances_elite_mines.setdefault(self.alliance, 0)):  # color of blue
                 objects["blue"].click(steps=self.alliances_elite_mines[self.alliance])
                 objects["gather_elite_mine"].click(delay=2)
-                objects["go"].click(delay=1)  # regularly I should be there
+                objects["go"].click(delay=0.5)  # regularly I should be there
                 self.alliances_elite_mines[self.alliance] += 1
                 return True  # everything is alright I went to elite
             else:
@@ -93,7 +93,7 @@ class Farm:
                 objects["favorites_back"].click()
                 return False  # if there is no elites
 
-    def switch_account(self):
+    def switch_account(self) -> None:
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
         objects["avatar"].click(delay=0.5)
         objects["account"].click(delay=0.5)
@@ -104,31 +104,28 @@ class Farm:
         objects["confirm"].click(delay=1)  # go inside
         print(f"logged into {self.name}")        
 
-    def log_into_account(self):
+    def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
-        if objects[self.name].compare_part():
-            print(f"already {self.name}")
-        else:
-            self.switch_account()            
-            while not objects[self.name].compare_part():
-                objects["xs"].find_and_click(objects["map"])
-                print(f"loading {self.name}...")
-            print(f"loaded {self.name}")
+        if not objects[self.name].compare_part():
+            self.switch_account()
+        print(f"logged into {self.name}")
 
-    @staticmethod
-    def go_outside():
-        print("Going to the map...")
-        objects["map"].click(repeat=3)
-        sleep(2)
+    def go_outside(self) -> None:
         while not objects["book"].compare_part():
-            objects["xs"].find_and_click(base_object=objects['map'])
-            sleep(1)
+            if (
+                objects[self.name].compare_part(do_screen=False)
+                or objects["xs"].find_and_click(do_screen=False)
+            ):
+                objects["map"].click(repeat=3)
+                sleep(2)
 
 
 
-def castle_generator():
+def iter_castles():
     sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
-    for row in sheet.iter_rows(min_row=inputter("enter from which castle do we start: ", 1) + 1, values_only=True):
+    start_row = inputter("enter from which castle do we start: ", base=1) + 1
+
+    for row in sheet.iter_rows(min_row=start_row, values_only=True):
         yield Farm(*row)
 
 

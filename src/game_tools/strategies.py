@@ -1,11 +1,11 @@
 from time import sleep
 
 
-from .actions import castle_generator
+from .actions import iter_castles
 
 
 
-castles = castle_generator()
+castles = iter_castles()
 
 
 def farming() -> None:
