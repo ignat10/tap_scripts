@@ -40,9 +40,3 @@ def test_templates_enum_matches_dirs(
     listdir_paths: set[Path] = get_listdir_paths_fixture
     templates_path: set[Path] = get_templates_path_fixture
     assert listdir_paths == templates_path
-
-print({
-        path
-        for object in objects.values()
-        if (path := object.path) is not None
-        })

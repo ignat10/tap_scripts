@@ -1,7 +1,3 @@
-from functools import wraps
-from typing import Callable
-
-
 from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
 from numpy import ndarray, frombuffer, uint8
 
