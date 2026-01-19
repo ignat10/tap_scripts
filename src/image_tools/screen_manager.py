@@ -31,5 +31,5 @@ def with_screen(func):
             screen = temp_screen
         else:
             raise RuntimeError("No temp screen captured")
-        return func(self, screen=screen, *args, **kwargs)
+        return func(self, *args, **kwargs, screen=screen)
     return wrapper

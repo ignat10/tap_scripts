@@ -34,8 +34,8 @@ class GameObject:
         self._cache: dict[str, ndarray] = {}
 
     @staticmethod
-    def _step(func):
-        def wrapper(self: Self, steps: int=0, *args, **kwargs) -> bool | tuple[int, int]:
+    def _step(func: Callable):
+        def wrapper(self: Self, *args, steps: int=0, **kwargs) -> bool | tuple[int, int]:
             assert self.coords is not None, f"try to make step for {self.path} without coords"
             if steps == 0:
                 moved_coords = self.coords
@@ -46,7 +46,7 @@ class GameObject:
 
                 lst[axis.value] += offset * steps
                 moved_coords = tuple(lst)
-            return func(self, coords=moved_coords, *args, **kwargs)
+            return func(self, *args, **kwargs, coords=moved_coords)
         return wrapper
     
     @property
@@ -62,6 +62,8 @@ class GameObject:
     @overload
     def _compare_loop(self, screen: ndarray, compare_method: Callable[[ndarray, ndarray], tuple[float, tuple[int, int]]]) -> tuple[int, int] | None: ...
     @overload
+    def _crop_screen(self, screen: ndarray, steps: int) -> ndarray: ...
+    @overload
     def click(self, *, delay: float=0.0, steps: int=0, repeat: int=1) -> None: ...
     @overload
     def find_and_click(self, *, do_screen: bool=True) -> bool: ...
@@ -76,13 +78,11 @@ class GameObject:
                 return coords or True
         return None
 
-    def _crop_screen(self, screen: ndarray, coords: tuple[int, int]) -> ndarray:
-        if coords is None:
-            return screen
-        corner = coords
+    @_step
+    def _crop_screen(self, screen, coords) -> ndarray:
         y, x = next(self.images).shape
-        opposite_corner = (corner[0] + x, corner[1] + y)
-        crop_screen = screen[corner[1]:opposite_corner[1], corner[0]:opposite_corner[0]]
+        opposite_corner = (coords[0] + x, coords[1] + y)
+        crop_screen = screen[coords[1]:opposite_corner[1], coords[0]:opposite_corner[0]]
         return crop_screen
 
     @_step
@@ -104,7 +104,6 @@ class GameObject:
         return False
     
     @screen_manager.with_screen
-    @_step
-    def compare_part(self, screen, coords):
-        cropped_screen = self._crop_screen(screen, coords=coords)
+    def compare_part(self, screen, steps=0):
+        cropped_screen = self._crop_screen(screen, steps=steps)
         return self._compare_loop(cropped_screen, compare_methods.ssim)
