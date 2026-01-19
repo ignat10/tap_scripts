@@ -1,5 +1,4 @@
 from time import sleep
-from dataclasses import dataclass, field
 from typing import Iterator, Callable, overload, Self
 from enum import Enum
 from pathlib import Path
@@ -9,7 +8,7 @@ from numpy import ndarray
 from cv2 import imread, cvtColor, COLOR_BGR2GRAY
 
 
-from ..data.paths import TEMPLATES_DIR
+from ..paths import TEMPLATES_DIR
 from ..image_tools import compare_methods, screen_manager
 from ..device import actions
 

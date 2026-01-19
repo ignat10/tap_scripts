@@ -1,9 +1,8 @@
 from typing import Literal
 import json
 
-
 from .game_object import GameObject
-from ..data.paths import GAME_OBJECTS
+from ..paths import GAME_OBJECTS
 
 
 GameObjectNames = Literal[
@@ -20,7 +19,6 @@ GameObjectNames = Literal[
     "mine_type",
     "plus",
     "minus",
-    "go_mine",
     "search_back",
     "mine",
     "gather",

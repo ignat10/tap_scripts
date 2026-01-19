@@ -2,8 +2,8 @@ from pathlib import Path
 
 
 
-_BASE_DIR = Path(__file__).parent.parent  # my_packages
-_DATA_DIR = _BASE_DIR / 'data'
+_ROOT_DIR = Path(__file__).parent.parent
+_DATA_DIR = _ROOT_DIR / 'data'
 
 
 TEMPLATES_DIR = _DATA_DIR / 'templates'
