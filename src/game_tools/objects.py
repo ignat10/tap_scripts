@@ -19,7 +19,6 @@ GameObjectNames = Literal[
     "mine_type",
     "plus",
     "minus",
-    "search_back",
     "mine",
     "gather",
     "go",
