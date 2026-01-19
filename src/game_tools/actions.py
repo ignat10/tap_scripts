@@ -29,8 +29,7 @@ class Farm:
         print("harvested. recalling...")
         objects["recall_all"].click()
         objects["use"].click(delay=0.5)
-        objects["cities"].click(delay=1)
-        objects["cities"].click()
+        objects["close"].click(repeat=2)
         print("lord skills done.")
 
     def get_std_mine(self) -> None:
@@ -49,7 +48,7 @@ class Farm:
             objects["go"].click(delay=0.5)
             objects["back"].click(delay=0.5)
 
-        objects["search"].click(delay=1)
+        objects["search"].click(delay=1, repeat=2)
         while True:
             find_another_mine()
             sleep(2)
@@ -86,6 +85,7 @@ class Farm:
                 objects["blue"].click(steps=self.alliances_elite_mines[self.alliance])
                 objects["gather_elite_mine"].click(delay=2)
                 objects["go"].click(delay=0.5)  # regularly I should be there
+                objects["back"]
                 self.alliances_elite_mines[self.alliance] += 1
                 return True  # everything is alright I went to elite
             else:
