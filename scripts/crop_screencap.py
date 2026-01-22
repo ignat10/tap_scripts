@@ -18,4 +18,4 @@ screen = imread("screen.png")
 
 crop = template._crop_screen(screen)
 
-imwrite("cropped_screen.png", crop)
+imwrite(f"{key}.png", crop)
