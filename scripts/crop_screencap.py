@@ -10,8 +10,8 @@ from src.game_tools.objects import objects
 actions.config_serial()
 system(f"adb -s {actions.serial} exec-out screencap -p > screen.png")
 
-
-template = objects["cities"]
+key = input("enter what template are we capturing: ")
+template = objects[key]
 
 
 screen = imread("screen.png")

@@ -12,5 +12,5 @@ __pycache__/
 *.png
 *.svg
 
-!my_packages/data/templates/**
-!my_packages/data/templates/**/*.png
+!data/templates/**
+!data/templates/**/*.png
