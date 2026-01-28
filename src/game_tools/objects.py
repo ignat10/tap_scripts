@@ -35,7 +35,14 @@ GameObjectNames = Literal[
     "google",
     "castle",
     "confirm",
+
     "leo",
+    "haac",
+    "hac",
+    "VIChac",
+    "farm,hacen",
+    "kazuru_farm5",
+    "kazuru_farm6",
 ]
 
 

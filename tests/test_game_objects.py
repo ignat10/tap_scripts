@@ -48,7 +48,7 @@ def test_data_names_contains_literal(
         data_names,
         literal_names
         ):
-    assert literal_names - data_names == set()
+    assert literal_names == data_names
 
 
 def test_templates_enum_matches_dirs(
