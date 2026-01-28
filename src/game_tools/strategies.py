@@ -1,18 +1,16 @@
 from time import sleep
 
-
 from .actions import iter_castles
 
 
 
-castles = iter_castles()
-
-
 def farming() -> None:
-    for castle in castles:
+    for castle in iter_castles():
         castle.log_into_account()
-        castle.go_outside()
+        castle.close_ad()
         castle.lord_skills()
+        castle.heal()
+        castle.go_outside()
 
         castle.get_std_mine()
         castle.get_std_mine()
@@ -22,6 +20,6 @@ def farming() -> None:
 
 
 def seconds():
-    for castle in castles:
+    for castle in iter_castles():
         castle.log_into_account()
         sleep(15)

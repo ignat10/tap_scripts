@@ -1,5 +1,5 @@
 from time import sleep
-from typing import Iterator, Callable, overload, Self
+from typing import Iterator, Callable, overload, Self, TypeVar
 from enum import Enum
 from pathlib import Path
 
@@ -14,10 +14,31 @@ from ..device import actions
 
 
 
+R = TypeVar("R")
+
+
 class Axis(Enum):
     X = 0
     Y = 1
 
+
+def _step(
+    func: Callable[..., R]
+    ) -> Callable[..., R]:
+    def wrapper(self: "GameObject", *args, steps: int=0, **kwargs) -> bool | tuple[int, int]:
+        assert self.coords is not None, f"try to make step for {self.path} without coords"
+        if steps == 0:
+            moved_coords = self.coords
+        else:
+            offset = self.delta[0]
+            axis = self.delta[1]
+            lst = list(self.coords)
+
+            lst[axis.value] += offset * steps
+            moved_coords = tuple(lst)
+        return func(self, *args, coords=moved_coords, **kwargs)
+    return wrapper
+    
 
 class GameObject:
     def __init__(
@@ -32,22 +53,6 @@ class GameObject:
         self.path: Path | None = (Path(path) if path is not None else None)
         self.threshold: float | None = (float(threshold) if threshold is not None else None)
         self._cache: dict[str, ndarray] = {}
-
-    @staticmethod
-    def _step(func: Callable):
-        def wrapper(self: Self, *args, steps: int=0, **kwargs) -> bool | tuple[int, int]:
-            assert self.coords is not None, f"try to make step for {self.path} without coords"
-            if steps == 0:
-                moved_coords = self.coords
-            else:
-                offset = self.delta[0]
-                axis = self.delta[1]
-                lst = list(self.coords)
-
-                lst[axis.value] += offset * steps
-                moved_coords = tuple(lst)
-            return func(self, *args, **kwargs, coords=moved_coords)
-        return wrapper
     
     @property
     def images(self) -> Iterator[ndarray]:
@@ -66,9 +71,9 @@ class GameObject:
     @overload
     def click(self, *, delay: float=0.0, steps: int=0, repeat: int=1) -> None: ...
     @overload
-    def find_and_click(self, *, do_screen: bool=True) -> bool: ...
+    def find_and_click(self) -> bool: ...
     @overload
-    def compare_part(self, *, do_screen: bool=True, steps: int=0) -> bool: ...
+    def compare_part(self, *, steps: int=0) -> bool: ...
 
     def _compare_loop(self, screen, compare_method):
         threshold = self.threshold
@@ -89,20 +94,23 @@ class GameObject:
     def click(
         self,
         coords: tuple[int, int],
+        *,
         delay: float = 0.0,
         repeat: int = 1
     ) -> None:
         sleep(delay)
         for _ in range(repeat):
             actions.input_tap(coords)
+        screen_manager.reset_temp_screen()
 
     @screen_manager.with_screen
     def find_and_click(self, screen):
         if coords := self._compare_loop(screen, compare_methods.match_template):
             actions.input_tap(coords)
+            screen_manager.reset_temp_screen()
             return True
         return False
-    
+
     @screen_manager.with_screen
     def compare_part(self, screen, steps=0):
         cropped_screen = self._crop_screen(screen, steps=steps)

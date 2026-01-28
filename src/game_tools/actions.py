@@ -1,4 +1,5 @@
 from time import sleep
+from typing import Iterator
 
 import openpyxl
 
@@ -8,7 +9,7 @@ from ..paths import FARMS_SHEET_PATH
 from ..utils.inputter import inputter
 
 
-class Farm:
+class Castle:
     alliances_elite_mines: dict[str, int] = {}
 
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
@@ -19,6 +20,30 @@ class Farm:
         self.alliance = alliance
         self.mine_lv = 6
         self.mine_type = 3
+
+    def _switch_account(self) -> None:
+        print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
+        objects["avatar"].click(delay=0.5)
+        objects["account"].click(delay=0.5)
+        objects["switch"].click(delay=1)
+        objects["login"].click(delay=1)
+        objects["google"].click(delay=2, steps=self.google)
+        objects["castle"].click(delay=3, steps=self.account)
+        objects["confirm"].click(delay=1)  # go inside
+        print(f"logged into {self.name}")        
+
+    def log_into_account(self) -> None:
+        print(f"checking is current castle: {self.name}")
+        if not objects[self.name].compare_part():
+            self._switch_account()
+        print(f"logged into {self.name}")
+
+    def close_ad(self) -> None:
+        objects['close'].click(repeat=5)
+        while not objects[self.name].compare_part():
+            if not objects["xs"].find_and_click():
+                objects['close'].click()
+        print("ad closed.")
 
     @staticmethod
     def lord_skills() -> None:
@@ -31,6 +56,19 @@ class Farm:
         objects["use"].click(delay=0.5)
         objects["close"].click(repeat=2)
         print("lord skills done.")
+    
+    @staticmethod
+    def heal() -> None:
+        print("healing...")
+        if objects["hospital"].find_and_click():
+            objects["go"].click(delay=1)
+            objects["confirm_heal_replace_that"].click(delay=1)
+
+    def go_outside(self) -> None:
+        print("going outside...")
+        objects["map"].click()
+        sleep(2)
+        print("outside.")
 
     def get_std_mine(self) -> None:
         """Go to standard mine from the map."""
@@ -93,40 +131,13 @@ class Farm:
                 objects["favorites_back"].click()
                 return False  # if there is no elites
 
-    def switch_account(self) -> None:
-        print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        objects["avatar"].click(delay=0.5)
-        objects["account"].click(delay=0.5)
-        objects["switch"].click(delay=1)
-        objects["login"].click(delay=1)
-        objects["google"].click(delay=2, steps=self.google)
-        objects["castle"].click(delay=3, steps=self.account)
-        objects["confirm"].click(delay=1)  # go inside
-        print(f"logged into {self.name}")        
 
-    def log_into_account(self) -> None:
-        print(f"checking is current castle: {self.name}")
-        if not objects[self.name].compare_part():
-            self.switch_account()
-        print(f"logged into {self.name}")
-
-    def go_outside(self) -> None:
-        while not objects["book"].compare_part():
-            if (
-                objects[self.name].compare_part(do_screen=False)
-                or objects["xs"].find_and_click(do_screen=False)
-            ):
-                objects["map"].click(repeat=3)
-                sleep(2)
-
-
-
-def iter_castles():
+def iter_castles() -> Iterator[Castle]:
     sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
     start_row = inputter("enter from which castle do we start: ", base=1) + 1
 
     for row in sheet.iter_rows(min_row=start_row, values_only=True):
-        yield Farm(*row)
+        yield Castle(*row)
 
 
 """"TODO:

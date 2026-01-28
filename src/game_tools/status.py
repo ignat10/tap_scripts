@@ -16,10 +16,10 @@ def check_status() -> Status:
     if not objects['book'].compare_part():
         return Status.NOT_MAP
 
-    if objects['cities'].compare_part(do_screen=False):#replace with compare_part
+    if objects['cities'].compare_part():
         return Status.NOT_FOUND
 
-    if objects['gather'].compare_part(do_screen=False):#replace with compare_part
+    if objects['gather'].compare_part():
         return Status.FOUND_VISIBLE
 
     else:
