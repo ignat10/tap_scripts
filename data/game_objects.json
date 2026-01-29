@@ -1,139 +1,342 @@
 {
   "load": {
-    "path": "load",
-    "threshold": 0.9
+    "template": {
+      "path": "load",
+      "threshold": 0.9
+    }
   },
   "xs": {
-    "path": "xs",
-    "threshold": 0.8
+    "template": {
+      "path": "xs",
+      "threshold": 0.8
+    }
   },
   "close": {
-    "coords": [650, 2710]
+    "point": {
+      "coords": {
+        "x": 650,
+        "y": 2710
+      }
+    }
   },
   "lord": {
-    "coords": [1130, 2068]
+    "point": {
+      "coords": {
+        "x": 1130,
+        "y": 2068
+      }
+    }
   },
   "recall_all": {
-    "coords": [1000, 1000]
+    "point": {
+      "coords": {
+        "x": 1000,
+        "y": 1000
+      }
+    }
   },
   "harvest": {
-    "coords": [226, 1763]
+    "point": {
+      "coords": {
+        "x": 226,
+        "y": 1763
+      }
+    }
   },
   "use": {
-    "coords": [599, 2633]
+    "point": {
+      "coords": {
+        "x": 599,
+        "y": 2633
+      }
+    }
   },
   "map": {
-    "coords": [113, 2599]
+    "point": {
+      "coords": {
+        "x": 113,
+        "y": 2599
+      }
+    }
   },
-  "cities": {
-    "coords": [505, 1016],
-    "path": "cities",
-    "threshold": 0.6
+  "city": {
+    "point": {
+      "coords": {
+        "x": 505,
+        "y": 1016
+      }
+    },
+    "template": {
+      "path": "city",
+      "threshold": 0.6
+    }
   },
   "search": {
-    "coords": [1130, 2239]
+    "point": {
+      "coords": {
+        "x": 1130,
+        "y": 2239
+      }
+    }
   },
   "mine_type": {
-    "coords": [78, 2345],
-    "delta": [200, "X"]
+    "point": {
+      "coords": {
+        "x": 78,
+        "y": 2345
+      },
+    "delta": {
+        "interval": 200,
+        "axis": "X"
+      }
+    }
   },
   "plus": {
-    "coords": [762, 2610]
+    "point": {
+      "coords": {
+        "x": 762,
+        "y": 2610
+      }
+    }
   },
   "minus": {
-    "coords": [130, 2610]
+    "point": {
+      "coords": {
+        "x": 130,
+        "y": 2610
+      }
+    }
   },
   "mine": {
-    "coords": [616, 1339],
-    "delta": [-183, "X"]
+    "point": {
+      "coords": {
+        "x": 616,
+        "y": 1339
+      },
+    "delta": {
+        "interval": -183,
+        "axis": "X"
+      }
+    }
   },
   "gather": {
-    "coords": [786, 1151],
-    "path": "gather",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 786,
+        "y": 1151
+      }
+    },
+    "template": {
+      "path": "gather",
+      "threshold": 0.8
+    }
   },
   "go": {
-    "coords": [1017, 2616]
+    "point": {
+      "coords": {
+        "x": 1017,
+        "y": 2616
+      }
+    }
   },
   "back": {
-    "coords": [892, 2397]
+    "point": {
+      "coords": {
+        "x": 892,
+        "y": 2397
+      }
+    }
   },
   "book": {
-    "coords": [37, 2022],
-    "path": "book",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 37,
+        "y": 2022
+      }
+    },
+    "template": {
+      "path": "book",
+      "threshold": 0.8
+    }
   },
   "favorites_back": {
-    "coords": [79, 170]
+    "point": {
+      "coords": {
+        "x": 79,
+        "y": 170
+      }
+    }
   },
   "alliance_elite_mines": {
-    "coords": [791, 300]
+    "point": {
+      "coords": {
+        "x": 791,
+        "y": 300
+      }
+    }
   },
   "blue": {
-    "coords": [320, 755],
-    "delta": [258, "Y"],
-    "path": "blue",
-    "threshold": 1.0
+    "point": {
+      "coords": {
+        "x": 320,
+        "y": 755
+      },
+      "delta": {
+        "interval": 258,
+        "axis": "Y"
+      }
+    },
+    "template": {
+      "path": "blue",
+      "threshold": 1
+    }
   },
   "gather_elite_mine": {
-    "coords": [881, 1051]
-  },
-  "avatar": {
-    "coords": [100, 100]
+    "point": {
+      "coords": {
+        "x": 881,
+        "y": 1051
+      }
+    }
   },
   "account": {
-    "coords": [203, 1243]
+    "point": {
+      "coords": {
+        "x": 203,
+        "y": 1243
+      }
+    }
   },
   "switch": {
-    "coords": [621, 1808]
+    "point": {
+      "coords": {
+        "x": 621,
+        "y": 1808
+      }
+    }
   },
   "login": {
-    "coords": [633, 1492]
+    "point": {
+      "coords": {
+        "x": 633,
+        "y": 1492
+      }
+    }
   },
   "google": {
-    "coords": [164, 840],
-    "delta": [200, "Y"]
+    "point": {
+      "coords": {
+        "x": 164,
+        "y": 840
+      },
+    "delta": {
+        "interval": 200,
+        "axis": "Y"
+      }
+    }
   },
   "castle": {
-    "coords": [452, 1067],
-    "delta": [135, "Y"]
+    "point": {
+      "coords": {
+        "x": 452,
+        "y": 1067
+      },
+      "delta": {
+        "interval": 135,
+        "axis": "Y"
+      }
+    }
   },
   "confirm": {
-    "coords": [354, 1550]
+    "point": {
+      "coords": {
+        "x": 354,
+        "y": 1550
+      }
+    }
   },
   "leo": {
-    "coords": [10, 10],
-    "path": "avatars/leo",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/leo",
+      "threshold": 0.8
+    }
   },
   "haac": {
-    "coords": [10, 10],
-    "path": "avatars/haac",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/haac",
+      "threshold": 0.8
+    }
   },
   "hac": {
-    "coords": [10, 10],
-    "path": "avatars/hac",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/hac",
+      "threshold": 0.8
+    }
   },
   "farm,hacen": {
-    "coords": [10, 10],
-    "path": "avatars/farm,hacen",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/farm,hacen",
+      "threshold": 0.8
+    }
   },
   "VIChac": {
-    "coords": [10, 10],
-    "path": "avatars/VIChac",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/VIChac",
+      "threshold": 0.8
+    }
   },
   "kazuru_farm5": {
-    "coords": [10, 10],
-    "path": "avatars/kazuru_farm5",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/kazuru_farm5",
+      "threshold": 0.8
+    }
   },
   "kazuru_farm6": {
-    "coords": [10, 10],
-    "path": "avatars/kazuru_farm6",
-    "threshold": 0.8
+    "point": {
+      "coords": {
+        "x": 10,
+        "y": 10
+      }
+    },
+    "template": {
+      "path": "avatars/kazuru_farm6",
+      "threshold": 0.8
+    }
   }
 }

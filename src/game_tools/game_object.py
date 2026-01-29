@@ -1,12 +1,11 @@
+from dataclasses import dataclass
 from time import sleep
-from typing import Iterator, Callable, overload, Self, TypeVar
+from typing import Iterator, Callable, overload, TypeVar
 from enum import Enum
 from pathlib import Path
 
-
 from numpy import ndarray
 from cv2 import imread, cvtColor, COLOR_BGR2GRAY
-
 
 from ..paths import TEMPLATES_DIR
 from ..image_tools import compare_methods, screen_manager
@@ -21,18 +20,46 @@ class Axis(Enum):
     X = 0
     Y = 1
 
+@dataclass(frozen=True)
+class Coords:
+    x: int
+    y: int
+
+@dataclass(frozen=True)
+class Delta:
+    interval: int
+    axis: Axis
+
+class Point:
+    def __init__(
+            self,
+            coords: dict[str, int],
+            delta: dict[str, int | str] | None = None
+            ) -> None:
+        self.coords: Coords = Coords(**coords)
+        self.delta: Delta | None = Delta(**delta) if delta is not None else None
+
+class Template:
+    def __init__(
+            self,
+            path: str,
+            threshold: float
+        ) -> None:
+        self.path: Path = Path(path)
+        self.threshold: float = threshold
 
 def _step(
     func: Callable[..., R]
     ) -> Callable[..., R]:
-    def wrapper(self: "GameObject", *args, steps: int=0, **kwargs) -> bool | tuple[int, int]:
-        assert self.coords is not None, f"try to make step for {self.path} without coords"
+    def wrapper(self: "GameObject", *args, steps: int=0, **kwargs) -> R:
+        if self.point.delta is None and steps != 0:
+            raise ValueError(f"Object {self} has no delta.")
         if steps == 0:
-            moved_coords = self.coords
+            moved_coords = self.point.coords
         else:
-            offset = self.delta[0]
-            axis = self.delta[1]
-            lst = list(self.coords)
+            offset = self.point.delta.interval
+            axis = self.point.delta.axis
+            lst = list(self.point.coords)
 
             lst[axis.value] += offset * steps
             moved_coords = tuple(lst)
@@ -43,20 +70,16 @@ def _step(
 class GameObject:
     def __init__(
             self,
-            coords: list[int] | None = None,
-            delta: list[int | str] | None = None,
-            path: str | None = None,
-            threshold: float | None = None, 
+            point=None,
+            template=None
     ) -> None:
-        self.coords: tuple[int, int] | None = (tuple(coords) if coords is not None else None)
-        self.delta: tuple[int, Axis] | None = ((delta[0], Axis[delta[1]]) if delta is not None else None)
-        self.path: Path | None = (Path(path) if path is not None else None)
-        self.threshold: float | None = (float(threshold) if threshold is not None else None)
+        self.point: Point | None = Point(**point) if point is not None else None
+        self.template: Template | None = Template(**template) if template is not None else None
         self._cache: dict[str, ndarray] = {}
-    
+
     @property
     def images(self) -> Iterator[ndarray]:
-        for file_path in (TEMPLATES_DIR / self.path).iterdir():
+        for file_path in (TEMPLATES_DIR / self.template.path).iterdir():
             file_name = file_path.name
             if file_name not in self._cache:
                 self._cache[file_name] = cvtColor(imread(file_path), COLOR_BGR2GRAY)
@@ -76,7 +99,10 @@ class GameObject:
     def compare_part(self, *, steps: int=0) -> bool: ...
 
     def _compare_loop(self, screen, compare_method):
-        threshold = self.threshold
+        if self.template is None:
+            raise ValueError(f"Object {self} has no template.")
+        
+        threshold = self.template.threshold
         for image in self.images:
             similarity, coords = compare_method(screen, image)
             if similarity >= threshold:
@@ -84,23 +110,23 @@ class GameObject:
         return None
 
     @_step
-    def _crop_screen(self, screen, coords) -> ndarray:
+    def _crop_screen(self, screen, coords: Coords) -> ndarray:
         y, x = next(self.images).shape
-        opposite_corner = (coords[0] + x, coords[1] + y)
-        crop_screen = screen[coords[1]:opposite_corner[1], coords[0]:opposite_corner[0]]
+        opposite_corner = Coords(coords.x + x, coords.y + y)
+        crop_screen = screen[coords.y:opposite_corner.y, coords.x:opposite_corner.x]
         return crop_screen
 
     @_step
     def click(
         self,
-        coords: tuple[int, int],
+        coords: Coords,
         *,
         delay: float = 0.0,
         repeat: int = 1
     ) -> None:
         sleep(delay)
         for _ in range(repeat):
-            actions.input_tap(coords)
+            actions.input_tap(coords.x, coords.y)
         screen_manager.reset_temp_screen()
 
     @screen_manager.with_screen

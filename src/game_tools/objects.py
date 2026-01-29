@@ -47,9 +47,8 @@ GameObjectNames = Literal[
 
 
 def load_game_objects():
-    global objects
     with GAME_OBJECTS.open() as f:
-        raw_data: dict[str, dict[str, tuple[int, int] | int | str | float]] = json.load(f)
+        raw_data: dict[str, dict] = json.load(f)
 
     return {
         object_name:

@@ -21,8 +21,8 @@ def _action(arguments: str, **kwargs):
     return adb_run(command, **kwargs)
 
 
-def input_tap(cords: tuple[int, int]) -> None:
-    _action(f"shell input tap {cords[0]} {cords[1]}", stdout=DEVNULL)
+def input_tap(x: int, y: int) -> None:
+    _action(f"shell input tap {x} {y}", stdout=DEVNULL)
 
 
 def screencap() -> str:
