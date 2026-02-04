@@ -1,13 +1,13 @@
 from typing import Callable, TypeVar
 from functools import wraps
 
-from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
-from numpy import ndarray, frombuffer, uint8
-
+from PIL import Image
+import io
+import numpy as np
 from ..device.actions import screencap
 
 
-temp_screen: ndarray | None = None
+temp_screen: np.ndarray | None = None
 
 
 def reset_temp_screen() -> None:
@@ -17,11 +17,12 @@ def reset_temp_screen() -> None:
 
 def _capture_screen() -> None:
     global temp_screen
-    console_output =  screencap()
-    screen_bytes = frombuffer(console_output, uint8)
-    screen = imdecode(screen_bytes, IMREAD_COLOR)
-    gray_screen = cvtColor(screen, COLOR_BGR2GRAY)
-    temp_screen = gray_screen
+    console_output = screencap()
+    io_bytes = io.BytesIO(console_output)
+    screen = Image.open(io_bytes)
+    gray_screen = screen.convert("L")
+    numpy_array = np.array(gray_screen, dtype=np.uint8)
+    temp_screen = numpy_array
 
 
 R = TypeVar("R")
