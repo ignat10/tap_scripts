@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar
+from typing import Callable, TypeVar, ParamSpec, Concatenate
 from functools import wraps
 
 from cv2 import imdecode, cvtColor, COLOR_BGR2GRAY, IMREAD_COLOR
@@ -23,7 +23,7 @@ def _capture_screen() -> None:
     gray_screen = cvtColor(screen, COLOR_BGR2GRAY)
     temp_screen = gray_screen
 
-
+P = ParamSpec("P")
 R = TypeVar("R")
 def with_screen(
         func: Callable[..., R]

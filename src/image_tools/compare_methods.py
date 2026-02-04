@@ -3,13 +3,14 @@ from numpy import ndarray
 
 
 
-def ssim(screen: ndarray, image: ndarray) -> tuple[float, None]:
+def ssim(screen: ndarray, image: ndarray, threshold: float) -> bool:
             """Wrapper for SSIM method."""
-            return quality.QualitySSIM_compute(screen, image)[0][0], None
+            similarity = quality.QualitySSIM_compute(screen, image)[0][0]
+            return similarity >= threshold
 
 
-def match_template(screen: ndarray, image: ndarray):
+def match_template(screen: ndarray, image: ndarray, threshold: float) -> tuple[int, int] | None:
             """Wrapper for cv2.matchTemplate method."""
             matched = matchTemplate(screen, image, TM_CCOEFF_NORMED)
-            _, result, _, coords = minMaxLoc(matched)
-            return result, tuple(coords)
+            _, similarity, _, coords = minMaxLoc(matched)
+            return coords if similarity >= threshold else None
