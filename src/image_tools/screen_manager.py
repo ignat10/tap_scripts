@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar
+from typing import Callable, TypeVar, ParamSpec, Concatenate
 from functools import wraps
 
 from PIL import Image
@@ -24,7 +24,7 @@ def _capture_screen() -> None:
     numpy_array = np.array(gray_screen, dtype=np.uint8)
     temp_screen = numpy_array
 
-
+P = ParamSpec("P")
 R = TypeVar("R")
 def with_screen(
         func: Callable[..., R]
