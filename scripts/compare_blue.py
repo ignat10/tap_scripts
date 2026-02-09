@@ -1,13 +1,14 @@
-from my_packages.game_tools.objects import objects
-from cv2 import imread, imshow, waitKey
+from src.game_tools.objects import objects
+from src.image_tools.compare_methods import numpy_diff
+
+import numpy as np
+from PIL import Image
+
 book = objects["book"]
-result = book.compare_part()
+
+temp = next(book.template.images)
+scr = np.array(Image.open('screen.png'))
+crp = book.template.crop_screen()
+
+result = numpy_diff()
 print(result)
-
-
-screen = imread("screen.png")
-imshow("ttsstt", screen)
-crop = book._crop_screen(screen=screen, coords=book.coords)
-
-imshow("tst", crop)
-waitKey(0)

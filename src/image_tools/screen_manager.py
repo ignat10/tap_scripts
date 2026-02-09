@@ -24,16 +24,18 @@ def _capture_screen() -> None:
     numpy_array = np.array(gray_screen, dtype=np.uint8)
     temp_screen = numpy_array
 
+T = TypeVar("T")
 P = ParamSpec("P")
 R = TypeVar("R")
+
 def with_screen(
-        func: Callable[..., R]
-        ) -> Callable[..., R]:
+        func: Callable[Concatenate[T, np.ndarray, P], R]
+        ) -> Callable[Concatenate[T, P], R]:
     @wraps(func)
     def wrapper(
         self,
-        *args,
-        **kwargs,
+        *args: P.args,
+        **kwargs: P.kwargs,
         ):
         if temp_screen is None:
             _capture_screen()
