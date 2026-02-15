@@ -4,7 +4,7 @@ from typing import get_args
 from pathlib import Path
 
 from src.paths import TEMPLATES_DIR
-from src.game_tools import objects
+from src.game_object import objects
 
 
 

@@ -14,7 +14,7 @@ import numpy as np
 #             return coords if similarity >= thredshold else None
 
 
-def numpy_diff(screen: np.ndarray, image: np.ndarray, threshold: float) -> bool:
-        diff = np.uint8(np.mean(np.abs(screen.astype(np.int16) - image.astype(np.int16), dtype=np.uint8), dtype=np.uint32))
+def numpy_diff(img1: np.ndarray, img2: np.ndarray, threshold: float) -> bool:
+        diff = np.uint8(np.mean(np.abs(img1.astype(np.int16) - img2.astype(np.int16), dtype=np.uint8), dtype=np.uint32))
         result = float((255 - diff) / 255)
         return result >= threshold

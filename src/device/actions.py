@@ -3,6 +3,7 @@ from subprocess import DEVNULL, PIPE
 
 from ..adb_tools.console_runner import adb_run
 from .config import configure_device
+from ..game_object.point_obj import Coords
 
 
 
@@ -21,8 +22,8 @@ def _action(arguments: str, **kwargs):
     return adb_run(command, **kwargs)
 
 
-def input_tap(x: int, y: int) -> None:
-    _action(f"shell input tap {x} {y}", stdout=DEVNULL)
+def input_tap(coords: Coords) -> None:
+    _action(f"shell input tap {coords.x} {coords.y}", stdout=DEVNULL)
 
 
 def screencap() -> str:

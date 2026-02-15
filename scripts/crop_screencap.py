@@ -3,7 +3,7 @@ from os import system
 from cv2 import imread, imwrite
 
 from src.device import actions
-from src.game_tools.objects import objects
+from src.game_object.objects import objects
 
 
 

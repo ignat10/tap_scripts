@@ -3,7 +3,7 @@ from typing import Iterator
 
 import openpyxl
 
-from .objects import objects
+from ..game_object.objects import objects
 from . import status
 from ..paths import FARMS_SHEET_PATH
 from ..utils.inputter import inputter

@@ -1,4 +1,4 @@
-from src.game_tools import strategies
+from src.game_logic import strategies
 from src.device import actions
 
 

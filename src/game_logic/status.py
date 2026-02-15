@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 
-from .objects import objects
+from ..game_object.objects import objects
 
 
 

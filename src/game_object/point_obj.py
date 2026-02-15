@@ -1,12 +1,13 @@
-from typing import Literal, Callable, TypeVar, ParamSpec, Concatenate, overload, TYPE_CHECKING
+from typing import Callable, Literal, TypeVar, ParamSpec, TYPE_CHECKING, Concatenate
 from dataclasses import dataclass
 from functools import wraps
 
 
 if TYPE_CHECKING:
     from .game_object import GameObject
+    import numpy as np
 
-T = TypeVar("T")
+
 P = ParamSpec("P")
 R = TypeVar("R")
 
@@ -33,15 +34,10 @@ class Point:
         self.delta: Delta | None = Delta(**self.delta) if self.delta is not None else None
 
 
-# @overload
-# def step(func: Callable[Concatenate[GameObject, Coords, P], R]) -> Callable[..., R]: ...
-    
-def step(
-    func: Callable[Concatenate[GameObject, Coords, P], R]
-    ) -> Callable[Concatenate[GameObject, int, P]]:
+def step(func):
     @wraps(func)
     def wrapper(
-            self: GameObject,
+            self: 'GameObject',
             *args: P.args,
             steps: int=0,
             **kwargs: P.kwargs
@@ -60,5 +56,5 @@ def step(
                 case "y":
                     moved_coords = Coords(x, y + delta)
                 
-        return func(self, moved_coords, *args, **kwargs)
+        return func(self, *args, moved_coords, **kwargs)
     return wrapper
