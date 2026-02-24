@@ -24,10 +24,9 @@ class Template:
         for file_path in (TEMPLATES_DIR / self.path).iterdir():
             file_name = file_path.name
             if file_name not in self._cache:
-                self._cache[file_name] = np.array(Image.open(file_path), dtype=np.uint8)
+                self._cache[file_name] = np.array(Image.open(file_path).convert("L"), dtype=np.uint8)
             yield self._cache[file_name]
 
-    @point_obj.step
     def crop_screen(self, screen: np.ndarray, coords: point_obj.Coords) -> np.ndarray:
         y, x = next(self.images).shape
         opposite_corner = point_obj.Coords(coords.x + x, coords.y + y)

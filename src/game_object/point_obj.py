@@ -34,7 +34,9 @@ class Point:
         self.delta: Delta | None = Delta(**self.delta) if self.delta is not None else None
 
 
-def step(func):
+def step(func:
+         Callable[Concatenate['GameObject', Coords, P], R] 
+        ) -> Callable[Concatenate['GameObject', int, P], R]:
     @wraps(func)
     def wrapper(
             self: 'GameObject',
@@ -56,5 +58,5 @@ def step(func):
                 case "y":
                     moved_coords = Coords(x, y + delta)
                 
-        return func(self, *args, moved_coords, **kwargs)
+        return func(self, *args, coords=moved_coords, **kwargs)
     return wrapper
