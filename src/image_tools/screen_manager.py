@@ -10,19 +10,22 @@ from ..device.actions import screencap
 temp_screen: np.ndarray | None = None
 
 
+def set_temp_screen(screen: np.ndarray) -> None:
+    global temp_screen
+    temp_screen = screen
+
 def reset_temp_screen() -> None:
     global temp_screen
     temp_screen = None
 
 
 def _capture_screen() -> None:
-    global temp_screen
     console_output = screencap()
     io_bytes = io.BytesIO(console_output)
     screen = Image.open(io_bytes)
     gray_screen = screen.convert("L")
     numpy_array = np.array(gray_screen, dtype=np.uint8)
-    temp_screen = numpy_array
+    set_temp_screen(numpy_array)
 
 T = TypeVar("T")
 P = ParamSpec("P")

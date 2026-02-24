@@ -7,7 +7,9 @@ from ..device import actions
 from . import point_obj, template_obj
 
 
+# type checking
 R = TypeVar("R")
+import numpy as np
 
 
 
@@ -42,12 +44,8 @@ class GameObject:
         return False
 
     @screen_manager.with_screen
-    def compare_part(self, screen, steps=0):
-        cropped_screen = self.template.crop_screen(screen, steps=steps)
-        return self.template.compare_loop(cropped_screen, compare_methods.ssim)
-
     @point_obj.step
-    @screen_manager.with_screen
-    def quiq_compare(self, screen, coords):
-        cropped_screen = self.template.crop_screen(screen, coords)
+    def quick_compare(self, screen: np.ndarray, coords: point_obj.Coords) -> bool:
+        cropped_screen = self.template.crop_screen(screen, coords=coords)
         return self.template.compare_loop(cropped_screen, compare_methods.numpy_diff)
+    

@@ -15,6 +15,16 @@ import numpy as np
 
 
 def numpy_diff(img1: np.ndarray, img2: np.ndarray, threshold: float) -> bool:
-        diff = np.uint8(np.mean(np.abs(img1.astype(np.int16) - img2.astype(np.int16), dtype=np.uint8), dtype=np.uint32))
-        result = float((255 - diff) / 255)
+        diff = np.abs(
+                img1.astype(np.int16)
+                - img2.astype(np.int16)
+        ).astype(np.uint8)
+
+        mean_diff = np.mean(
+                diff,
+                dtype=np.uint32
+        )
+        print(mean_diff)
+        result = float((255 - mean_diff) / 255)
+        print(result)
         return result >= threshold
