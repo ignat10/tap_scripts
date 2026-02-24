@@ -1,9 +1,8 @@
-from cv2 import imread, imwrite, cvtColor, COLOR_BGR2GRAY
 from numpy import ndarray
 from cv2.quality import QualitySSIM_compute as ssim
 
-from my_packages.image_tools import screen_manager
-from my_packages.game_tools.objects import objects
+from src.image_tools import screen_manager
+from src.game_object.objects import objects
 
 
 corner = (506, 1022)
