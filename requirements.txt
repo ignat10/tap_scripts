@@ -1,3 +1,5 @@
 openCV-contrib-python
 openPyXL
+
+maturin
 pytest

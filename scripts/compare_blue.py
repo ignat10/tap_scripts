@@ -1,5 +1,7 @@
 import timeit
 
+import image_comparer
+print(image_comparer.sum_as_string(4, 7))
 from src.game_object.objects import objects
 
 
