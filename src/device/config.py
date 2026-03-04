@@ -11,19 +11,14 @@ DEVICE_IP = "192.168.0.192"
 
 def configure_device() -> str:
     print("connecting adb device...")
-    while True:
-        sleep(1)
 
-        if serial := _scan():
-            break
+    serial: str | None = _scan()
+    while serial is None:
+        if (ip := _input_ip()) is not None:
+            _connect(ip)
 
-        if (serial := _input_ip()) is None:
-            continue
+        serial = _scan()
 
-        if _connect(serial):
-            continue
-
-        print(f"error connecting to device \nretrying...")
         
     print(f"connected to device '{serial}'")
     return serial
