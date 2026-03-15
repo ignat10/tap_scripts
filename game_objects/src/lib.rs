@@ -17,11 +17,16 @@ mod screen;
 
 #[pymodule]
 mod game_objects {
+    use pyo3::prelude::*;
+
     #[pymodule_export]
-    use super::{
-        get_object,
-        init,
-    };
+    use super::get_object;
+
+    #[pymodule_export]
+    use super::init;
+
+    #[pyfunction]
+    fn say() -> i8 {print!("say"); 5}
 }
 
 
@@ -53,7 +58,7 @@ fn get_object(name: &str) -> Option<GameObject> {
 
 
 #[pyclass]
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct GameObject {
     point: Option<Point>,
     template: Option<Template>
@@ -111,7 +116,7 @@ impl GameObject {
 }
 
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 struct Template {
     threshold: f32,
     path: PathBuf,
@@ -146,7 +151,7 @@ impl Template {
 }
 
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 struct Point {
     coords: Coords,
     delta: Delta
@@ -169,22 +174,85 @@ impl Point {
 }
 
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 struct Coords {
     x: u16,
     y: u16,
 }
 
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 struct Delta {
     interval: u16,
     axis: Axis,
 }
 
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, PartialEq, Debug)]
 enum Axis {
     X,
     Y,
+}
+
+#[cfg(test)]
+mod tests {
+    use std::str::FromStr;
+
+    use super::*;
+
+
+    #[test]
+    fn template_test() {
+        let data = r#"
+            {
+                "path": "path_to_template_dir",
+                "threshold": 0.8
+            }
+        "#;
+
+        let template_result: Result<Template, serde_json::Error> = serde_json::from_str(&data);
+
+        assert!(template_result.is_ok());
+
+        let template = template_result.unwrap();
+
+        assert_eq!(template.path, PathBuf::from_str("path_to_template_dir").unwrap());
+        assert_eq!(template.threshold, 0.8);
+    }
+
+    #[test]
+    fn point_test() {
+        let data = r#"
+            {
+                "coords": {
+                    "x": 200,
+                    "y": 900
+                },
+                "delta": {
+                    "interval": 50,
+                    "axis": "Y"
+                }
+            }
+        "#;
+
+
+        let point_result: Result<Point, serde_json::Error> = serde_json::from_str(&data);
+
+        assert!(point_result.is_ok());
+
+        let point = point_result.unwrap();
+        let coords = &point.coords;
+        let delta = &point.delta;
+
+        assert_eq!(coords.x, 200);
+        assert_eq!(coords.y, 900);
+
+        assert_eq!(delta.axis, Axis::Y);
+        assert_eq!(delta.interval, 50);
+
+        let moved_coords = point.move_coords(3);
+
+        assert_eq!(moved_coords.x, 200);
+        assert_eq!(moved_coords.y, 1050);
+    }
 }
