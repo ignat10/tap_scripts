@@ -3,7 +3,7 @@ requires = ["maturin>=1.12,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "image_comparer"
+name = "game_objects"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Rust",
