@@ -1,4 +1,4 @@
-use std::collections:: {HashMap, HashSet};
+use std::collections::HashMap;
 use std::ffi::OsString;
 use std::fs;
 use std::path::PathBuf;
@@ -14,17 +14,20 @@ pub mod adb;
 mod screen;
 
 
-static GAME_OBJECTS: OnceLock<serde_json::Value> = OnceLock::new();
-
 
 #[pymodule]
-mod image_comparer {
+mod game_objects {
     #[pymodule_export]
     use super::{
         get_object,
         init,
     };
 }
+
+
+
+static GAME_OBJECTS: OnceLock<serde_json::Value> = OnceLock::new();
+
 
 
 #[pyfunction]
@@ -59,23 +62,30 @@ struct GameObject {
 
 #[pymethods]
 impl GameObject {
-    fn compare(&mut self, steps: u8) -> bool {
-        let coords = &self.point.as_ref().unwrap().coords;
+    fn compare(&mut self, steps: Option<u16>) -> bool {
+        let steps = steps.unwrap_or(0);
+
+        let coords = self.point
+            .as_ref()
+            .unwrap()
+            .move_coords(steps);
+
         let template = self.template.as_mut().unwrap();
         let threshold = template.threshold;
 
+        let size = template.iter_images().next().unwrap().dimensions();
+
         let screen_guard = screen::get();
-        let size = screen_guard.dimensions();
-        let cropped_screen = image::imageops::crop_imm(&*screen_guard, coords.x as u32, coords.y as u32, size.0, size.1);
+        let screen_part = screen_guard.view(coords.x as u32, coords.y as u32, size.0, size.1).to_image();
 
         let num_pixels = size.0 * size.1;
          
 
         template.iter_images().any(|image| {
-            let total_diff: u32 = cropped_screen.pixels()
-                .map(|(_x, _y, pixel)| pixel.0[0])
+            let total_diff: u32 = screen_part
+                .iter()
                 .zip(image.iter())
-                .map(|(a, b)| (a as i16 - *b as i16).abs() as u32)
+                .map(|(a, b)| (*a as i16 - *b as i16).abs() as u32)
                 .sum();
 
             let normalized_diff: f32 = (total_diff / num_pixels) as f32 / u8::MAX as f32;
@@ -84,25 +94,17 @@ impl GameObject {
         })
     }
 
-    fn tap(&self, steps: u16, repeat: u8) {
+    fn tap(&self, steps: Option<u16>, repeat: Option<u8>) {
         let point = self.point.as_ref().unwrap();
-        let coords = &point.coords;
-
-        let moved_coords = match point.delta.axis {
-            Axis::X => Coords {
-                x: coords.x + point.delta.interval * steps,
-                y: coords.y,
-            },
-            Axis::Y => Coords {
-                x: coords.x,
-                y: coords.y + point.delta.interval * steps,
-            },
+        let coords = if let Some(steps) = steps {
+            &point.move_coords(steps)
+        } else {
+            &point.coords
         };
+        let x = coords.x.to_string();
+        let y = coords.y.to_string();
 
-        let x = moved_coords.x.to_string();
-        let y = moved_coords.y.to_string();
-
-        for _ in 0..repeat {
+        for _ in 0..repeat.unwrap_or(1) {
             adb::device_action(&[&x, &y]);
         }
     }
@@ -114,9 +116,7 @@ struct Template {
     threshold: f32,
     path: PathBuf,
     #[serde(skip, default)]
-    _images: HashMap<OsString, Option<Vec<u8>>>,
-    #[serde(skip, default)]
-    _used_images: HashSet<OsString>,
+    _images: HashMap<OsString, Option<image::GrayImage>>,
 }
 
 
@@ -128,21 +128,19 @@ impl Template {
         }
     }
 
-    fn iter_images(&mut self) -> impl Iterator<Item = &Vec<u8>> {
+    fn iter_images(&mut self) -> impl Iterator<Item = &image::GrayImage> {
         if self._images.is_empty() {
             self.init();
         }
 
-        self._images.iter_mut().filter_map(|(key, image)| {
-            if self._used_images.contains(key) {
-                None
-            } else {
-                if image.is_none() {
-                    *image = Some(image::open(self.path.join(key)).unwrap().into_luma8().into_raw());
-                }
-                self._used_images.insert(key.clone());
-                image.as_ref()
+        let path = self.path.clone();
+
+        self._images.iter_mut().filter_map(move |(key, image)| {
+            if image.is_none() {
+                *image = Some(image::open(path.join(key)).unwrap().to_luma8());
             }
+
+            image.as_ref()
         })
     }
 }
@@ -152,6 +150,22 @@ impl Template {
 struct Point {
     coords: Coords,
     delta: Delta
+}
+
+
+impl Point {
+    fn move_coords(&self, steps: u16) -> Coords {
+        match self.delta.axis {
+            Axis::X => Coords {
+                x: self.coords.x + self.delta.interval * steps,
+                y: self.coords.y,
+            },
+            Axis::Y => Coords {
+                x: self.coords.x,
+                y: self.coords.y + self.delta.interval * steps,
+            },
+        }
+    }
 }
 
 

@@ -17,5 +17,5 @@ __pycache__/
 
 
 # Rust  /  Pyo3
-image_comparer/target/
-image_comparer/Cargo.lock
+game_objects/target/
+game_objects/Cargo.lock
