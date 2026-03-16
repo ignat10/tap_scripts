@@ -17,43 +17,25 @@ mod screen;
 
 #[pymodule]
 mod game_objects {
-    use pyo3::prelude::*;
+    #[pymodule_export]
+    use super::get_objects;
 
     #[pymodule_export]
-    use super::get_object;
-
-    #[pymodule_export]
-    use super::init;
-
-    #[pyfunction]
-    fn say() -> i8 {print!("say"); 5}
+    use super::GameObject;
 }
-
-
-
-static GAME_OBJECTS: OnceLock<serde_json::Value> = OnceLock::new();
-
 
 
 #[pyfunction]
 fn get_objects(data_path: PathBuf) -> HashMap<String, GameObject> {
     paths::init(PathBuf::from(data_path));
 
-    GAME_OBJECTS.set(serde_json::from_reader(
-        fs::File::open(paths::get_game_objects()).unwrap()
-    ).unwrap()).unwrap();
-}
+    adb::device_config();
 
-
-#[pyfunction]
-fn get_object(name: &str) -> Option<GameObject> {
-    let v = GAME_OBJECTS
-        .get()
+    serde_json::from_reader(
+        fs::File::open(paths::game_objects())
         .unwrap()
-        .get(name)?;
-
-    let game_object: GameObject = serde_json::from_value(v.clone()).unwrap();
-    Some(game_object)
+    )
+    .unwrap()
 }
 
 
@@ -67,6 +49,7 @@ struct GameObject {
 
 #[pymethods]
 impl GameObject {
+    #[pyo3(signature = (steps=None))]
     fn compare(&mut self, steps: Option<u16>) -> bool {
         let point = self.point.as_ref().unwrap();
 
@@ -81,7 +64,7 @@ impl GameObject {
 
         let size = template.iter_images().next().unwrap().dimensions();
         let num_pixels = size.0 * size.1;
-         
+
         let screen = screen::get_crop(coords.x as u32, coords.y as u32, size.0, size.1);         
 
         template.iter_images().any(|image| {
