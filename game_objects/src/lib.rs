@@ -4,7 +4,6 @@ use std::fs;
 use std::path::PathBuf;
 use std::sync::OnceLock;
 
-use image::GenericImageView;
 use pyo3::prelude::*;
 use serde::Deserialize;
 use serde_json;
@@ -68,26 +67,24 @@ struct GameObject {
 #[pymethods]
 impl GameObject {
     fn compare(&mut self, steps: Option<u16>) -> bool {
-        let steps = steps.unwrap_or(0);
+        let point = self.point.as_ref().unwrap();
 
-        let coords = self.point
-            .as_ref()
-            .unwrap()
-            .move_coords(steps);
+        let coords = if let Some(steps) = steps {
+            &point.move_coords(steps)
+        } else {
+            &point.coords
+        };
 
         let template = self.template.as_mut().unwrap();
         let threshold = template.threshold;
 
         let size = template.iter_images().next().unwrap().dimensions();
-
-        let screen_guard = screen::get();
-        let screen_part = screen_guard.view(coords.x as u32, coords.y as u32, size.0, size.1).to_image();
-
         let num_pixels = size.0 * size.1;
          
+        let screen = screen::get_crop(coords.x as u32, coords.y as u32, size.0, size.1);         
 
         template.iter_images().any(|image| {
-            let total_diff: u32 = screen_part
+            let total_diff: u32 = screen
                 .iter()
                 .zip(image.iter())
                 .map(|(a, b)| (*a as i16 - *b as i16).abs() as u32)

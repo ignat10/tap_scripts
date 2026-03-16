@@ -20,6 +20,13 @@ pub fn get() -> MappedMutexGuard<'static, image::GrayImage> {
 }
 
 
+pub fn get_crop(x: u32, y: u32, width: u32, height: u32) -> image::GrayImage {
+    let screen_guard = get();
+    
+    image::imageops::crop_imm(&*screen_guard, x, y, width, height).to_image()
+}
+
+
 fn set(screen_guard: &mut MutexGuard<'static, Option<image::GrayImage>>) {
     let bytes = adb::device_action(&["exec-out", "screencap",]).stdout;
 
