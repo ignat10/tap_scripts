@@ -36,7 +36,7 @@ static GAME_OBJECTS: OnceLock<serde_json::Value> = OnceLock::new();
 
 
 #[pyfunction]
-fn init(data_path: &str) {
+fn get_objects(data_path: PathBuf) -> HashMap<String, GameObject> {
     paths::init(PathBuf::from(data_path));
 
     GAME_OBJECTS.set(serde_json::from_reader(
@@ -127,7 +127,9 @@ struct Template {
 
 impl Template {
     fn init(&mut self) {
-        for entry in fs::read_dir(&self.path).unwrap() {
+        let objects_templates_dir = paths::templates().join(&self.path);
+        
+        for entry in fs::read_dir(objects_templates_dir).unwrap() {
             let entry = entry.unwrap();
             self._images.insert(entry.file_name(), None);
         }
@@ -138,7 +140,7 @@ impl Template {
             self.init();
         }
 
-        let path = self.path.clone();
+        let path = paths::templates().join(self.path.clone());
 
         self._images.iter_mut().filter_map(move |(key, image)| {
             if image.is_none() {

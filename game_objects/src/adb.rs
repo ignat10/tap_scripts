@@ -94,7 +94,7 @@ fn run(args: &[&str]) -> std::process::Output {
 
 
 fn get_ip() -> String {
-    let ip_path = paths::get_ip();
+    let ip_path = paths::ip();
     let raw_ip = fs::read_to_string(ip_path).expect("Failed to read device IP file");
     raw_ip.trim().to_string()
 }

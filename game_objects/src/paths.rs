@@ -1,5 +1,5 @@
 use std::sync::OnceLock;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 
 static DATA: OnceLock<PathBuf> = OnceLock::new();
@@ -11,17 +11,21 @@ pub fn init(data_path: PathBuf) {
 }
 
 
-pub fn get_ip() -> PathBuf {
-    DATA
-        .get()
-        .unwrap()
-        .join("device_ip.json")
+pub fn ip() -> PathBuf {
+    data_dir().join("device_ip.json")
 }
 
 
-pub fn get_game_objects() -> PathBuf {
-    DATA
-        .get()
-        .unwrap()
-        .join("game_objects.json")
+pub fn game_objects() -> PathBuf {
+    data_dir().join("game_objects.json")
+}
+
+
+pub fn templates() -> PathBuf {
+    data_dir().join("templates")
+}
+
+
+fn data_dir() -> &'static Path {
+    DATA.get().expect("DATA has not been initialized. Call paths::init() before using.")
 }
