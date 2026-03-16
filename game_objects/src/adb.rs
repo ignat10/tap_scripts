@@ -44,10 +44,14 @@ fn scan() -> Option<String> {
     let text_output = String::from_utf8_lossy(&raw_output).into_owned();
 
     for line in text_output.lines().skip(1) {
-        let mut ser_stat = line.split_whitespace();
+        if line.is_empty() {
+            return None;
+        }
+        
+        let mut serial_status = line.split_whitespace();
 
-        let serial = ser_stat.next().unwrap();
-        let status = ser_stat.next().unwrap();
+        let serial = serial_status.next().unwrap();
+        let status = serial_status.next().unwrap();
 
         if status == "device" {
             return Some(serial.to_string());
