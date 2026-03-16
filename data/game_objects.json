@@ -85,9 +85,8 @@
         "x": 78,
         "y": 2345
       },
-    "delta": {
-        "interval": 200,
-        "axis": "X"
+      "delta": {
+        "PosX": 200
       }
     }
   },
@@ -113,9 +112,8 @@
         "x": 616,
         "y": 1339
       },
-    "delta": {
-        "interval": -183,
-        "axis": "X"
+      "delta": {
+        "NegX": 183
       }
     }
   },
@@ -182,8 +180,7 @@
         "y": 755
       },
       "delta": {
-        "interval": 258,
-        "axis": "Y"
+        "PosY": 258
       }
     },
     "template": {
@@ -229,9 +226,8 @@
         "x": 164,
         "y": 840
       },
-    "delta": {
-        "interval": 200,
-        "axis": "Y"
+      "delta": {
+        "PosY": 200
       }
     }
   },
@@ -242,8 +238,7 @@
         "y": 1067
       },
       "delta": {
-        "interval": 135,
-        "axis": "Y"
+        "PosY": 135
       }
     }
   },

@@ -159,21 +159,34 @@ impl Template {
 #[derive(Deserialize)]
 struct Point {
     coords: Coords,
-    delta: Delta
+    delta: Option<Delta>
 }
 
 
 impl Point {
     fn move_coords(&self, steps: u16) -> Coords {
-        match self.delta.axis {
-            Axis::X => Coords {
-                x: self.coords.x + self.delta.interval * steps,
-                y: self.coords.y,
+        let delta = self.delta.as_ref().unwrap();
+
+        let x = self.coords.x;
+        let y = self.coords.y;
+
+        match delta {
+            Delta::PosX(interval) => Coords {
+                x: x + interval * steps,
+                y: y,
             },
-            Axis::Y => Coords {
-                x: self.coords.x,
-                y: self.coords.y + self.delta.interval * steps,
+            Delta::NegX(interval) => Coords {
+                x: x - interval * steps,
+                y: y,
             },
+            Delta::PosY(interval) => Coords {
+                x: x,
+                y: y + interval * steps,
+            },
+            Delta::NegY(interval) => Coords {
+                x: x,
+                y: y - interval * steps
+            }
         }
     }
 }
@@ -186,17 +199,12 @@ struct Coords {
 }
 
 
-#[derive(Deserialize)]
-struct Delta {
-    interval: u16,
-    axis: Axis,
-}
-
-
 #[derive(Deserialize, PartialEq, Debug)]
-enum Axis {
-    X,
-    Y,
+enum Delta {
+    PosX(u16),
+    NegX(u16),
+    PosY(u16),
+    NegY(u16),
 }
 
 #[cfg(test)]
