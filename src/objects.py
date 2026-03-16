@@ -1,8 +1,8 @@
 from typing import Literal
-import json
 
-from .game_object import GameObject
-from ..paths import GAME_OBJECTS
+import game_objects
+
+from .paths import DATA_DIR
 
 
 GameObjectNames = Literal[
@@ -14,7 +14,7 @@ GameObjectNames = Literal[
     "harvest",
     "use",
     "map",
-    "cities",
+    "city",
     "search",
     "mine_type",
     "plus",
@@ -28,7 +28,6 @@ GameObjectNames = Literal[
     "alliance_elite_mines",
     "blue",
     "gather_elite_mine",
-    "avatar",
     "account",
     "switch",
     "login",
@@ -46,15 +45,4 @@ GameObjectNames = Literal[
 ]
 
 
-def load_game_objects():
-    with GAME_OBJECTS.open() as f:
-        raw_data: dict[str, dict] = json.load(f)
-
-    return {
-        object_name:
-        GameObject(**arguments)
-        for object_name, arguments in raw_data.items()
-    }
-
-
-objects: dict[GameObjectNames, GameObject] = load_game_objects()
+objects: dict[GameObjectNames, game_objects.GameObject] = game_objects.get_objects(DATA_DIR)
