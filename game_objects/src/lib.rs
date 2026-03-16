@@ -207,10 +207,11 @@ enum Delta {
     NegY(u16),
 }
 
+
+
+
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
-
     use super::*;
 
 
@@ -229,12 +230,12 @@ mod tests {
 
         let template = template_result.unwrap();
 
-        assert_eq!(template.path, PathBuf::from_str("path_to_template_dir").unwrap());
+        assert_eq!(template.path, PathBuf::from("path_to_template_dir"));
         assert_eq!(template.threshold, 0.8);
     }
 
     #[test]
-    fn point_test() {
+    fn full_point_test() {
         let data = r#"
             {
                 "coords": {
@@ -242,8 +243,7 @@ mod tests {
                     "y": 900
                 },
                 "delta": {
-                    "interval": 50,
-                    "axis": "Y"
+                    "PosY": 50
                 }
             }
         "#;
@@ -255,17 +255,45 @@ mod tests {
 
         let point = point_result.unwrap();
         let coords = &point.coords;
-        let delta = &point.delta;
+        let delta = point.delta.as_ref().unwrap();
 
         assert_eq!(coords.x, 200);
         assert_eq!(coords.y, 900);
 
-        assert_eq!(delta.axis, Axis::Y);
-        assert_eq!(delta.interval, 50);
+        assert_eq!(delta, &Delta::PosY(50));
 
         let moved_coords = point.move_coords(3);
 
         assert_eq!(moved_coords.x, 200);
         assert_eq!(moved_coords.y, 1050);
+
+    }
+
+    #[test]
+    fn point_without_delta() {
+    let data_without_delta = r#"
+        {
+            "coords": {
+                "x": 1200,
+                "y": 400
+            }
+        }
+    "#;
+
+        let point_result: Result<Point, serde_json::Error> = serde_json::from_str(&data_without_delta);
+
+        assert!(point_result.is_ok());
+
+        let point = point_result.unwrap();
+
+        assert_eq!(point.coords.x, 1200);
+        assert_eq!(point.coords.y, 400);
+
+        assert!(point.delta.is_none());
+    }
+
+    #[test]
+    fn load_objects() {
+        let objects  = get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
     }
 }
