@@ -2,7 +2,8 @@ use std::collections::HashMap;
 use std::ffi::OsString;
 use std::fs;
 use std::path::PathBuf;
-use std::sync::OnceLock;
+use std::thread::sleep;
+use std::time::Duration;
 
 use pyo3::prelude::*;
 use serde::Deserialize;
@@ -96,7 +97,8 @@ impl GameObject {
         })
     }
 
-    fn tap(&self, steps: Option<u16>, repeat: Option<u8>) {
+    #[pyo3(signature = (delay=None, steps=None, repeat=None))]
+    fn tap(&self, delay: Option<f32>, steps: Option<u16>, repeat: Option<u8>) {
         let point = self.point.as_ref().unwrap();
         let coords = if let Some(steps) = steps {
             &point.move_coords(steps)
@@ -109,6 +111,10 @@ impl GameObject {
         for _ in 0..repeat.unwrap_or(1) {
             adb::device_action(&[&x, &y]);
         }
+
+        if let Some(secs) = delay {
+            sleep(Duration::from_secs_f32(secs))
+        };
     }
 }
 
