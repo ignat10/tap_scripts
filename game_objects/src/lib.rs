@@ -124,8 +124,33 @@ impl Sample {
     }
 
 
-    fn compare(&self, sample_image: &image::GrayImage) -> bool {
-        false
+    fn compare(&mut self, comparison_image: &image::GrayImage) -> bool {
+        let threshold = self.threshold;
+        let dims = comparison_image.dimensions();
+        let num_pixels = dims.0 * dims.1;
+
+        self.iter_images().any(|sample_image| {
+            let diff: Vec<i16> = sample_image.as_raw().iter()
+                .zip(comparison_image.as_raw().iter())
+                .map(|(a, b)| {
+                    (*a as i16 - *b as i16).abs()
+                }).collect();
+
+            let average_diff = (diff
+                .iter()
+                .map(|&x| x as i32)
+                .sum::<i32>() / num_pixels as i32
+                ) as i16;
+
+            let structural_duff: u8 = (diff.iter()
+                .map(|&x| (x - average_diff).abs() as u32)
+                .sum::<u32>()
+                / num_pixels) as u8;
+
+            let result: f32 = structural_duff as f32 / u8::MAX as f32;
+            
+            result >= threshold
+        })
     }
 }
 
@@ -273,6 +298,6 @@ mod tests {
 
 
     fn compare_test() {
-
+        
     }
 }
