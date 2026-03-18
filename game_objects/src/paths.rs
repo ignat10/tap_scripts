@@ -21,8 +21,8 @@ pub fn game_objects() -> PathBuf {
 }
 
 
-pub fn templates() -> PathBuf {
-    data_dir().join("templates")
+pub fn samples() -> PathBuf {
+    data_dir().join("samples")
 }
 
 

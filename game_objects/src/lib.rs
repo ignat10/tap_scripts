@@ -43,7 +43,7 @@ fn get_objects(data_path: PathBuf) -> HashMap<String, GameObject> {
 #[derive(Deserialize)]
 struct GameObject {
     point: Option<Point>,
-    template: Option<Template>
+    sample: Option<Sample>
 }
 
 
@@ -52,6 +52,7 @@ impl GameObject {
     #[pyo3(signature = (steps=None))]
     fn compare(&mut self, steps: Option<u16>) -> bool {
         let point = self.point.as_ref().unwrap();
+        let sample = self.sample.as_mut().unwrap();
 
         let coords = if let Some(steps) = steps {
             &point.move_coords(steps)
@@ -59,25 +60,10 @@ impl GameObject {
             &point.coords
         };
 
-        let template = self.template.as_mut().unwrap();
-        let threshold = template.threshold;
+        let size = sample.iter_images().next().unwrap().dimensions();
+        let screen = screen::get_crop(coords.x as u32, coords.y as u32, size.0, size.1);
 
-        let size = template.iter_images().next().unwrap().dimensions();
-        let num_pixels = size.0 * size.1;
-
-        let screen = screen::get_crop(coords.x as u32, coords.y as u32, size.0, size.1);         
-
-        template.iter_images().any(|image| {
-            let total_diff: u32 = screen
-                .iter()
-                .zip(image.iter())
-                .map(|(a, b)| (*a as i16 - *b as i16).abs() as u32)
-                .sum();
-
-            let normalized_diff: f32 = (total_diff / num_pixels) as f32 / u8::MAX as f32;
-
-            normalized_diff > threshold
-        })
+        sample.compare(&screen)
     }
 
     #[pyo3(signature = (delay=None, steps=None, repeat=None))]
@@ -103,7 +89,7 @@ impl GameObject {
 
 
 #[derive(Deserialize)]
-struct Template {
+struct Sample {
     threshold: f32,
     path: PathBuf,
     #[serde(skip, default)]
@@ -111,11 +97,11 @@ struct Template {
 }
 
 
-impl Template {
+impl Sample {
     fn init(&mut self) {
-        let objects_templates_dir = paths::templates().join(&self.path);
+        let samples_dir = paths::samples().join(&self.path);
         
-        for entry in fs::read_dir(objects_templates_dir).unwrap() {
+        for entry in fs::read_dir(samples_dir).unwrap() {
             let entry = entry.unwrap();
             self._images.insert(entry.file_name(), None);
         }
@@ -126,7 +112,7 @@ impl Template {
             self.init();
         }
 
-        let path = paths::templates().join(self.path.clone());
+        let path = paths::samples().join(self.path.clone());
 
         self._images.iter_mut().filter_map(move |(key, image)| {
             if image.is_none() {
@@ -135,6 +121,11 @@ impl Template {
 
             image.as_ref()
         })
+    }
+
+
+    fn compare(&self, sample_image: &image::GrayImage) -> bool {
+        false
     }
 }
 
@@ -199,22 +190,22 @@ mod tests {
 
 
     #[test]
-    fn template_test() {
+    fn sample_test() {
         let data = r#"
             {
-                "path": "path_to_template_dir",
+                "path": "path_to_sample_dir",
                 "threshold": 0.8
             }
         "#;
 
-        let template_result: Result<Template, serde_json::Error> = serde_json::from_str(&data);
+        let sample_result: Result<Sample, serde_json::Error> = serde_json::from_str(&data);
 
-        assert!(template_result.is_ok());
+        assert!(sample_result.is_ok());
 
-        let template = template_result.unwrap();
+        let sample = sample_result.unwrap();
 
-        assert_eq!(template.path, PathBuf::from("path_to_template_dir"));
-        assert_eq!(template.threshold, 0.8);
+        assert_eq!(sample.path, PathBuf::from("path_to_sample_dir"));
+        assert_eq!(sample.threshold, 0.8);
     }
 
     #[test]
@@ -277,6 +268,11 @@ mod tests {
 
     #[test]
     fn load_objects() {
-        let objects  = get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
+        get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
+    }
+
+
+    fn compare_test() {
+
     }
 }
