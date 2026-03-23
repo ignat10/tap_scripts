@@ -12,7 +12,7 @@ pub fn init(data_path: PathBuf) {
 
 
 pub fn ip() -> PathBuf {
-    data_dir().join("device_ip.json")
+    data_dir().join("device_ip.txt")
 }
 
 

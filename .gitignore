@@ -19,3 +19,6 @@ __pycache__/
 # Rust  /  Pyo3
 screen_objects/target/
 screen_objects/Cargo.lock
+
+# local device ip
+data/device_ip.txt
