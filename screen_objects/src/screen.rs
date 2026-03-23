@@ -37,7 +37,7 @@ fn set(screen_guard: &mut MutexGuard<'static, Option<image::GrayImage>>) {
         .split_whitespace()
         .last()
         .unwrap();
-    
+
     let mut dims = size_part
         .split('x')
         .map(|s| s.parse::<u32>().unwrap());

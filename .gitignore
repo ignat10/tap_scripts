@@ -17,5 +17,5 @@ __pycache__/
 
 
 # Rust  /  Pyo3
-game_objects/target/
-game_objects/Cargo.lock
+screen_objects/target/
+screen_objects/Cargo.lock
