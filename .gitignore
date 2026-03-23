@@ -12,8 +12,7 @@ __pycache__/
 *.png
 *.svg
 
-!data/templates/**
-!data/templates/**/*.png
+!data/samples/**
 
 
 # Rust  /  Pyo3
