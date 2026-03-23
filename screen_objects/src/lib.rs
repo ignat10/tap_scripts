@@ -16,17 +16,17 @@ mod screen;
 
 
 #[pymodule]
-mod game_objects {
+mod screen_objects {
     #[pymodule_export]
     use super::get_objects;
 
     #[pymodule_export]
-    use super::GameObject;
+    use super::ScreenObject;
 }
 
 
 #[pyfunction]
-fn get_objects(data_path: PathBuf) -> HashMap<String, GameObject> {
+fn get_objects(data_path: PathBuf) -> HashMap<String, ScreenObject> {
     paths::init(PathBuf::from(data_path));
 
     adb::device_config();
@@ -41,14 +41,14 @@ fn get_objects(data_path: PathBuf) -> HashMap<String, GameObject> {
 
 #[pyclass]
 #[derive(Deserialize)]
-struct GameObject {
+struct ScreenObject {
     point: Option<Point>,
     sample: Option<Sample>
 }
 
 
 #[pymethods]
-impl GameObject {
+impl ScreenObject {
     #[pyo3(signature = (steps=None))]
     fn compare(&mut self, steps: Option<u16>) -> bool {
         let point = self.point.as_ref().unwrap();
@@ -127,27 +127,24 @@ impl Sample {
     fn compare(&mut self, comparison_image: &image::GrayImage) -> bool {
         let threshold = self.threshold;
         let dims = comparison_image.dimensions();
-        let num_pixels = dims.0 * dims.1;
+        let pixels = dims.0 * dims.1;
+        let step = (pixels as f32).cbrt() as usize;
 
         self.iter_images().any(|sample_image| {
-            let diff: Vec<i16> = sample_image.as_raw().iter()
+            let mut pixel = 0;
+            let mut total_diff: i32 = 0;
+            let mut total_delta: i32 = 0;
+            for (a, b) in sample_image.as_raw().iter()
                 .zip(comparison_image.as_raw().iter())
-                .map(|(a, b)| {
-                    (*a as i16 - *b as i16).abs()
-                }).collect();
+                .step_by(step)
+            {
+                pixel += 1;
+                let diff = *a as i32 - *b as i32;
+                total_diff += diff;
+                total_delta += (diff - total_diff / pixel).abs();
+            }
 
-            let average_diff = (diff
-                .iter()
-                .map(|&x| x as i32)
-                .sum::<i32>() / num_pixels as i32
-                ) as i16;
-
-            let structural_duff: u8 = (diff.iter()
-                .map(|&x| (x - average_diff).abs() as u32)
-                .sum::<u32>()
-                / num_pixels) as u8;
-
-            let result: f32 = structural_duff as f32 / u8::MAX as f32;
+            let result: f32 = ((total_delta / pixel) as f32 / u8::MAX as f32).powi(2);
             
             result >= threshold
         })
@@ -296,8 +293,14 @@ mod tests {
         get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
     }
 
-
+    #[test]
     fn compare_test() {
+        let mut objects = get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
+        let city_opt = objects.get_mut("city");
         
+        assert!(city_opt.is_some());
+        let city = city_opt.unwrap();
+
+        assert!(city.compare(None));
     }
 }
