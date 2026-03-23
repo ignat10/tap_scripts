@@ -30,7 +30,6 @@ class Castle:
         objects["google"].tap(delay=2, steps=self.google)
         objects["castle"].tap(delay=3, steps=self.account)
         objects["confirm"].tap(delay=1)  # go inside
-        print(f"logged into {self.name}")        
 
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
