@@ -2,13 +2,13 @@
   "load": {
     "template": {
       "path": "load",
-      "threshold": 0.9
+      "tolerance": 0.5
     }
   },
   "xs": {
     "template": {
       "path": "xs",
-      "threshold": 0.8
+      "threshold": 0.5
     }
   },
   "close": {
