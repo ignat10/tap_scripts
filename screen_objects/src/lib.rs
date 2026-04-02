@@ -1,3 +1,5 @@
+#![feature(portable_simd)]
+
 use std::collections::HashMap;
 use std::ffi::OsString;
 use std::fs;
@@ -12,6 +14,7 @@ use serde_json;
 pub mod paths;
 pub mod adb;
 mod screen;
+mod image_analyzer;
 
 
 
@@ -62,28 +65,22 @@ impl ScreenObject {
 
         let size = sample.iter_images().next().unwrap().dimensions();
         let screen = screen::get_crop(coords.x as u32, coords.y as u32, size.0, size.1);
-
-        sample.compare(&screen)
+        sample.compare_loop(&screen)
     }
 
-    #[pyo3(signature = (delay=None, steps=None, repeat=None))]
-    fn tap(&self, delay: Option<f32>, steps: Option<u16>, repeat: Option<u8>) {
-        let point = self.point.as_ref().unwrap();
-        let coords = if let Some(steps) = steps {
-            &point.move_coords(steps)
+    fn tap_if_found(&mut self) -> bool {
+        let sample = self.sample.as_mut().unwrap();
+        let screen = &*screen::get();
+        let tolerance = sample.tolerance;
+
+        let coords = sample.iter_images().find_map(|sample_image| image_analyzer::find_sample(screen, sample_image, tolerance));
+
+        if let Some(coords) = coords {
+            adb::tap(&coords);
+            return true;
         } else {
-            &point.coords
-        };
-        let x = coords.x.to_string();
-        let y = coords.y.to_string();
-
-        for _ in 0..repeat.unwrap_or(1) {
-            adb::device_action(&[&x, &y]);
+            return false;
         }
-
-        if let Some(secs) = delay {
-            sleep(Duration::from_secs_f32(secs))
-        };
     }
 }
 
