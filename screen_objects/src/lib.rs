@@ -36,9 +36,9 @@ fn get_objects(data_path: PathBuf) -> HashMap<String, ScreenObject> {
 
     serde_json::from_reader(
         fs::File::open(paths::game_objects())
-        .unwrap()
+        .expect("Failed open file")
     )
-    .unwrap()
+    .expect("Failed to parse JSON data")
 }
 
 
@@ -52,6 +52,25 @@ struct ScreenObject {
 
 #[pymethods]
 impl ScreenObject {
+    #[pyo3(signature = (delay=None, steps=None, repeat=None))]
+    fn tap(&self, delay: Option<f32>, steps: Option<u16>, repeat: Option<u8>) {
+        let point = self.point.as_ref().unwrap();
+        let coords = if let Some(steps) = steps {
+            &point.move_coords(steps)
+        } else {
+            &point.coords
+        };
+
+        for _ in 0..repeat.unwrap_or(1) {
+            adb::tap(coords);
+        }
+
+        if let Some(secs) = delay {
+            sleep(Duration::from_secs_f32(secs))
+        };
+    }
+
+
     #[pyo3(signature = (steps=None))]
     fn compare(&mut self, steps: Option<u16>) -> bool {
         let point = self.point.as_ref().unwrap();
@@ -87,7 +106,7 @@ impl ScreenObject {
 
 #[derive(Deserialize)]
 struct Sample {
-    threshold: f32,
+    tolerance: f32,
     path: PathBuf,
     #[serde(skip, default)]
     _images: HashMap<OsString, Option<image::GrayImage>>,
@@ -120,30 +139,9 @@ impl Sample {
         })
     }
 
-
-    fn compare(&mut self, comparison_image: &image::GrayImage) -> bool {
-        let threshold = self.threshold;
-        let dims = comparison_image.dimensions();
-        let pixels = dims.0 * dims.1;
-        let step = (pixels as f32).cbrt() as usize;
-
+    fn compare_loop(&mut self, comparison: &image::GrayImage) -> bool {
         self.iter_images().any(|sample_image| {
-            let mut pixel = 0;
-            let mut total_diff: i32 = 0;
-            let mut total_delta: i32 = 0;
-            for (a, b) in sample_image.as_raw().iter()
-                .zip(comparison_image.as_raw().iter())
-                .step_by(step)
-            {
-                pixel += 1;
-                let diff = *a as i32 - *b as i32;
-                total_diff += diff;
-                total_delta += (diff - total_diff / pixel).abs();
-            }
-
-            let result: f32 = ((total_delta / pixel) as f32 / u8::MAX as f32).powi(2);
-            
-            result >= threshold
+            image_analyzer::images_match(sample_image, comparison)
         })
     }
 }
@@ -203,6 +201,11 @@ enum Delta {
 
 
 
+
+
+
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -213,7 +216,7 @@ mod tests {
         let data = r#"
             {
                 "path": "path_to_sample_dir",
-                "threshold": 0.8
+                "tolerance": 0.8
             }
         "#;
 
@@ -224,7 +227,7 @@ mod tests {
         let sample = sample_result.unwrap();
 
         assert_eq!(sample.path, PathBuf::from("path_to_sample_dir"));
-        assert_eq!(sample.threshold, 0.8);
+        assert_eq!(sample.tolerance, 0.8);
     }
 
     #[test]
@@ -283,21 +286,5 @@ mod tests {
         assert_eq!(point.coords.y, 400);
 
         assert!(point.delta.is_none());
-    }
-
-    #[test]
-    fn load_objects() {
-        get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
-    }
-
-    #[test]
-    fn compare_test() {
-        let mut objects = get_objects(PathBuf::from(r"/home/kazuru/tap_scripts/data"));
-        let city_opt = objects.get_mut("city");
-        
-        assert!(city_opt.is_some());
-        let city = city_opt.unwrap();
-
-        assert!(city.compare(None));
     }
 }

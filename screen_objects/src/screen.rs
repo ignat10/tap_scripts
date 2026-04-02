@@ -28,33 +28,12 @@ pub fn get_crop(x: u32, y: u32, width: u32, height: u32) -> image::GrayImage {
 
 
 fn set(screen_guard: &mut MutexGuard<'static, Option<image::GrayImage>>) {
-    let bytes = adb::device_action(&["exec-out", "screencap",]).stdout;
+    let screen_bytes = adb::screencap();
+    let (w, h) = adb::dimensions();
 
-    let output = adb::device_action(&["shell", "wm", "size"]).stdout;
-    let size_str = String::from_utf8_lossy(&output);
+    let rgba_img = image::RgbaImage::from_raw(w, h, screen_bytes)
+        .expect("Failed to create RGBA image from screencap data");
 
-    let size_part = size_str
-        .split_whitespace()
-        .last()
-        .unwrap();
-
-    let mut dims = size_part
-        .split('x')
-        .map(|s| s.parse::<u32>().unwrap());
-
-    let w = dims.next().unwrap();
-    let h = dims.next().unwrap();
-
-    let mut gray_image: image::GrayImage = image::GrayImage::new(w, h);
-    let buf = gray_image.as_mut();
-
-    for (chunk, pixel) in bytes.chunks(4).zip(buf.iter_mut()) {
-        let r = chunk[0] as u16;
-        let g = chunk[1] as u16;
-        let b = chunk[2] as u16;
-
-        let gray = ((r + g + b) / 3) as u8;
-        *pixel = gray;
-    }
-    **screen_guard = Some(gray_image);
+    let gray_img = image::DynamicImage::ImageRgba8(rgba_img).into_luma8();
+    **screen_guard = Some(gray_img);
 }

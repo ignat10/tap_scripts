@@ -1,10 +1,11 @@
 use std::process::{Command, Output};
 use std::io::stdin;
 use std::fs;
-
 use std::sync::OnceLock;
 
-use crate::paths;
+use itertools::Itertools;
+
+use crate::{paths, Coords};
 
 
 const ADB_PORT_LENGTH: usize = 5;
@@ -14,13 +15,33 @@ static DEVICE_SERIAL: OnceLock<String> = OnceLock::new();
 
 
 
-pub fn device_action(args: &[&str]) -> Output {
-    let serial = DEVICE_SERIAL.get().unwrap();
-    run([&["-s", serial], args].concat().as_slice())
+pub(super) fn tap(coords: &Coords) {
+    device_action(&["shell", "input", "tap", &coords.x.to_string(), &coords.y.to_string()]);
 }
 
 
-pub fn device_config() {
+pub(crate) fn screencap() -> Vec<u8> {
+    device_action(&["exec-out", "screencap",]).stdout
+}
+
+
+pub(crate) fn dimensions() -> (u32, u32) {
+    let output = device_action(&["shell", "wm", "size"]).stdout;
+    let size_str = String::from_utf8_lossy(&output);
+
+    let size_part = size_str
+        .split_whitespace()
+        .last()
+        .unwrap();
+
+    size_part.split('x')
+        .map(|s| s.parse::<u32>().unwrap())
+        .collect_tuple()
+        .unwrap()
+}
+
+
+pub(super) fn device_config() {
     println!("connecting adb device...");
 
     let ip = get_ip();
@@ -86,6 +107,12 @@ fn connect(port: &str) -> bool {
     let text_output = String::from_utf8_lossy(&raw_output).into_owned();
 
     text_output.contains("connected to")
+}
+
+
+fn device_action(args: &[&str]) -> Output {
+    let serial = DEVICE_SERIAL.get().unwrap();
+    run([&["-s", serial], args].concat().as_slice())
 }
 
 
