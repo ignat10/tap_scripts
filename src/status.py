@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 
-from src import objects
+from src.objects import objects
 
 
 
@@ -13,13 +13,13 @@ class Status(Enum):
 
 
 def check_status() -> Status:
-    if not objects['book'].compare_part():
+    if not objects['book'].compare():
         return Status.NOT_MAP
 
-    if objects['cities'].compare_part():
+    if objects['city'].compare():
         return Status.NOT_FOUND
 
-    if objects['gather'].compare_part():
+    if objects['gather'].compare():
         return Status.FOUND_VISIBLE
 
     else:

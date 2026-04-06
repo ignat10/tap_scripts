@@ -23,7 +23,7 @@ class Castle:
 
     def _switch_account(self) -> None:
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        objects[self.name].tap(delay=0.5)
+        objects[self.name].tap()
         objects["account"].tap(delay=0.5)
         objects["switch"].tap(delay=1)
         objects["login"].tap(delay=1)
@@ -39,8 +39,8 @@ class Castle:
 
     def close_ad(self) -> None:
         objects['close'].tap(repeat=5)
-        while not objects[self.name].compare():
-            if not objects["xs"].find_and_tap():
+        while not objects["map"].compare():
+            if not objects["xs"].tap_if_found():
                 objects['close'].tap()
         print("ad closed.")
 
@@ -53,13 +53,14 @@ class Castle:
         print("harvested. recalling...")
         objects["recall_all"].tap()
         objects["use"].tap(delay=0.5)
-        objects["close"].tap(repeat=2)
+        objects["close"].tap(delay=1, repeat=2)
         print("lord skills done.")
     
     @staticmethod
     def heal() -> None:
         print("healing...")
-        if objects["hospital"].find_and_tap():
+        if objects["heal"].compare():
+            objects["heal"].tap()
             objects["go"].tap(delay=1)
             objects["confirm_heal_replace_that"].tap(delay=1)
 

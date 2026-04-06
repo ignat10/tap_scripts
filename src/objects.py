@@ -1,6 +1,6 @@
 from typing import Literal
 
-import game_objects
+import screen_objects
 
 from .paths import DATA_DIR
 
@@ -9,6 +9,7 @@ GameObjectNames = Literal[
     "load",
     "xs",
     "close",
+    "heal",
     "lord",
     "recall_all",
     "harvest",
@@ -45,4 +46,4 @@ GameObjectNames = Literal[
 ]
 
 
-objects: dict[GameObjectNames, game_objects.GameObject] = game_objects.get_objects(DATA_DIR)
+objects: dict[GameObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(DATA_DIR)
