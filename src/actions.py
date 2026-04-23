@@ -3,7 +3,7 @@ from typing import Iterator
 
 import openpyxl
 
-from .objects import objects
+from .objects import objects, ScreenObjectNames
 from . import status
 from .paths import FARMS_SHEET_PATH
 from .inputter import inputter
@@ -13,7 +13,7 @@ class Castle:
     alliances_elite_mines: dict[str, int] = {}
 
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
-        self.name = name.replace(".", "")
+        self.name: ScreenObjectNames = name.replace(".", "") # type: ignore
         self.google = google
         self.account = account
         self.lv = lv
@@ -62,7 +62,9 @@ class Castle:
         if objects["heal"].compare():
             objects["heal"].tap()
             objects["go"].tap(delay=1)
-            objects["confirm_heal_replace_that"].tap(delay=1)
+            sleep(0.5)
+            # confirm
+        print("healed")
 
     def go_outside(self) -> None:
         print("going outside...")
@@ -134,10 +136,13 @@ class Castle:
 
 def iter_castles() -> Iterator[Castle]:
     sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
+    if sheet is None:
+        raise ValueError("cannot load sheet")
+    
     start_row = inputter("enter from which castle do we start: ", base_val=1) + 1
 
     for row in sheet.iter_rows(min_row=start_row, values_only=True):
-        yield Castle(*row)
+        yield Castle(*row) # type: ignore
 
 
 """"TODO:

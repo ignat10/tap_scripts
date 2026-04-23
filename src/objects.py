@@ -2,13 +2,14 @@ from typing import Literal
 
 import screen_objects
 
-from .paths import DATA_DIR
+from . import paths
 
 
-GameObjectNames = Literal[
+ScreenObjectNames = Literal[
     "load",
     "xs",
     "close",
+    "claim",
     "heal",
     "lord",
     "recall_all",
@@ -45,5 +46,6 @@ GameObjectNames = Literal[
     "kazuru_farm6",
 ]
 
+ip = paths.IP_PATH.read_text()
 
-objects: dict[GameObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(DATA_DIR)
+objects: dict[ScreenObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(paths.SAMPLES_DIR, paths.OBJECTS_PATH, ip) # type: ignore
