@@ -1,5 +1,3 @@
 openPyXL
 
-pyo3
-maturin
 pytest
