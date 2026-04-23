@@ -1,353 +1,243 @@
 {
     "load": {
-        "sample": {
-            "path": "load",
-            "tolerance": 0.1
-        }
+        "path": "load"
     },
     "xs": {
-        "sample": {
-            "path": "xs",
-            "tolerance": 0.1
-        }
+        "path": "xs"
     },
     "close": {
-        "point": {
-            "coords": {
-                "x": 650,
-                "y": 2710
-            }
+        "coords": {
+            "x": 650,
+            "y": 2710
         }
     },
     "heal": {
-        "point": {
-            "coords": {
-                "x": 510,
-                "y": 1307
-            }
+        "coords": {
+            "x": 507,
+            "y": 1307
         },
-        "sample": {
-            "path": "heal",
-            "tolerance": 0.1
-        }
+        "path": "heal"
+    },
+    "claim": {
+        "path": "claims"
     },
     "lord": {
-        "point": {
-            "coords": {
-                "x": 1130,
-                "y": 2068
-            }
+        "coords": {
+            "x": 1130,
+            "y": 2068
         }
     },
     "recall_all": {
-        "point": {
-            "coords": {
-                "x": 1000,
-                "y": 1000
-            }
+        "coords": {
+            "x": 1000,
+            "y": 1000
         }
     },
     "harvest": {
-        "point": {
-            "coords": {
-                "x": 226,
-                "y": 1763
-            }
+        "coords": {
+            "x": 226,
+            "y": 1763
         }
     },
     "use": {
-        "point": {
-            "coords": {
-                "x": 599,
-                "y": 2633
-            }
+        "coords": {
+            "x": 599,
+            "y": 2633
         }
     },
     "map": {
-        "point": {
-            "coords": {
-                "x": 37,
-                "y": 2513
-            }
+        "coords": {
+            "x": 37,
+            "y": 2513
         },
-        "sample": {
-            "path": "map",
-            "tolerance": 0.1
-        }
+        "path": "map"
     },
     "city": {
-        "point": {
-            "coords": {
-                "x": 553,
-                "y": 951
-            }
+        "coords": {
+            "x": 551,
+            "y": 952
         },
-        "sample": {
-            "path": "cities",
-            "tolerance": 0.1
-        }
+        "path": "cities"
     },
     "search": {
-        "point": {
-            "coords": {
-                "x": 1130,
-                "y": 2239
-            }
+        "coords": {
+            "x": 1130,
+            "y": 2239
         }
     },
     "mine_type": {
-        "point": {
-            "coords": {
-                "x": 78,
-                "y": 2345
-            },
-            "delta": {
-                "PosX": 200
-            }
+        "coords": {
+            "x": 78,
+            "y": 2345
+        },
+        "delta": {
+            "PosX": 200
         }
     },
     "plus": {
-        "point": {
-            "coords": {
-                "x": 762,
-                "y": 2610
-            }
+        "coords": {
+            "x": 762,
+            "y": 2610
         }
     },
     "minus": {
-        "point": {
-            "coords": {
-                "x": 130,
-                "y": 2610
-            }
+        "coords": {
+            "x": 130,
+            "y": 2610
         }
     },
     "mine": {
-        "point": {
-            "coords": {
-                "x": 616,
-                "y": 1339
-            },
-            "delta": {
-                "NegX": 183
-            }
+        "coords": {
+            "x": 616,
+            "y": 1339
+        },
+        "delta": {
+            "NegX": 183
         }
     },
     "gather": {
-        "point": {
-            "coords": {
-                "x": 786,
-                "y": 1151
-            }
+        "coords": {
+            "x": 786,
+            "y": 1151
         },
-        "sample": {
-            "path": "gather",
-            "tolerance": 0.1
-        }
+        "path": "gather"
     },
     "go": {
-        "point": {
-            "coords": {
-                "x": 1017,
-                "y": 2616
-            }
+        "coords": {
+            "x": 1017,
+            "y": 2616
         }
     },
     "back": {
-        "point": {
-            "coords": {
-                "x": 892,
-                "y": 2397
-            }
+        "coords": {
+            "x": 892,
+            "y": 2397
         }
     },
     "book": {
-        "point": {
-            "coords": {
-                "x": 41,
-                "y": 2022
-            }
+        "coords": {
+            "x": 41,
+            "y": 2022
         },
-        "sample": {
-            "path": "book",
-            "tolerance": 0.1
-        }
+        "path": "book"
     },
     "favorites_back": {
-        "point": {
-            "coords": {
-                "x": 79,
-                "y": 170
-            }
+        "coords": {
+            "x": 79,
+            "y": 170
         }
     },
     "alliance_elite_mines": {
-        "point": {
-            "coords": {
-                "x": 791,
-                "y": 300
-            }
+        "coords": {
+            "x": 791,
+            "y": 300
         }
     },
     "blue": {
-        "point": {
-            "coords": {
-                "x": 320,
-                "y": 755
-            },
-            "delta": {
-                "PosY": 258
-            }
+        "coords": {
+            "x": 320,
+            "y": 755
         },
-        "sample": {
-            "path": "blue",
-            "tolerance": 0.0
-        }
+        "delta": {
+            "PosY": 258
+        },
+        "path": "blue"
     },
     "gather_elite_mine": {
-        "point": {
-            "coords": {
-                "x": 881,
-                "y": 1051
-            }
+        "coords": {
+            "x": 881,
+            "y": 1051
         }
     },
     "account": {
-        "point": {
-            "coords": {
-                "x": 203,
-                "y": 1243
-            }
+        "coords": {
+            "x": 203,
+            "y": 1243
         }
     },
     "switch": {
-        "point": {
-            "coords": {
-                "x": 621,
-                "y": 1808
-            }
+        "coords": {
+            "x": 621,
+            "y": 1808
         }
     },
     "login": {
-        "point": {
-            "coords": {
-                "x": 633,
-                "y": 1492
-            }
+        "coords": {
+            "x": 633,
+            "y": 1492
         }
     },
     "google": {
-        "point": {
-            "coords": {
-                "x": 164,
-                "y": 840
-            },
-            "delta": {
-                "PosY": 200
-            }
+        "coords": {
+            "x": 164,
+            "y": 840
+        },
+        "delta": {
+            "PosY": 200
         }
     },
     "castle": {
-        "point": {
-            "coords": {
-                "x": 452,
-                "y": 1067
-            },
-            "delta": {
-                "PosY": 135
-            }
+        "coords": {
+            "x": 452,
+            "y": 1067
+        },
+        "delta": {
+            "PosY": 135
         }
     },
     "confirm": {
-        "point": {
-            "coords": {
-                "x": 354,
-                "y": 1550
-            }
+        "coords": {
+            "x": 354,
+            "y": 1550
         }
     },
     "leo": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/leo",
-            "tolerance": 0.1
-        }
+        "path": "avatars/leo"
     },
     "haac": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/haac",
-            "tolerance": 0.2
-        }
+        "path": "avatars/haac"
     },
     "hac": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/hac",
-            "tolerance": 0.2
-        }
+        "path": "avatars/hac"
     },
     "farm,hacen": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/farm,hacen",
-            "tolerance": 0.2
-        }
+        "path": "avatars/farm,hacen"
     },
     "VIChac": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/VIChac",
-            "tolerance": 0.2
-        }
+        "path": "avatars/VIChac"
     },
     "kazuru_farm5": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/kazuru_farm5",
-            "tolerance": 0.2
-        }
+        "path": "avatars/kazuru_farm5"
     },
     "kazuru_farm6": {
-        "point": {
-            "coords": {
-                "x": 10,
-                "y": 10
-            }
+        "coords": {
+            "x": 10,
+            "y": 10
         },
-        "sample": {
-            "path": "avatars/kazuru_farm6",
-            "tolerance": 0.2
-        }
+        "path": "avatars/kazuru_farm6"
     }
 }
