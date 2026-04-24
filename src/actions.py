@@ -33,12 +33,12 @@ class Castle:
         print(f"checking is current castle: {self.name}")
         if not objects[self.name].compare():
             print(f"logging into {self.name}, google: {self.google}, account: {self.account}")
-        objects[self.name].tap()
-        objects["account"].tap(delay=0.5)
-        objects["switch"].tap(delay=1)
-        objects["login"].tap(delay=1)
-        objects["google"].tap(delay=2, steps=self.google)
-        objects["castle"].tap(delay=3, steps=self.account)
+            objects[self.name].tap()
+            objects["account"].tap(delay=0.5)
+            objects["switch"].tap(delay=1)
+            objects["login"].tap(delay=1)
+            objects["google"].tap(delay=2, steps=self.google)
+            objects["castle"].tap(delay=3, steps=self.account)
             objects["confirm"].tap(delay=1)
             print("logged in, loading...")
         else:
@@ -75,7 +75,7 @@ class Castle:
             objects["go"].tap(delay=1)
             sleep(0.5)
             # confirm
-        print("healed")
+            print("healed")
 
     def go_outside(self) -> None:
         print("going outside...")
