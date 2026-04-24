@@ -29,21 +29,20 @@ class Castle:
         self.mine_lv = 6
         self.mine_type: MineType = MineType.IRON
 
-    def _switch_account(self) -> None:
-        print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
+    def log_into_account(self) -> None:
+        print(f"checking is current castle: {self.name}")
+        if not objects[self.name].compare():
+            print(f"logging into {self.name}, google: {self.google}, account: {self.account}")
         objects[self.name].tap()
         objects["account"].tap(delay=0.5)
         objects["switch"].tap(delay=1)
         objects["login"].tap(delay=1)
         objects["google"].tap(delay=2, steps=self.google)
         objects["castle"].tap(delay=3, steps=self.account)
-        objects["confirm"].tap(delay=1)  # go inside
-
-    def log_into_account(self) -> None:
-        print(f"checking is current castle: {self.name}")
-        if not objects[self.name].compare():
-            self._switch_account()
-        print(f"logged into {self.name}")
+            objects["confirm"].tap(delay=1)
+            print("logged in, loading...")
+        else:
+            print(f"already logged into {self.name}")
 
     def close_ad(self) -> None:
         objects['close'].tap(repeat=5)
@@ -51,6 +50,10 @@ class Castle:
             if not objects["xs"].tap_if_found():
                 objects['close'].tap()
         print("ad closed.")
+
+    def claim(self) -> None:
+        while objects['claim'].tap_if_found():
+            print("claimed something")
 
     @staticmethod
     def lord_skills() -> None:
@@ -66,8 +69,8 @@ class Castle:
     
     @staticmethod
     def heal() -> None:
-        print("healing...")
         if objects["heal"].compare():
+            print("healing...")
             objects["heal"].tap()
             objects["go"].tap(delay=1)
             sleep(0.5)
