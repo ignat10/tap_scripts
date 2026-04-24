@@ -1,12 +1,20 @@
 from time import sleep
+from enum import IntEnum
 from typing import Iterator
 
 import openpyxl
 
 from .objects import objects, ScreenObjectNames
-from . import status
+from .status import Status, check_status
 from .paths import FARMS_SHEET_PATH
 from .inputter import inputter
+
+
+class MineType(IntEnum):
+    FOOD = 0
+    WOOD = 1
+    STONE = 2
+    IRON = 3
 
 
 class Castle:
@@ -19,7 +27,7 @@ class Castle:
         self.lv = lv
         self.alliance = alliance
         self.mine_lv = 6
-        self.mine_type = 3
+        self.mine_type: MineType = MineType.IRON
 
     def _switch_account(self) -> None:
         print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
@@ -93,25 +101,28 @@ class Castle:
             find_another_mine()
             sleep(2)
 
-            match status.check_status():
-                case status.Status.FOUND_VISIBLE:
+            match check_status():
+                case Status.FOUND_VISIBLE:
                     print("gather is visible")
                     break
-                case status.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
+                case Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
                     print("gather is invisible")
                     objects["gather"].tap()
                     break
-                case status.Status.NOT_FOUND:
+                case Status.NOT_FOUND:
                     if self.mine_type > 0:
                         print("second mine type")
-                        self.mine_type -= 1
+                        self.mine_type = MineType(self.mine_type - 1)
                     else:
                         print("less lv")
                         self.mine_lv -= 1
-                        self.mine_type = 3
-                case status.Status.NOT_MAP:
+                        self.mine_type = MineType.IRON
+                case Status.NOT_MAP:
                     print("Not on the map. Panic.")
                     continue
+                case Status.ERROR:
+                    raise(RuntimeError("There is city and mine in the same place"))
+                
         objects["mine"].tap(delay=0.5)
         gather_std_mine()
 
