@@ -3,6 +3,7 @@ from enum import IntEnum
 from typing import Iterator
 
 import openpyxl
+from screen_objects import reset_screen
 
 from .objects import objects, ScreenObjectNames
 from .status import Status, check_status
@@ -40,7 +41,13 @@ class Castle:
             objects["google"].tap(delay=2, steps=self.google)
             objects["castle"].tap(delay=3, steps=self.account)
             objects["confirm"].tap(delay=1)
-            print("logged in, loading...")
+            print("logged in.")
+            while not (objects["map"].compare() or objects[self.name].compare()):
+                objects['xs'].tap_if_found()
+                reset_screen()
+                sleep(1)
+                print("loading...")
+            print("loaded.")
         else:
             print(f"already logged into {self.name}")
 
@@ -54,6 +61,7 @@ class Castle:
     def claim(self) -> None:
         while objects['claim'].tap_if_found():
             print("claimed something")
+        sleep(0.5)
 
     @staticmethod
     def lord_skills() -> None:
