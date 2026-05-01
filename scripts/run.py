@@ -1,12 +1,4 @@
-from src.actions import iter_castles
+from src.objects import objects
 
-iterator = iter_castles()
-
-
-
-castle = iterator.__next__()
-
-
-
-
-castle.log_into_account()
+objects["claim"].tap_if_found()
+print("claimed something")
