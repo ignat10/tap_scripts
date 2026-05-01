@@ -74,8 +74,20 @@ class Castle:
             objects["heal"].tap()
             objects["go"].tap(delay=1)
             sleep(0.5)
-            # confirm
-            print("healed")
+            if objects['confirm_rss'].compare():
+                objects['confirm_rss'].tap()
+        else:
+            print("no need to heal.")
+    
+    @staticmethod
+    def sanctuary() -> None:
+        if objects['sanctuary'].compare():
+            print("sanctuary...")
+            objects['sanctuary'].tap()
+            objects['go'].tap(delay=1)
+            objects['back'].tap(delay=0.5)
+        else:
+            print("no need to go to sanctuary.")
 
     def go_outside(self) -> None:
         print("going outside...")
@@ -97,7 +109,7 @@ class Castle:
         def gather_std_mine() -> None:
             objects["gather"].tap(delay=0.5)
             objects["go"].tap(delay=0.5)
-            objects["back"].tap(delay=0.5)
+            objects["to_castle"].tap(delay=0.5)
 
         objects["search"].tap(delay=1, repeat=2)
         while True:
@@ -139,7 +151,7 @@ class Castle:
                 objects["blue"].tap(steps=self.alliances_elite_mines[self.alliance])
                 objects["gather_elite_mine"].tap(delay=2)
                 objects["go"].tap(delay=0.5)  # regularly I should be there
-                objects["back"]
+                objects["to_castle"].tap(delay=0.5)
                 self.alliances_elite_mines[self.alliance] += 1
                 return True  # everything is alright I went to elite
             else:

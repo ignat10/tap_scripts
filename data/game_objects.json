@@ -16,7 +16,28 @@
             "x": 506,
             "y": 1306
         },
-        "path": "heal"
+        "path": "hospital/heal"
+    },
+    "sanctuary": {
+        "coords": {
+            "x": 506,
+            "y": 1306
+        },
+        "path": "hospital/sanctuary"
+    },
+    "confirm_rss": {
+        "coords": {
+            "x": 456,
+            "y": 1941
+        },
+        "path": "hospital/confirm_rss"
+    },
+    "back": {
+        "coords": {
+            "x": 40,
+            "y": 29
+        },
+        "path": "back"
     },
     "claim": {
         "path": "claims"
@@ -47,7 +68,7 @@
     },
     "map": {
         "coords": {
-            "x": 37,
+            "x": 33,
             "y": 2513
         },
         "path": "map"
@@ -106,7 +127,7 @@
             "y": 2616
         }
     },
-    "back": {
+    "to_castle": {
         "coords": {
             "x": 892,
             "y": 2397
@@ -114,7 +135,7 @@
     },
     "book": {
         "coords": {
-            "x": 41,
+            "x": 37,
             "y": 2022
         },
         "path": "book"
