@@ -114,29 +114,23 @@ class Castle:
         objects["search"].tap(delay=1, repeat=2)
         while True:
             find_another_mine()
-            sleep(2)
+            sleep(1.5)
 
             match check_status():
-                case Status.FOUND_VISIBLE:
-                    print("gather is visible")
-                    break
-                case Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
-                    print("gather is invisible")
-                    objects["gather"].tap()
+                case Status.FOUND:
+                    print("Mine found")
                     break
                 case Status.NOT_FOUND:
                     if self.mine_type > 0:
-                        print("second mine type")
                         self.mine_type = MineType(self.mine_type - 1)
                     else:
                         print("less lv")
                         self.mine_lv -= 1
                         self.mine_type = MineType.IRON
                 case Status.NOT_MAP:
-                    print("Not on the map. Panic.")
-                    continue
+                    raise(RuntimeError("Not on the map. Panic."))
                 case Status.ERROR:
-                    raise(RuntimeError("There is city and mine in the same place"))
+                    print("some chemistry error")
                 
         objects["mine"].tap(delay=0.5)
         gather_std_mine()
