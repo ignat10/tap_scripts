@@ -22,7 +22,7 @@ class Castle:
     alliances_elite_mines: dict[str, int] = {}
 
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
-        self.name: ScreenObjectNames = name.replace(".", "") # type: ignore
+        self.name: ScreenObjectNames = name # type: ignore
         self.google = google
         self.account = account
         self.lv = lv

@@ -41,9 +41,9 @@ ScreenObjectNames = Literal[
     "confirm",
 
     "leo",
-    "haac",
-    "hac",
-    "VIChac",
+    "haac.",
+    "hac......",
+    "VIC.hac",
     "farm,hacen",
     "kazuru_farm5",
     "kazuru_farm6",
