@@ -75,8 +75,8 @@
     },
     "city": {
         "coords": {
-            "x": 551,
-            "y": 952
+            "x": 572,
+            "y": 1078
         },
         "path": "cities"
     },
@@ -186,6 +186,13 @@
             "y": 1492
         }
     },
+    "logo": {
+        "coords": {
+            "x": 546,
+            "y": 374
+        },
+        "path": "logo"
+    },
     "google": {
         "coords": {
             "x": 164,
@@ -194,6 +201,13 @@
         "delta": {
             "PosY": 200
         }
+    },
+    "acc_list": {
+        "coords": {
+            "x": 534,
+            "y": 875
+        },
+        "path": "acc_list"
     },
     "castle": {
         "coords": {

@@ -36,7 +36,9 @@ ScreenObjectNames = Literal[
     "account",
     "switch",
     "login",
+    "logo",
     "google",
+    "acc_list",
     "castle",
     "confirm",
 

@@ -35,15 +35,27 @@ class Castle:
         if not objects[self.name].compare():
             print(f"logging into {self.name}, google: {self.google}, account: {self.account}")
             objects[self.name].tap()
-            objects["account"].tap(delay=0.5)
-            objects["switch"].tap(delay=1)
-            objects["login"].tap(delay=1)
-            objects["google"].tap(delay=2, steps=self.google)
-            objects["castle"].tap(delay=3, steps=self.account)
-            objects["confirm"].tap(delay=1)
+            sleep(0.5)
+            objects["account"].tap()
+            while True:
+                objects['close'].spam_tap(5, 0.1)
+                sleep(1)
+                objects["switch"].tap()
+                sleep(1)
+                objects["login"].tap()
+                sleep(2)
+                if not objects["logo"].compare():
+                    continue
+                objects["google"].tap(offset_steps=self.google)
+                sleep(3)
+                if not objects["acc_list"].compare():
+                    continue
+                objects["castle"].tap(offset_steps=self.account)
+                sleep(1)
+                objects["confirm"].tap()
+                break
             print("logged in.")
-            while not (objects["map"].compare() or objects[self.name].compare()):
-                objects['xs'].tap_if_found()
+            while not any((objects["map"].compare(), objects[self.name].compare(), objects['xs'].tap_if_found())):
                 reset_screen()
                 sleep(1)
                 print("loading...")
