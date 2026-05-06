@@ -179,8 +179,18 @@ def iter_castles() -> Iterator[Castle]:
     if sheet is None:
         raise ValueError("cannot load sheet")
     
-    start_row = inputter("enter from which castle do we start: ", base_val=1) + 1
+    inp = input("enter from which castle do we start: ") # first row is header
 
+    if not inp:
+        for cell in sheet['A'][1:]:
+            if objects[cell.value].compare():
+                start_row = cell.row
+                break
+        else:
+            raise RuntimeError("cannot find any castle on the screen")
+    else:
+        start_row = int(inp) + 1 # because of header
+    
     for row in sheet.iter_rows(min_row=start_row, values_only=True):
         yield Castle(*row) # type: ignore
 
