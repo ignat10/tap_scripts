@@ -1,4 +1,7 @@
-from src.objects import objects
+from src.actions import iter_castles
 
-objects["claim"].tap_if_found()
-print("claimed something")
+castle = next(iter_castles())
+
+while command := input("Enter action: "):
+    func = getattr(castle, command)
+    func()

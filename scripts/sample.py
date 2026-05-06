@@ -4,18 +4,18 @@ from src.objects import objects
 
 name = input("Enter object name: ")
 
-object = objects[name] # type: ignore
+obj = objects[name] # type: ignore
 
 while command := input("Enter command: "):
     match command:
         case "find":
-            print(object.find_object())
+            print(obj.find_object())
 
         case "comp":
-            print(object.compare())
+            print(obj.compare())
 
         case 'add':
-            object.add_sample()
+            obj.add_sample()
             
         case 'reset':
             reset_screen()
