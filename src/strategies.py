@@ -8,8 +8,8 @@ def farming() -> None:
     for castle in iter_castles():
         castle.log_into_account()
         castle.close_ad()
-        castle.lord_skills()
         castle.heal()
+        castle.lord_skills()
         castle.go_outside()
 
         castle.get_std_mine()

@@ -1,342 +1,243 @@
 {
-  "load": {
-    "template": {
-      "path": "load",
-      "threshold": 0.9
-    }
-  },
-  "xs": {
-    "template": {
-      "path": "xs",
-      "threshold": 0.8
-    }
-  },
-  "close": {
-    "point": {
-      "coords": {
-        "x": 650,
-        "y": 2710
-      }
-    }
-  },
-  "lord": {
-    "point": {
-      "coords": {
-        "x": 1130,
-        "y": 2068
-      }
-    }
-  },
-  "recall_all": {
-    "point": {
-      "coords": {
-        "x": 1000,
-        "y": 1000
-      }
-    }
-  },
-  "harvest": {
-    "point": {
-      "coords": {
-        "x": 226,
-        "y": 1763
-      }
-    }
-  },
-  "use": {
-    "point": {
-      "coords": {
-        "x": 599,
-        "y": 2633
-      }
-    }
-  },
-  "map": {
-    "point": {
-      "coords": {
-        "x": 113,
-        "y": 2599
-      }
-    }
-  },
-  "city": {
-    "point": {
-      "coords": {
-        "x": 505,
-        "y": 1016
-      }
+    "load": {
+        "path": "load"
     },
-    "template": {
-      "path": "city",
-      "threshold": 0.6
-    }
-  },
-  "search": {
-    "point": {
-      "coords": {
-        "x": 1130,
-        "y": 2239
-      }
-    }
-  },
-  "mine_type": {
-    "point": {
-      "coords": {
-        "x": 78,
-        "y": 2345
-      },
-    "delta": {
-        "interval": 200,
-        "axis": "X"
-      }
-    }
-  },
-  "plus": {
-    "point": {
-      "coords": {
-        "x": 762,
-        "y": 2610
-      }
-    }
-  },
-  "minus": {
-    "point": {
-      "coords": {
-        "x": 130,
-        "y": 2610
-      }
-    }
-  },
-  "mine": {
-    "point": {
-      "coords": {
-        "x": 616,
-        "y": 1339
-      },
-    "delta": {
-        "interval": -183,
-        "axis": "X"
-      }
-    }
-  },
-  "gather": {
-    "point": {
-      "coords": {
-        "x": 786,
-        "y": 1151
-      }
+    "xs": {
+        "path": "xs"
     },
-    "template": {
-      "path": "gather",
-      "threshold": 0.8
-    }
-  },
-  "go": {
-    "point": {
-      "coords": {
-        "x": 1017,
-        "y": 2616
-      }
-    }
-  },
-  "back": {
-    "point": {
-      "coords": {
-        "x": 892,
-        "y": 2397
-      }
-    }
-  },
-  "book": {
-    "point": {
-      "coords": {
-        "x": 37,
-        "y": 2022
-      }
+    "close": {
+        "coords": {
+            "x": 650,
+            "y": 2710
+        }
     },
-    "template": {
-      "path": "book",
-      "threshold": 0.8
-    }
-  },
-  "favorites_back": {
-    "point": {
-      "coords": {
-        "x": 79,
-        "y": 170
-      }
-    }
-  },
-  "alliance_elite_mines": {
-    "point": {
-      "coords": {
-        "x": 791,
-        "y": 300
-      }
-    }
-  },
-  "blue": {
-    "point": {
-      "coords": {
-        "x": 320,
-        "y": 755
-      },
-      "delta": {
-        "interval": 258,
-        "axis": "Y"
-      }
+    "heal": {
+        "coords": {
+            "x": 507,
+            "y": 1307
+        },
+        "path": "heal"
     },
-    "template": {
-      "path": "blue",
-      "threshold": 1
-    }
-  },
-  "gather_elite_mine": {
-    "point": {
-      "coords": {
-        "x": 881,
-        "y": 1051
-      }
-    }
-  },
-  "account": {
-    "point": {
-      "coords": {
-        "x": 203,
-        "y": 1243
-      }
-    }
-  },
-  "switch": {
-    "point": {
-      "coords": {
-        "x": 621,
-        "y": 1808
-      }
-    }
-  },
-  "login": {
-    "point": {
-      "coords": {
-        "x": 633,
-        "y": 1492
-      }
-    }
-  },
-  "google": {
-    "point": {
-      "coords": {
-        "x": 164,
-        "y": 840
-      },
-    "delta": {
-        "interval": 200,
-        "axis": "Y"
-      }
-    }
-  },
-  "castle": {
-    "point": {
-      "coords": {
-        "x": 452,
-        "y": 1067
-      },
-      "delta": {
-        "interval": 135,
-        "axis": "Y"
-      }
-    }
-  },
-  "confirm": {
-    "point": {
-      "coords": {
-        "x": 354,
-        "y": 1550
-      }
-    }
-  },
-  "leo": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "claim": {
+        "path": "claims"
     },
-    "template": {
-      "path": "avatars/leo",
-      "threshold": 0.8
-    }
-  },
-  "haac": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "lord": {
+        "coords": {
+            "x": 1130,
+            "y": 2068
+        }
     },
-    "template": {
-      "path": "avatars/haac",
-      "threshold": 0.8
-    }
-  },
-  "hac": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "recall_all": {
+        "coords": {
+            "x": 1000,
+            "y": 1000
+        }
     },
-    "template": {
-      "path": "avatars/hac",
-      "threshold": 0.8
-    }
-  },
-  "farm,hacen": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "harvest": {
+        "coords": {
+            "x": 226,
+            "y": 1763
+        }
     },
-    "template": {
-      "path": "avatars/farm,hacen",
-      "threshold": 0.8
-    }
-  },
-  "VIChac": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "use": {
+        "coords": {
+            "x": 599,
+            "y": 2633
+        }
     },
-    "template": {
-      "path": "avatars/VIChac",
-      "threshold": 0.8
-    }
-  },
-  "kazuru_farm5": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "map": {
+        "coords": {
+            "x": 37,
+            "y": 2513
+        },
+        "path": "map"
     },
-    "template": {
-      "path": "avatars/kazuru_farm5",
-      "threshold": 0.8
-    }
-  },
-  "kazuru_farm6": {
-    "point": {
-      "coords": {
-        "x": 10,
-        "y": 10
-      }
+    "city": {
+        "coords": {
+            "x": 551,
+            "y": 952
+        },
+        "path": "cities"
     },
-    "template": {
-      "path": "avatars/kazuru_farm6",
-      "threshold": 0.8
+    "search": {
+        "coords": {
+            "x": 1130,
+            "y": 2239
+        }
+    },
+    "mine_type": {
+        "coords": {
+            "x": 78,
+            "y": 2345
+        },
+        "delta": {
+            "PosX": 200
+        }
+    },
+    "plus": {
+        "coords": {
+            "x": 762,
+            "y": 2610
+        }
+    },
+    "minus": {
+        "coords": {
+            "x": 130,
+            "y": 2610
+        }
+    },
+    "mine": {
+        "coords": {
+            "x": 616,
+            "y": 1339
+        },
+        "delta": {
+            "NegX": 183
+        }
+    },
+    "gather": {
+        "coords": {
+            "x": 786,
+            "y": 1151
+        },
+        "path": "gather"
+    },
+    "go": {
+        "coords": {
+            "x": 1017,
+            "y": 2616
+        }
+    },
+    "back": {
+        "coords": {
+            "x": 892,
+            "y": 2397
+        }
+    },
+    "book": {
+        "coords": {
+            "x": 41,
+            "y": 2022
+        },
+        "path": "book"
+    },
+    "favorites_back": {
+        "coords": {
+            "x": 79,
+            "y": 170
+        }
+    },
+    "alliance_elite_mines": {
+        "coords": {
+            "x": 791,
+            "y": 300
+        }
+    },
+    "blue": {
+        "coords": {
+            "x": 320,
+            "y": 755
+        },
+        "delta": {
+            "PosY": 258
+        },
+        "path": "blue"
+    },
+    "gather_elite_mine": {
+        "coords": {
+            "x": 881,
+            "y": 1051
+        }
+    },
+    "account": {
+        "coords": {
+            "x": 203,
+            "y": 1243
+        }
+    },
+    "switch": {
+        "coords": {
+            "x": 621,
+            "y": 1808
+        }
+    },
+    "login": {
+        "coords": {
+            "x": 633,
+            "y": 1492
+        }
+    },
+    "google": {
+        "coords": {
+            "x": 164,
+            "y": 840
+        },
+        "delta": {
+            "PosY": 200
+        }
+    },
+    "castle": {
+        "coords": {
+            "x": 452,
+            "y": 1067
+        },
+        "delta": {
+            "PosY": 135
+        }
+    },
+    "confirm": {
+        "coords": {
+            "x": 354,
+            "y": 1550
+        }
+    },
+    "leo": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/leo"
+    },
+    "haac": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/haac"
+    },
+    "hac": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/hac"
+    },
+    "farm,hacen": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/farm,hacen"
+    },
+    "VIChac": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/VIChac"
+    },
+    "kazuru_farm5": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/kazuru_farm5"
+    },
+    "kazuru_farm6": {
+        "coords": {
+            "x": 10,
+            "y": 10
+        },
+        "path": "avatars/kazuru_farm6"
     }
-  }
 }

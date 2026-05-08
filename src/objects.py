@@ -1,20 +1,22 @@
 from typing import Literal
-import json
 
-from .game_object import GameObject
-from ..paths import GAME_OBJECTS
+import screen_objects
+
+from . import paths
 
 
-GameObjectNames = Literal[
+ScreenObjectNames = Literal[
     "load",
     "xs",
     "close",
+    "claim",
+    "heal",
     "lord",
     "recall_all",
     "harvest",
     "use",
     "map",
-    "cities",
+    "city",
     "search",
     "mine_type",
     "plus",
@@ -28,7 +30,6 @@ GameObjectNames = Literal[
     "alliance_elite_mines",
     "blue",
     "gather_elite_mine",
-    "avatar",
     "account",
     "switch",
     "login",
@@ -45,16 +46,6 @@ GameObjectNames = Literal[
     "kazuru_farm6",
 ]
 
+ip = paths.IP_PATH.read_text()
 
-def load_game_objects():
-    with GAME_OBJECTS.open() as f:
-        raw_data: dict[str, dict] = json.load(f)
-
-    return {
-        object_name:
-        GameObject(**arguments)
-        for object_name, arguments in raw_data.items()
-    }
-
-
-objects: dict[GameObjectNames, GameObject] = load_game_objects()
+objects: dict[ScreenObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(paths.SAMPLES_DIR, paths.OBJECTS_PATH, ip) # type: ignore
