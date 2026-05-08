@@ -8,7 +8,9 @@ def farming() -> None:
     for castle in iter_castles():
         castle.log_into_account()
         castle.close_ad()
+        castle.claim()
         castle.heal()
+        castle.sanctuary()
         castle.lord_skills()
         castle.go_outside()
 
@@ -16,7 +18,8 @@ def farming() -> None:
         castle.get_std_mine()
         if not castle.get_elite_mine():
             castle.get_std_mine()
-        castle.get_std_mine()
+        if castle.lv >= 19:
+            castle.get_std_mine()
 
 
 def seconds():

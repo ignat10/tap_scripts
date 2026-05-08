@@ -6,10 +6,10 @@ from src.objects import objects
 
 
 class Status(Enum):
+    ERROR = auto()
     NOT_MAP = auto()
     NOT_FOUND = auto()
-    FOUND_VISIBLE = auto()
-    FOUND_NOT_VISIBLE = auto()
+    FOUND = auto()
 
 
 def check_status() -> Status:
@@ -18,9 +18,9 @@ def check_status() -> Status:
 
     if objects['city'].compare():
         return Status.NOT_FOUND
-
-    if objects['gather'].compare():
-        return Status.FOUND_VISIBLE
+    
+    if objects['gather'].compare() or objects['mine'].compare():
+        return Status.FOUND
 
     else:
-        return Status.FOUND_NOT_VISIBLE
+        return Status.ERROR

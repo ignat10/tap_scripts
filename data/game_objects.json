@@ -13,10 +13,31 @@
     },
     "heal": {
         "coords": {
-            "x": 507,
-            "y": 1307
+            "x": 506,
+            "y": 1306
         },
-        "path": "heal"
+        "path": "hospital/heal"
+    },
+    "sanctuary": {
+        "coords": {
+            "x": 506,
+            "y": 1306
+        },
+        "path": "hospital/sanctuary"
+    },
+    "confirm_rss": {
+        "coords": {
+            "x": 456,
+            "y": 1941
+        },
+        "path": "hospital/confirm_rss"
+    },
+    "back": {
+        "coords": {
+            "x": 40,
+            "y": 29
+        },
+        "path": "back"
     },
     "claim": {
         "path": "claims"
@@ -47,15 +68,15 @@
     },
     "map": {
         "coords": {
-            "x": 37,
+            "x": 33,
             "y": 2513
         },
         "path": "map"
     },
     "city": {
         "coords": {
-            "x": 551,
-            "y": 952
+            "x": 572,
+            "y": 1078
         },
         "path": "cities"
     },
@@ -88,12 +109,10 @@
     },
     "mine": {
         "coords": {
-            "x": 616,
-            "y": 1339
+            "x": 519,
+            "y": 1209
         },
-        "delta": {
-            "NegX": 183
-        }
+        "path": "mines"
     },
     "gather": {
         "coords": {
@@ -108,7 +127,7 @@
             "y": 2616
         }
     },
-    "back": {
+    "to_castle": {
         "coords": {
             "x": 892,
             "y": 2397
@@ -116,7 +135,7 @@
     },
     "book": {
         "coords": {
-            "x": 41,
+            "x": 37,
             "y": 2022
         },
         "path": "book"
@@ -167,6 +186,13 @@
             "y": 1492
         }
     },
+    "logo": {
+        "coords": {
+            "x": 546,
+            "y": 374
+        },
+        "path": "logo"
+    },
     "google": {
         "coords": {
             "x": 164,
@@ -175,6 +201,13 @@
         "delta": {
             "PosY": 200
         }
+    },
+    "acc_list": {
+        "coords": {
+            "x": 534,
+            "y": 875
+        },
+        "path": "acc_list"
     },
     "castle": {
         "coords": {
@@ -198,14 +231,14 @@
         },
         "path": "avatars/leo"
     },
-    "haac": {
+    "haac.": {
         "coords": {
             "x": 10,
             "y": 10
         },
         "path": "avatars/haac"
     },
-    "hac": {
+    "hac......": {
         "coords": {
             "x": 10,
             "y": 10
@@ -219,7 +252,7 @@
         },
         "path": "avatars/farm,hacen"
     },
-    "VIChac": {
+    "VIC.hac": {
         "coords": {
             "x": 10,
             "y": 10

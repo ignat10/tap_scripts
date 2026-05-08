@@ -1,70 +1,123 @@
 from time import sleep
+from enum import IntEnum
 from typing import Iterator
 
 import openpyxl
+from screen_objects import reset_screen
 
 from .objects import objects, ScreenObjectNames
-from . import status
+from .status import Status, check_status
 from .paths import FARMS_SHEET_PATH
-from .inputter import inputter
+
+
+class MineType(IntEnum):
+    FOOD = 0
+    WOOD = 1
+    STONE = 2
+    IRON = 3
 
 
 class Castle:
     alliances_elite_mines: dict[str, int] = {}
 
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
-        self.name: ScreenObjectNames = name.replace(".", "") # type: ignore
+        self.name: ScreenObjectNames = name # type: ignore
         self.google = google
         self.account = account
         self.lv = lv
         self.alliance = alliance
         self.mine_lv = 6
-        self.mine_type = 3
-
-    def _switch_account(self) -> None:
-        print(f"running second_farm {self.name}, google: {self.google}, account: {self.account}")
-        objects[self.name].tap()
-        objects["account"].tap(delay=0.5)
-        objects["switch"].tap(delay=1)
-        objects["login"].tap(delay=1)
-        objects["google"].tap(delay=2, steps=self.google)
-        objects["castle"].tap(delay=3, steps=self.account)
-        objects["confirm"].tap(delay=1)  # go inside
+        self.mine_type: MineType = MineType.IRON
 
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
         if not objects[self.name].compare():
-            self._switch_account()
-        print(f"logged into {self.name}")
+            print(f"logging into {self.name}, google: {self.google}, account: {self.account}")
+            objects[self.name].tap()
+            sleep(0.5)
+            objects["account"].tap()
+            while True:
+                objects['close'].spam_tap(5, 0.1)
+                sleep(1)
+                objects["switch"].tap()
+                sleep(1)
+                objects["login"].tap()
+                sleep(2)
+                if not objects["logo"].compare():
+                    continue
+                objects["google"].tap(offset_steps=self.google)
+                sleep(3)
+                if not objects["acc_list"].compare():
+                    continue
+                objects["castle"].tap(offset_steps=self.account)
+                sleep(1)
+                objects["confirm"].tap()
+                break
+            print("logged in.")
+            while not any((objects["map"].compare(), objects[self.name].compare(), objects['xs'].tap_if_found())):
+                reset_screen()
+                sleep(1)
+                print("loading...")
+            print("loaded.")
+        else:
+            print(f"already logged into {self.name}")
 
     def close_ad(self) -> None:
-        objects['close'].tap(repeat=5)
+        objects['close'].spam_tap(10, 0.2)
+        sleep(1)
         while not objects["map"].compare():
             if not objects["xs"].tap_if_found():
                 objects['close'].tap()
+            sleep(1)
         print("ad closed.")
+
+    def claim(self) -> None:
+        while objects['claim'].tap_if_found():
+            print("claimed something")
+        sleep(0.5)
 
     @staticmethod
     def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].tap()
-        objects["harvest"].tap(delay=0.5)
-        objects["use"].tap(delay=0.5)
+        sleep(0.5)
+        objects["harvest"].tap()
+        sleep(0.5)
+        objects["use"].tap()
         print("harvested. recalling...")
         objects["recall_all"].tap()
-        objects["use"].tap(delay=0.5)
-        objects["close"].tap(delay=1, repeat=2)
+        sleep(0.5)
+        objects["use"].tap()
+        sleep(1)
+        objects["close"].tap()
+        sleep(0.2)
+        objects['close'].tap()
         print("lord skills done.")
     
     @staticmethod
     def heal() -> None:
-        print("healing...")
         if objects["heal"].compare():
+            print("healing...")
             objects["heal"].tap()
-            objects["go"].tap(delay=1)
+            sleep(1)
+            objects["go"].tap()
             sleep(0.5)
-            # confirm
-        print("healed")
+            if objects['confirm_rss'].compare():
+                objects['confirm_rss'].tap()
+        else:
+            print("no need to heal.")
+    
+    @staticmethod
+    def sanctuary() -> None:
+        if objects['sanctuary'].compare():
+            print("sanctuary...")
+            objects['sanctuary'].tap()
+            sleep(1)
+            objects['go'].tap()
+            sleep(0.5)
+            objects['back'].tap()
+        else:
+            print("no need to go to sanctuary.")
 
     def go_outside(self) -> None:
         print("going outside...")
@@ -75,57 +128,55 @@ class Castle:
     def get_std_mine(self) -> None:
         """Go to standard mine from the map."""
 
-        def find_another_mine() -> None:
-            """Find another mine if not found."""
-            print(f"searching mine type: {self.mine_type}, lv: {self.mine_lv}")
-            objects["mine_type"].tap(steps=self.mine_type, delay=0.5)
-            objects["minus"].tap(repeat=5)
-            objects["plus"].tap(repeat=self.mine_lv - 1)
-            objects["go"].tap(repeat=3)
-
-        def gather_std_mine() -> None:
-            objects["gather"].tap(delay=0.5)
-            objects["go"].tap(delay=0.5)
-            objects["back"].tap(delay=0.5)
-
-        objects["search"].tap(delay=1, repeat=2)
+        objects["search"].tap()
         while True:
-            find_another_mine()
-            sleep(2)
+            print(f"searching mine. type: {self.mine_type}, lv: {self.mine_lv}")
+            sleep(0.5)
+            objects["mine_type"].tap(offset_steps=self.mine_type)
+            objects["minus"].spam_tap(5, 0)
+            objects["plus"].spam_tap(self.mine_lv - 1, 0)
+            objects["go"].spam_tap(4, 0.1)
+            sleep(1.5)
 
-            match status.check_status():
-                case status.Status.FOUND_VISIBLE:
-                    print("gather is visible")
+            match check_status():
+                case Status.FOUND:
                     break
-                case status.Status.FOUND_NOT_VISIBLE:  # if mine found but point gather is invisible
-                    print("gather is invisible")
-                    objects["gather"].tap()
-                    break
-                case status.Status.NOT_FOUND:
+                case Status.NOT_FOUND:
                     if self.mine_type > 0:
-                        print("second mine type")
-                        self.mine_type -= 1
+                        self.mine_type = MineType(self.mine_type - 1)
                     else:
-                        print("less lv")
                         self.mine_lv -= 1
-                        self.mine_type = 3
-                case status.Status.NOT_MAP:
-                    print("Not on the map. Panic.")
-                    continue
-        objects["mine"].tap(delay=0.5)
-        gather_std_mine()
+                        self.mine_type = MineType.IRON
+                case Status.NOT_MAP:
+                    raise(RuntimeError("Not on the map. Panic."))
+                case Status.ERROR:
+                    print("some chemistry error")
+                
+        sleep(0.5)
+        objects["mine"].tap()
+        sleep(0.5)
+        objects["gather"].tap()
+        sleep(0.5)
+        objects["go"].tap()
+        print("mine taken.")
+        sleep(0.5)
+        objects["to_castle"].tap()
 
     def get_elite_mine(self) -> bool:
         print("Elite")
         while True:
             objects["book"].tap()
-            objects["alliance_elite_mines"].tap(delay=0.5)
+            sleep(0.5)
+            objects["alliance_elite_mines"].tap()
             sleep(1)
-            if objects["blue"].compare(steps=self.alliances_elite_mines.setdefault(self.alliance, 0)):  # color of blue
-                objects["blue"].tap(steps=self.alliances_elite_mines[self.alliance])
-                objects["gather_elite_mine"].tap(delay=2)
-                objects["go"].tap(delay=0.5)  # regularly I should be there
-                objects["back"]
+            if objects["blue"].compare(offset_steps=self.alliances_elite_mines.setdefault(self.alliance, 0)):  # color of blue
+                objects["blue"].tap(offset_steps=self.alliances_elite_mines[self.alliance])
+                sleep(2)
+                objects["gather_elite_mine"].tap()
+                sleep(0.5)
+                objects["go"].tap()  # regularly I should be there
+                sleep(0.5)
+                objects["to_castle"].tap()
                 self.alliances_elite_mines[self.alliance] += 1
                 return True  # everything is alright I went to elite
             else:
@@ -139,8 +190,18 @@ def iter_castles() -> Iterator[Castle]:
     if sheet is None:
         raise ValueError("cannot load sheet")
     
-    start_row = inputter("enter from which castle do we start: ", base_val=1) + 1
+    inp = input("enter from which castle do we start: ") # first row is header
 
+    if not inp:
+        for cell in sheet['A'][1:]:
+            if objects[cell.value].compare():
+                start_row = cell.row
+                break
+        else:
+            raise RuntimeError("cannot find any castle on the screen")
+    else:
+        start_row = int(inp) + 1 # because of header
+    
     for row in sheet.iter_rows(min_row=start_row, values_only=True):
         yield Castle(*row) # type: ignore
 
