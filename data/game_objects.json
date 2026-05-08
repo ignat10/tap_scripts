@@ -92,7 +92,8 @@
             "y": 2345
         },
         "delta": {
-            "PosX": 200
+            "dir": "Right",
+            "gap": 200
         }
     },
     "plus": {
@@ -158,7 +159,8 @@
             "y": 755
         },
         "delta": {
-            "PosY": 258
+            "dir": "Down",
+            "gap": 258
         },
         "path": "blue"
     },
@@ -199,7 +201,8 @@
             "y": 840
         },
         "delta": {
-            "PosY": 200
+            "dir": "Down",
+            "gap": 200
         }
     },
     "acc_list": {
@@ -215,7 +218,8 @@
             "y": 1067
         },
         "delta": {
-            "PosY": 135
+            "dir": "Down",
+            "gap": 135
         }
     },
     "confirm": {
