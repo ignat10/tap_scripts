@@ -51,6 +51,11 @@ ScreenObjectNames = Literal[
     "kazuru_farm6",
 ]
 
-ip = paths.IP_PATH.read_text()
 
-objects: dict[ScreenObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(paths.SAMPLES_DIR, paths.OBJECTS_PATH, ip) # type: ignore
+
+objects: dict[ScreenObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(paths.SAMPLES_DIR, paths.OBJECTS_PATH) # type: ignore
+
+
+def device_config():
+    screen_objects.device_config(paths.IP_PATH.read_text())
+    

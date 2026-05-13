@@ -1,6 +1,8 @@
 from screen_objects import reset_screen
 
-from src.objects import objects
+from src.objects import device_config, objects
+
+device_config()
 
 name = input("Enter object name: ")
 
