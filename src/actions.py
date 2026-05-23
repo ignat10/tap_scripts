@@ -21,7 +21,7 @@ class Castle:
     alliances_elite_mines: dict[str, int] = {}
 
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
-        self.name: ScreenObjectNames = name # type: ignore
+        self.name: ScreenObjectNames = name.replace('.', '') # type: ignore
         self.google = google
         self.account = account
         self.lv = lv
@@ -31,9 +31,8 @@ class Castle:
 
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
-        if not objects[self.name].compare():
+        if not objects[self.name].tap():
             print(f"logging into {self.name}, google: {self.google}, account: {self.account}")
-            objects[self.name].tap()
             sleep(0.5)
             objects["account"].tap()
             while True:
@@ -43,18 +42,22 @@ class Castle:
                 sleep(1)
                 objects["login"].tap()
                 sleep(2)
-                if not objects["logo"].compare():
+                if not objects["logo"].exists():
                     continue
-                objects["google"].tap(offset_steps=self.google)
+                objects["google"].tap()
                 sleep(3)
-                if not objects["acc_list"].compare():
+                if not objects["acc_list"].exists():
                     continue
-                objects["castle"].tap(offset_steps=self.account)
+                objects["castle"].tap()
                 sleep(1)
                 objects["confirm"].tap()
                 break
             print("logged in.")
-            while not any((objects["map"].compare(), objects[self.name].compare(), objects['xs'].tap_if_found())):
+            while not any((
+                    objects["map"].exists(),
+                    objects[self.name].exists(),
+                    objects['xs'].tap()
+            )):
                 reset_screen()
                 sleep(1)
                 print("loading...")
@@ -65,14 +68,14 @@ class Castle:
     def close_ad(self) -> None:
         objects['close'].spam_tap(10, 0.2)
         sleep(1)
-        while not objects["map"].compare():
-            if not objects["xs"].tap_if_found():
+        while not objects["map"].exists():
+            if not objects["xs"].tap():
                 objects['close'].tap()
             sleep(1)
         print("ad closed.")
 
     def claim(self) -> None:
-        while objects['claim'].tap_if_found():
+        while objects['claim'].tap():
             print("claimed something")
         sleep(0.5)
 
@@ -96,20 +99,20 @@ class Castle:
     
     @staticmethod
     def heal() -> None:
-        if objects["heal"].compare():
+        if objects["heal"].exists():
             print("healing...")
             objects["heal"].tap()
             sleep(1)
             objects["go"].tap()
             sleep(0.5)
-            if objects['confirm_rss'].compare():
+            if objects['confirm_rss'].exists():
                 objects['confirm_rss'].tap()
         else:
             print("no need to heal.")
     
     @staticmethod
     def sanctuary() -> None:
-        if objects['sanctuary'].compare():
+        if objects['sanctuary'].exists():
             print("sanctuary...")
             objects['sanctuary'].tap()
             sleep(1)
@@ -132,7 +135,7 @@ class Castle:
         while True:
             print(f"searching mine. type: {self.mine_type}, lv: {self.mine_lv}")
             sleep(0.5)
-            objects["mine_type"].tap(offset_steps=self.mine_type)
+            objects["mine_type"].tap()
             objects["minus"].spam_tap(5, 0)
             objects["plus"].spam_tap(self.mine_lv - 1, 0)
             objects["go"].spam_tap(4, 0.1)
@@ -169,8 +172,8 @@ class Castle:
             sleep(0.5)
             objects["alliance_elite_mines"].tap()
             sleep(1)
-            if objects["blue"].compare(offset_steps=self.alliances_elite_mines.setdefault(self.alliance, 0)):  # color of blue
-                objects["blue"].tap(offset_steps=self.alliances_elite_mines[self.alliance])
+            if objects["blue"].exists():  # color of blue
+                objects["blue"].tap()
                 sleep(2)
                 objects["gather_elite_mine"].tap()
                 sleep(0.5)
@@ -194,7 +197,7 @@ def iter_castles() -> Iterator[Castle]:
 
     if not inp:
         for cell in sheet['A'][1:]:
-            if objects[cell.value].compare():
+            if objects[cell.value.replace('.', '')].exists():
                 start_row = cell.row
                 break
         else:

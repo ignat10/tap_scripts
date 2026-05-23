@@ -2,7 +2,7 @@ from time import perf_counter
 from src import objects
 
 
-objects.device_config()
+objects.config()
 
 obj = objects.objects['city']
 

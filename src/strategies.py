@@ -1,10 +1,10 @@
 from time import sleep
 
 from .actions import iter_castles
-from .objects import device_config
+from .objects import config
 
 
-device_config()
+config()
 
 
 def farming() -> None:
