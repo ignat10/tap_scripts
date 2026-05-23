@@ -5,17 +5,12 @@ from src.utils import object_from_input
 
 config()
 
-name = input("Enter object name: ")
-
-obj = objects[name] # type: ignore
+obj = object_from_input()
 
 while command := input("Enter command: "):
     match command:
-        case "find":
-            print(obj.find_object())
-
-        case "comp":
-            print(obj.compare())
+        case "exists":
+            print(obj.exists())
 
         case 'add':
             obj.add_sample()
