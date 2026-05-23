@@ -1,6 +1,9 @@
-from typing import Literal
+from typing import Literal, cast
+from os import getenv
+from pathlib import Path
 
-import screen_objects
+from dotenv import load_dotenv
+from screen_objects import ScreenObject, device_config, get_objects
 
 from . import paths
 
@@ -43,8 +46,8 @@ ScreenObjectNames = Literal[
     "confirm",
 
     "leo",
-    "haac.",
-    "hac......",
+    "haac",
+    "hac",
     "VIC.hac",
     "farm,hacen",
     "kazuru_farm5",
@@ -53,9 +56,16 @@ ScreenObjectNames = Literal[
 
 
 
-objects: dict[ScreenObjectNames, screen_objects.ScreenObject] = screen_objects.get_objects(paths.SAMPLES_DIR, paths.OBJECTS_PATH) # type: ignore
+objects: dict[ScreenObjectNames, ScreenObject] = cast(
+    dict[ScreenObjectNames, ScreenObject],
+    get_objects(paths.SAMPLES_DIR)
+)
 
 
-def device_config():
-    screen_objects.device_config(paths.IP_PATH.read_text())
+def config():
+    load_dotenv()
+    adb = getenv("ADB")
+    if adb is None:
+        raise Exception("ADB not set")
+    device_config(adb=Path(adb), ip=None)
     
