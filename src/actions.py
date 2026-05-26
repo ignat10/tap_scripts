@@ -11,10 +11,10 @@ from .paths import FARMS_SHEET_PATH
 
 
 class MineType(IntEnum):
-    FOOD = 0
-    WOOD = 1
-    STONE = 2
-    IRON = 3
+    FOOD = 1
+    WOOD = 2
+    STONE = 3
+    IRON = 4
 
 
 class Castle:
@@ -44,7 +44,7 @@ class Castle:
                 sleep(2)
                 if not objects["logo"].exists():
                     continue
-                objects["google"].tap()
+                objects["mail"].tap()
                 sleep(3)
                 if not objects["acc_list"].exists():
                     continue
@@ -65,7 +65,8 @@ class Castle:
         else:
             print(f"already logged into {self.name}")
 
-    def close_ad(self) -> None:
+    @staticmethod
+    def close_ad() -> None:
         objects['close'].spam_tap(10, 0.2)
         sleep(1)
         while not objects["map"].exists():
@@ -74,7 +75,8 @@ class Castle:
             sleep(1)
         print("ad closed.")
 
-    def claim(self) -> None:
+    @staticmethod
+    def claim() -> None:
         while objects['claim'].tap():
             print("claimed something")
         sleep(0.5)
@@ -99,14 +101,12 @@ class Castle:
     
     @staticmethod
     def heal() -> None:
-        if objects["heal"].exists():
+        if objects["hospital"].tap():
             print("healing...")
-            objects["heal"].tap()
             sleep(1)
-            objects["go"].tap()
+            objects["heal"].tap()
             sleep(0.5)
-            if objects['confirm_rss'].exists():
-                objects['confirm_rss'].tap()
+            objects['confirm_rss'].tap()
         else:
             print("no need to heal.")
     
@@ -116,13 +116,14 @@ class Castle:
             print("sanctuary...")
             objects['sanctuary'].tap()
             sleep(1)
-            objects['go'].tap()
+            objects['heal'].tap()
             sleep(0.5)
             objects['back'].tap()
         else:
             print("no need to go to sanctuary.")
 
-    def go_outside(self) -> None:
+    @staticmethod
+    def go_outside() -> None:
         print("going outside...")
         objects["map"].tap()
         sleep(2)
@@ -135,7 +136,7 @@ class Castle:
         while True:
             print(f"searching mine. type: {self.mine_type}, lv: {self.mine_lv}")
             sleep(0.5)
-            objects["mine_type"].tap()
+            objects[self.mine_type.name.lower()].tap()
             objects["minus"].spam_tap(5, 0)
             objects["plus"].spam_tap(self.mine_lv - 1, 0)
             objects["go"].spam_tap(4, 0.1)
@@ -145,7 +146,7 @@ class Castle:
                 case Status.FOUND:
                     break
                 case Status.NOT_FOUND:
-                    if self.mine_type > 0:
+                    if self.mine_type > 1:
                         self.mine_type = MineType(self.mine_type - 1)
                     else:
                         self.mine_lv -= 1
@@ -170,12 +171,12 @@ class Castle:
         while True:
             objects["book"].tap()
             sleep(0.5)
-            objects["alliance_elite_mines"].tap()
+            objects["elite_mines"].tap()
             sleep(1)
             if objects["blue"].exists():  # color of blue
                 objects["blue"].tap()
                 sleep(2)
-                objects["gather_elite_mine"].tap()
+                objects["gather_elite"].tap()
                 sleep(0.5)
                 objects["go"].tap()  # regularly I should be there
                 sleep(0.5)
@@ -184,7 +185,7 @@ class Castle:
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
-                objects["favorites_back"].tap()
+                objects["back"].tap()
                 return False  # if there is no elites
 
 
