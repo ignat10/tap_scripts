@@ -1,4 +1,7 @@
+from src.objects import config
 from src.actions import iter_castles
+
+config()
 
 castle = next(iter_castles())
 

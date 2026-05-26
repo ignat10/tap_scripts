@@ -13,13 +13,13 @@ class Status(Enum):
 
 
 def check_status() -> Status:
-    if not objects['book'].compare():
+    if not objects['book'].exists():
         return Status.NOT_MAP
 
-    if objects['city'].compare():
+    if objects['city'].exists():
         return Status.NOT_FOUND
     
-    if objects['gather'].compare() or objects['mine'].compare():
+    if objects['gather'].exists() or objects['mine'].exists():
         return Status.FOUND
 
     else:
