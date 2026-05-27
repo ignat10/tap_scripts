@@ -9,8 +9,7 @@ from . import paths
 
 
 ScreenObjectNames = Literal[
-    "load",
-    "xs",
+    "x1",
     "close",
     "claim",
     "hospital",
@@ -31,7 +30,10 @@ ScreenObjectNames = Literal[
     "iron",
     "plus",
     "minus",
-    "mine",
+    "food_type",
+    "wood_type",
+    "stone_type",
+    "iron_type",
     "go",
     "gather",
     "set_out",

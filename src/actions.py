@@ -8,6 +8,7 @@ from screen_objects import reset_screen
 from .objects import objects, ScreenObjectNames
 from .status import Status, check_status
 from .paths import FARMS_SHEET_PATH
+from .utils import object_from_str
 
 
 class MineType(IntEnum):
@@ -56,7 +57,7 @@ class Castle:
             while not any((
                     objects["map"].exists(),
                     objects[self.name].exists(),
-                    objects['xs'].tap()
+                    objects['x1'].tap()
             )):
                 reset_screen()
                 sleep(1)
@@ -70,7 +71,7 @@ class Castle:
         objects['close'].spam_tap(10, 0.2)
         sleep(1)
         while not objects["map"].exists():
-            if not objects["xs"].tap():
+            if not objects["x1"].tap():
                 objects['close'].tap()
             sleep(1)
         print("ad closed.")
@@ -157,7 +158,7 @@ class Castle:
                     print("some chemistry error")
                 
         sleep(0.5)
-        objects["mine"].tap()
+        object_from_str(self.mine_type.name.lower()).tap()
         sleep(0.5)
         objects["gather"].tap()
         sleep(0.5)
