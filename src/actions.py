@@ -107,8 +107,6 @@ class Castle:
         else:
             print("no need to heal.")
     
-    @staticmethod
-    def sanctuary() -> None:
         if objects['sanctuary'].exists():
             print("sanctuary...")
             objects['sanctuary'].tap()

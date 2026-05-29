@@ -13,7 +13,6 @@ def farming() -> None:
         castle.close_ad()
         castle.claim()
         castle.heal()
-        castle.sanctuary()
         castle.lord_skills()
         castle.go_outside()
 
