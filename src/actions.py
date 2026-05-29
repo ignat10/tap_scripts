@@ -32,8 +32,9 @@ class Castle:
 
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
-        if not objects[self.name].tap():
-            print(f"logging into {self.name}, google: {self.google}, account: {self.account}")
+        if not objects[self.name].exists():
+            print(f"logging into {self.name}")
+            objects["avatar"].tap()
             sleep(0.5)
             objects["account"].tap()
             while True:
@@ -128,7 +129,7 @@ class Castle:
 
         objects["search"].tap()
         while True:
-            print(f"searching mine. type: {self.mine_type}, lv: {self.mine_lv}")
+            print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower().capitalize()}")
             sleep(0.5)
             objects[self.mine_type.name.lower()].tap()
             objects["minus"].spam_tap(5, 0)
