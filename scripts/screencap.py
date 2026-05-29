@@ -12,12 +12,10 @@ adb = getenv("ADB")
 if adb is None:
     raise ValueError("Please set ADB to .env file")
 
-data = run(adb, capture_output=True)
+data = run([adb, "exec-out", "screencap"], capture_output=True).stdout
 
 
-# skip possible header if needed
-# data = data[12:]
 
-img = Image.frombytes("RGBA", (width, height), data.stdout)
+img = Image.frombytes("RGBA", (width, height), data)
 
 img.save("screen.png")
