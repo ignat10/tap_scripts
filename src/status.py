@@ -19,7 +19,7 @@ def check_status() -> Status:
     if objects['city'].exists():
         return Status.NOT_FOUND
     
-    if objects['gather'].exists() or objects['mine'].exists():
+    if objects['gather'].exists():
         return Status.FOUND
 
     else:

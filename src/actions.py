@@ -46,12 +46,12 @@ class Castle:
                 if not objects["logo"].exists():
                     back()
                     continue
-                objects["mail"].tap()
+                object_from_str(f"google_{self.google}").tap()
                 sleep(3)
                 if not objects["acc_list"].exists():
                     back()
                     continue
-                objects["castle"].tap()
+                object_from_str(f"{self.name}_account").tap()
                 sleep(1)
                 objects["confirm"].tap()
                 break
@@ -78,15 +78,14 @@ class Castle:
 
     @staticmethod
     def claim() -> None:
-        while objects['claim'].tap():
-            print("claimed something")
-        sleep(0.5)
+        if objects["claim_healed"].tap():
+            print("claimed healed troops")
 
     @staticmethod
     def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].tap()
-        sleep(0.5)
+        sleep(1)
         objects["harvest"].tap()
         sleep(0.5)
         objects["use"].tap()
@@ -121,7 +120,7 @@ class Castle:
     def go_outside() -> None:
         print("going outside...")
         objects["map"].tap()
-        sleep(2)
+        sleep(3)
         print("outside.")
 
     def get_std_mine(self) -> None:
@@ -131,7 +130,7 @@ class Castle:
         while True:
             print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower().capitalize()}")
             sleep(0.5)
-            objects[self.mine_type.name.lower()].tap()
+            object_from_str(f"{self.mine_type.name.lower()}_type").tap()
             objects["minus"].spam_tap(5, 0)
             objects["plus"].spam_tap(self.mine_lv - 1, 0)
             objects["go"].spam_tap(4, 0.1)
@@ -152,8 +151,8 @@ class Castle:
                     print("some chemistry error")
                 
         sleep(0.5)
-        object_from_str(self.mine_type.name.lower()).tap()
-        sleep(0.5)
+        objects['gather'].tap()
+        sleep(0.2)
         objects["gather"].tap()
         sleep(0.5)
         objects["go"].tap()
@@ -168,8 +167,7 @@ class Castle:
             sleep(0.5)
             objects["elite_mines"].tap()
             sleep(1)
-            if objects["blue"].exists():  # color of blue
-                objects["blue"].tap()
+            if objects["blue"].tap():  # color of blue
                 sleep(2)
                 objects["gather_elite"].tap()
                 sleep(0.5)
