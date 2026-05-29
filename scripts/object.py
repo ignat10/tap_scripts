@@ -1,4 +1,4 @@
-from screen_objects import reset_screen
+from screen_objects import reset_screen, back
 
 from src.objects import config
 from src.utils import object_from_input
@@ -18,11 +18,12 @@ while command := input("Enter command: "):
         case cmd if cmd.startswith("spam"):
             [n, i] = cmd.split()[1:]
             obj.spam_tap(int(n), int(i))
-        case 'add':
-            obj.add_sample()
             
         case 'reset':
             reset_screen()
+
+        case 'back':
+            back()
             
         case _:
             print("Invalid command")

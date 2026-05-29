@@ -3,7 +3,7 @@ from enum import IntEnum
 from typing import Iterator
 
 import openpyxl
-from screen_objects import reset_screen
+from screen_objects import reset_screen, back
 
 from .objects import objects, ScreenObjectNames
 from .status import Status, check_status
@@ -37,17 +37,18 @@ class Castle:
             sleep(0.5)
             objects["account"].tap()
             while True:
-                objects['close'].spam_tap(5, 0.1)
                 sleep(1)
                 objects["switch"].tap()
                 sleep(1)
                 objects["login"].tap()
                 sleep(2)
                 if not objects["logo"].exists():
+                    back()
                     continue
                 objects["mail"].tap()
                 sleep(3)
                 if not objects["acc_list"].exists():
+                    back()
                     continue
                 objects["castle"].tap()
                 sleep(1)
@@ -68,11 +69,9 @@ class Castle:
 
     @staticmethod
     def close_ad() -> None:
-        objects['close'].spam_tap(10, 0.2)
-        sleep(1)
         while not objects["map"].exists():
             if not objects["x1"].tap():
-                objects['close'].tap()
+                back()
             sleep(1)
         print("ad closed.")
 
@@ -94,10 +93,7 @@ class Castle:
         objects["recall_all"].tap()
         sleep(0.5)
         objects["use"].tap()
-        sleep(1)
-        objects["close"].tap()
-        sleep(0.2)
-        objects['close'].tap()
+        back()
         print("lord skills done.")
     
     @staticmethod
@@ -118,8 +114,7 @@ class Castle:
             objects['sanctuary'].tap()
             sleep(1)
             objects['heal'].tap()
-            sleep(0.5)
-            objects['back'].tap()
+            back()
         else:
             print("no need to go to sanctuary.")
 
