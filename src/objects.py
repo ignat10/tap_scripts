@@ -10,8 +10,7 @@ from . import paths
 
 ScreenObjectNames = Literal[
     "x1",
-    "close",
-    "claim",
+    "claim_healed",
     "hospital",
     "heal",
     "confirm_rss",
@@ -42,22 +41,31 @@ ScreenObjectNames = Literal[
     "elite_mines",
     "blue",
     "gather_elite",
-    "account",
-    "switch",
-    "login",
-    "logo",
-    "mail",
-    "acc_list",
-    "castle",
-    "confirm",
 
     "leo",
     "haac",
     "hac",
     "VIChac",
-    "farm,hacen",
+    'farm,hacen',
     "kazuru_farm5",
     "kazuru_farm6",
+
+    "avatar",
+    "account",
+    "switch",
+    "login",
+    "logo",
+
+    "google_1",
+    "google_2",
+
+    "acc_list",
+
+    "leo_account",
+    "haac_account",
+    "hac_account",
+
+    "confirm",
 ]
 
 
