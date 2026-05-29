@@ -1,8 +1,8 @@
-from typing import get_args, cast
+from typing import cast
 
 from .objects import ScreenObjectNames, objects, ScreenObject
 
-object_names = get_args(ScreenObjectNames)
+object_names = objects.keys()
 
 def object_from_input() -> ScreenObject:
     inp = input("Enter object name: ")
