@@ -42,7 +42,7 @@ class Castle:
         if not objects[self.name].exists():
             print(f"logging into {self.name}")
             objects["avatar"].tap()
-            sleep(0.5)
+            sleep(1)
             objects["account"].tap()
             while True:
                 sleep(1)
@@ -61,6 +61,8 @@ class Castle:
                 objects["confirm"].tap()
                 break
             print("logged in.")
+            sleep(5)
+
             while not any((
                 objects["map"].exists(),
                 objects[self.name].exists(),
@@ -96,12 +98,17 @@ class Castle:
         objects["harvest"].tap()
         sleep(0.5)
         objects["use"].tap()
-        print("harvested. recalling...")
+        back()
+        print("harvested")
+        sleep(0.2)
+        objects["lord"].tap()
+        sleep(1)
         objects["recall_all"].tap()
         sleep(0.5)
-        objects["use"].tap()
-        back()
+        if not objects["use"].tap():
+            back()
         print("lord skills done.")
+        sleep(0.3)
     
     @staticmethod
     def heal() -> None:
@@ -109,14 +116,16 @@ class Castle:
             print("healing...")
             sleep(1)
             objects["heal"].tap()
-            sleep(0.5)
+            sleep(1)
             objects['confirm_rss'].tap()
+            sleep(1)
         else:
             print("no need to heal.")
+        if objects["ask_help"].tap():
+            sleep(1)
     
-        if objects['sanctuary'].exists():
+        if objects['sanctuary'].tap():
             print("sanctuary...")
-            objects['sanctuary'].tap()
             sleep(1)
             objects['heal'].tap()
             back()
@@ -126,8 +135,11 @@ class Castle:
     @staticmethod
     def go_outside() -> None:
         print("going outside...")
-        objects["map"].tap()
-        sleep(3)
+        while not objects['book'].exists():
+            if not objects["map"].tap():
+                back()
+            reset_screen()
+            sleep(3)
         print("outside.")
 
     def get_std_mine(self) -> None:
@@ -187,7 +199,6 @@ class Castle:
                 print("some chemistry error")
                 objects["back"].tap()
                 return False  # if there is no elites
-
 
 def iter_castles() -> Iterator[Castle]:
     sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
