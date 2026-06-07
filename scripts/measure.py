@@ -1,8 +1,9 @@
 from time import perf_counter
+from src.objects import config
 from src.utils import object_from_input
 
 
-objects.config()
+config()
 
 obj = object_from_input()
 
