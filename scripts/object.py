@@ -19,11 +19,10 @@ while command := input("Enter command: "):
             [n, i] = cmd.split()[1:]
             obj.spam_tap(int(n), int(i))
             
-        case 'reset':
-            reset_screen()
-
         case 'back':
             back()
             
         case _:
             print("Invalid command")
+
+    reset_screen()
