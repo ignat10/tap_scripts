@@ -128,6 +128,7 @@ class Castle:
             print("sanctuary...")
             sleep(1)
             objects['heal'].tap()
+            sleep(0.3)
             back()
         else:
             print("no need to go to sanctuary.")
