@@ -57,9 +57,11 @@ class Castle:
                 break
             print("logged in.")
             while not any((
-                    objects["map"].exists(),
-                    objects[self.name].exists(),
-                    objects['x1'].tap()
+                objects["map"].exists(),
+                objects[self.name].exists(),
+                objects['x1'].tap(),
+                objects["claim_daily"].tap(),
+                objects['blur_map'].exists(),
             )):
                 reset_screen()
                 sleep(1)

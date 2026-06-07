@@ -9,11 +9,14 @@ from . import paths
 
 
 ScreenObjectNames = Literal[
+    "claim_daily",
     "x1",
+    "blur_map",
     "claim_healed",
     "hospital",
     "heal",
     "confirm_rss",
+    "ask_help",
     "sanctuary",
     "back",
     "lord",
