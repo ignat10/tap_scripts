@@ -1,8 +1,8 @@
 from enum import Enum, auto
 
 
-from src.objects import objects
-
+from .objects import objects
+from .utils import object_from_str
 
 
 class Status(Enum):
@@ -12,11 +12,11 @@ class Status(Enum):
     FOUND = auto()
 
 
-def check_status() -> Status:
+def check_status(level: int) -> Status:
     if not objects['book'].exists():
         return Status.NOT_MAP
 
-    if objects['city'].exists():
+    if object_from_str(f'city_{level}').exists():
         return Status.NOT_FOUND
     
     if objects['gather'].exists():

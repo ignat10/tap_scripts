@@ -66,7 +66,6 @@ class Castle:
             while not any((
                 objects["map"].exists(),
                 objects[self.name].exists(),
-                objects['x1'].tap(),
                 objects["claim_daily"].tap(),
                 objects['blur_map'].exists(),
             )):
@@ -80,8 +79,7 @@ class Castle:
     @staticmethod
     def close_ad() -> None:
         while not objects["map"].exists():
-            if not objects["x1"].tap():
-                back()
+            back()
             sleep(1)
         print("ad closed.")
 
@@ -127,7 +125,7 @@ class Castle:
         if objects['sanctuary'].tap():
             print("sanctuary...")
             sleep(1)
-            objects['heal'].tap()
+            objects['revive'].tap()
             sleep(0.3)
             back()
         else:
