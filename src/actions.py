@@ -219,10 +219,3 @@ def iter_castles() -> Iterator[Castle]:
     
     for row in sheet.iter_rows(min_row=start_row, values_only=True):
         yield Castle(*row) # type: ignore
-
-
-""""TODO:
-Добавить logging и заменить print на logger. (малый)
-
-Настроить flake8/ruff/black и pre-commit. (малый)
-"""
