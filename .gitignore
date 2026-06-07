@@ -13,7 +13,3 @@ __pycache__/
 *.svg
 
 !data/samples/**
-
-
-# local device ip
-data/device_ip.txt
