@@ -1,10 +1,10 @@
 from time import perf_counter
-from src import objects
+from src.utils import object_from_input
 
 
 objects.config()
 
-obj = objects.objects['city']
+obj = object_from_input()
 
 
 obj.exists()
