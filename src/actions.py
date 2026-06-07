@@ -19,12 +19,9 @@ class MineType(IntEnum):
 
 
 class Castle:
-    alliances_elite_mines: dict[str, int] = {}
-
-    def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
+    def __init__(self, name: str, lv: int, google: int, alliance: str):
         self.name: ScreenObjectNames = name.replace('.', '') # type: ignore
         self.google = google
-        self.account = account
         self.lv = lv
         self.alliance = alliance
         self.mine_lv = 6
@@ -43,15 +40,13 @@ class Castle:
                 sleep(1)
                 objects["login"].tap()
                 sleep(2)
-                if not objects["logo"].exists():
+                if not object_from_str(f"google_{self.google}").tap():
                     back()
                     continue
-                object_from_str(f"google_{self.google}").tap()
                 sleep(3)
-                if not objects["acc_list"].exists():
+                if not object_from_str(f"{self.name}_account").tap():
                     back()
                     continue
-                object_from_str(f"{self.name}_account").tap()
                 sleep(1)
                 objects["confirm"].tap()
                 break
