@@ -1,10 +1,6 @@
-# venv
-.venv/
-
-# cache
+venv/
 __pycache__/
 
-# IDE's trash
 .idea/
 .vscode/
 
