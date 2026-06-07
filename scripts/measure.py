@@ -7,11 +7,12 @@ objects.config()
 obj = objects.objects['city']
 
 
-r = obj.find_object()
+obj.exists()
 
 s = perf_counter()
-t = obj.find_object()
+t = obj.exists()
 e = perf_counter()
-print(r)
+
+print(t)
 
 print(f"took {e-s} seconds")
