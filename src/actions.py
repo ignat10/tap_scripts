@@ -146,15 +146,15 @@ class Castle:
 
         objects["search"].tap()
         while True:
-            print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower().capitalize()}")
+            print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower()}")
             sleep(0.5)
             object_from_str(f"{self.mine_type.name.lower()}_type").tap()
-            objects["minus"].spam_tap(5, 0)
-            objects["plus"].spam_tap(self.mine_lv - 1, 0)
+            objects["plus"].spam_tap(5, 0)
+            objects["minus"].spam_tap(6 - self.mine_lv, 0)
             objects["go"].spam_tap(4, 0.1)
             sleep(1.5)
 
-            match check_status():
+            match check_status(self.lv):
                 case Status.FOUND:
                     break
                 case Status.NOT_FOUND:
