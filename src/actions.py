@@ -27,6 +27,16 @@ class Castle:
         self.mine_lv = 6
         self.mine_type: MineType = MineType.IRON
 
+    alliances_elite_mines: dict[str, int] = {}
+
+    @property
+    def alliance_mines_num(self) -> int:
+        return self.alliances_elite_mines.setdefault(self.alliance, 0)
+
+    @alliance_mines_num.setter
+    def alliance_mines_num(self, value: int) -> None:
+        self.alliances_elite_mines[self.alliance] = value
+
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
         if not objects[self.name].exists():
@@ -164,14 +174,14 @@ class Castle:
             sleep(0.5)
             objects["elite_mines"].tap()
             sleep(1)
-            if objects["blue"].tap():  # color of blue
+            if objects["blue"].tap_nth(self.alliance_mines_num):  # color of blue
                 sleep(2)
                 objects["gather_elite"].tap()
                 sleep(0.5)
                 objects["go"].tap()  # regularly I should be there
                 sleep(0.5)
                 objects["to_castle"].tap()
-                self.alliances_elite_mines[self.alliance] += 1
+                self.alliance_mines_num += 1
                 return True  # everything is alright I went to elite
             else:
                 print("some chemistry error")
