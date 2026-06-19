@@ -11,7 +11,6 @@ def farming() -> None:
     for castle in iter_castles():
         castle.log_into_account()
         castle.close_ad()
-        castle.claim()
         castle.heal()
         castle.lord_skills()
         castle.go_outside()

@@ -35,10 +35,11 @@ class Castle:
         print(f"checking is current castle: {self.name}")
         if not objects[self.name].exists():
             print(f"logging into {self.name}")
-            objects["avatar"].tap()
-            sleep(1)
-            objects["account"].tap()
+
             while True:
+                if objects["avatar"].tap():
+                    sleep(1)
+                objects["account"].tap()
                 sleep(1)
                 objects["switch"].tap()
                 sleep(1)
@@ -79,11 +80,6 @@ class Castle:
         print("ad closed.")
 
     @staticmethod
-    def claim() -> None:
-        if objects["claim_healed"].tap():
-            print("claimed healed troops")
-
-    @staticmethod
     def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].tap()
@@ -93,22 +89,22 @@ class Castle:
             objects['use'].tap()
             sleep(0.2)
         objects["harvest"].tap()
-        sleep(0.5)
-        objects["use"].tap()
-        back()
-        print("harvested")
         sleep(0.2)
-        objects["lord"].tap()
-        sleep(1)
+        objects["use"].tap()
+        print("harvested")
         objects["recall_all"].tap()
-        sleep(0.5)
+        sleep(0.2)
         if not objects["use"].tap():
             back()
+            objects['use'].tap()
         print("lord skills done.")
         sleep(0.3)
     
     @staticmethod
     def heal() -> None:
+        if objects['claim_healed'].tap():
+            print("claimed healed")
+            sleep(1)
         if objects["hospital"].tap():
             print("healing...")
             sleep(1)
@@ -186,15 +182,12 @@ class Castle:
                 case status:
                     raise RuntimeError(f"got Status: {status.name} when searching mine.")
                 
-        sleep(0.5)
         objects['gather'].tap()
         sleep(0.2)
         objects["gather"].tap()
         sleep(0.5)
-        objects["go"].tap()
+        objects["set_out"].tap()
         print("mine taken.")
-        sleep(0.5)
-        objects["to_castle"].tap()
 
     def get_elite_mine(self) -> bool:
         print("Elite")
@@ -204,17 +197,18 @@ class Castle:
             objects["elite_mines"].tap()
             sleep(1)
             if objects["blue"].tap_nth(self.alliance_mines_num):  # color of blue
-                sleep(2)
-                objects["gather_elite"].tap()
-                sleep(0.5)
-                objects["go"].tap()  # regularly I should be there
-                sleep(0.5)
-                objects["to_castle"].tap()
                 self.alliance_mines_num += 1
-                return True  # everything is alright I went to elite
+                sleep(2)
+                if objects["gather_elite"].tap():
+                    sleep(0.5)
+                    objects["set_out"].tap()  # regularly I should be there
+                    sleep(0.2)
+                    return True  # everything is alright I went to elite
+                else:
+                    return self.get_elite_mine()
             else:
                 print("some chemistry error")
-                objects["back"].tap()
+                back()
                 return False  # if there is no elites
 
 def iter_castles() -> Iterator[Castle]:
@@ -232,7 +226,10 @@ def iter_castles() -> Iterator[Castle]:
         else:
             raise RuntimeError("cannot find any castle on the screen")
     else:
-        start_row = int(inp) + 1 # because of header
-    
+        try:
+            start_row = int(inp) + 1 # because of header
+        except ValueError:
+            raise ValueError(f"Entered invalid castle number: {inp}")
+
     for row in sheet.iter_rows(min_row=start_row, values_only=True):
         yield Castle(*row) # type: ignore
