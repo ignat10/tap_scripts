@@ -1,21 +1,15 @@
 from time import sleep
-from enum import IntEnum
 from typing import Iterator
 
 import openpyxl
 from screen_objects import reset_screen, back
 
 from .objects import objects, ScreenObjectNames
-from .status import Status, check_status
+from .status import MineType, Status, check_status
 from .paths import FARMS_SHEET_PATH
 from .utils import object_from_str
 
 
-class MineType(IntEnum):
-    FOOD = 1
-    WOOD = 2
-    STONE = 3
-    IRON = 4
 
 
 class Castle:
@@ -63,24 +57,25 @@ class Castle:
             print("logged in.")
             sleep(5)
 
-            while not any((
-                objects["map"].exists(),
-                objects[self.name].exists(),
-                objects["claim_daily"].tap(),
-                objects['blur_map'].exists(),
-            )):
+            while check_status() == Status.ERROR:
                 reset_screen()
                 sleep(1)
                 print("loading...")
+            status = check_status()
+            assert(status == Status.INSIDE_AD or status == Status.INSIDE_CLOSED)
             print("loaded.")
         else:
             print(f"already logged into {self.name}")
 
     @staticmethod
     def close_ad() -> None:
-        while not objects["map"].exists():
-            back()
-            sleep(1)
+        while check_status() != Status.INSIDE_CLOSED:
+            if check_status() != Status.INSIDE_AD:
+                raise RuntimeError("I'm not inside the castle.")
+
+            if not (objects['claim_daily'].tap() or objects['x'].tap()):
+                back()
+            sleep(1.5)
         print("ad closed.")
 
     @staticmethod
@@ -92,7 +87,11 @@ class Castle:
     def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].tap()
-        sleep(1)
+        sleep(1.5)
+        if objects['gather_speed_up'].tap():
+            sleep(0.5)
+            objects['use'].tap()
+            sleep(0.2)
         objects["harvest"].tap()
         sleep(0.5)
         objects["use"].tap()
@@ -117,14 +116,33 @@ class Castle:
             sleep(1)
             objects['confirm_rss'].tap()
             sleep(1)
-        else:
-            print("no need to heal.")
-        if objects["ask_help"].tap():
-            sleep(1)
-    
+        objects["ask_help"].tap()
+        objects['hospital_building'].tap()
+        sleep(1)
+        if objects['speed_up'].tap():
+            sleep(0.5)
+            objects['one-tap_speed_up'].tap()
+            sleep(0.5)
+            objects["confirm_speed_up"].tap()
+            sleep(0.7)
+            objects["claim_healed"].tap()
+            sleep(0.5)
         if objects['sanctuary'].tap():
             print("sanctuary...")
             sleep(1)
+            objects['revive'].tap()
+            objects['claim_holy_water'].tap()
+            sleep(0.5)
+            if not objects['confirm_claim_water'].tap():
+                sleep(0.5)
+                objects['holy_quest'].tap()
+                sleep(0.5)
+                objects['claim_holy_quest'].tap()
+                sleep(0.5)
+                if objects['confirm_claim_water'].tap():
+                    sleep(0.5)
+                objects['holy_revival'].tap()
+            sleep(0.5)
             objects['revive'].tap()
             sleep(0.3)
             back()
@@ -154,7 +172,7 @@ class Castle:
             objects["go"].spam_tap(4, 0.1)
             sleep(1.5)
 
-            match check_status(self.lv):
+            match check_status():
                 case Status.FOUND:
                     break
                 case Status.NOT_FOUND:
@@ -163,10 +181,10 @@ class Castle:
                     else:
                         self.mine_lv -= 1
                         self.mine_type = MineType.IRON
-                case Status.NOT_MAP:
-                    raise(RuntimeError("Not on the map. Panic."))
                 case Status.ERROR:
                     print("some chemistry error")
+                case status:
+                    raise RuntimeError(f"got Status: {status.name} when searching mine.")
                 
         sleep(0.5)
         objects['gather'].tap()
