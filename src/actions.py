@@ -104,7 +104,7 @@ class Castle:
             back()
             objects['use'].tap()
         print("lord skills done.")
-        sleep(0.3)
+        sleep(0.8)
     
     @staticmethod
     def heal() -> None:
@@ -118,15 +118,17 @@ class Castle:
             sleep(1)
             objects['confirm_rss'].tap()
             sleep(1)
-        objects["ask_help"].tap()
-        objects['hospital_building'].tap()
+        else:
+            print("no need to go to the hospital.")
+        if not objects["ask_help"].tap():
+            objects['hospital_building'].tap()
         sleep(1)
         if objects['speed_up'].tap():
             sleep(0.5)
             objects['one-tap_speed_up'].tap()
             sleep(0.5)
             objects["confirm_speed_up"].tap()
-            sleep(0.7)
+            sleep(1.5)
             objects["claim_healed"].tap()
             sleep(0.5)
         if objects['sanctuary'].tap():
@@ -191,6 +193,9 @@ class Castle:
         objects["gather"].tap()
         sleep(0.5)
         objects["set_out"].tap()
+        if check_map_status() == MapStatus.NOT_AT_MAP:
+            back()
+            sleep(1)
         print("mine taken.")
 
     def get_elite_mine(self) -> bool:
