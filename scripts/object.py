@@ -15,8 +15,12 @@ while command := input("Enter command: "):
         case "tap":
             print(obj.tap())
 
-        case "tap best":
-            print(obj.tap_best())
+        case "cal":
+            fixed = bool(input("fixed? "))
+            region = inp if (inp := input("region: ")) else None
+            n = int(inp) if (inp := input("n: ")) else None
+
+            obj.calibrate(fixed, region, n)
 
         case cmd if cmd.startswith("spam"):
             [n, i] = cmd.split()[1:]
@@ -27,6 +31,9 @@ while command := input("Enter command: "):
             n = cmd.split()[1]
             r = obj.tap_nth(int(n))
             print(r)
+
+        case "count":
+            print(obj.count())
 
         case 'back':
             back()
