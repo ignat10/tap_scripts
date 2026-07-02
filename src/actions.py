@@ -10,7 +10,7 @@ from .paths import FARMS_SHEET_PATH
 from .utils import object_from_str
 
 
-
+ELITE_MINES = range(10)
 
 class Castle:
     def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
@@ -21,16 +21,9 @@ class Castle:
         self.alliance = alliance
         self.mine_lv = 6
         self.mine_type: MineType = MineType.IRON
+        self.elite_mines = self.alliances_elite_mines.setdefault(self.alliance, iter(ELITE_MINES))
 
-    alliances_elite_mines: dict[str, int] = {}
-
-    @property
-    def alliance_mines_num(self) -> int:
-        return self.alliances_elite_mines.setdefault(self.alliance, 0)
-
-    @alliance_mines_num.setter
-    def alliance_mines_num(self, value: int) -> None:
-        self.alliances_elite_mines[self.alliance] = value
+    alliances_elite_mines: dict[str, Iterator[int]] = {}
 
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
@@ -200,25 +193,25 @@ class Castle:
 
     def get_elite_mine(self) -> bool:
         print("Elite")
-        while True:
+        for e in self.elite_mines:
+            assert (status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
             objects["book"].tap()
             sleep(0.5)
             objects["elite_mines"].tap()
             sleep(1)
-            if objects["blue"].tap_nth(self.alliance_mines_num):  # color of blue
-                self.alliance_mines_num += 1
+            if objects["blue"].tap_nth(e):  # color of blue
                 sleep(2)
                 if objects["gather_elite"].tap():
                     sleep(0.5)
-                    objects["set_out"].tap()  # regularly I should be there
-                    sleep(0.2)
-                    return True  # everything is alright I went to elite
-                else:
-                    return self.get_elite_mine()
+                    if not objects["set_out"].tap():  # regularly I should be there
+                        back()
+                    sleep(0.3)
+                    return True
             else:
                 print("some chemistry error")
                 back()
                 return False  # if there is no elites
+        raise RuntimeError("all elite mines are full.")
 
 def iter_castles() -> Iterator[Castle]:
     sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
