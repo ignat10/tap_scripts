@@ -10,34 +10,61 @@ class MineType(IntEnum):
     STONE = 3
     IRON = 4
 
+class MapStatus(Enum):
+    FOUND = auto()
+    NOT_FOUND = auto()
+    NOT_AT_MAP = auto()
+
+class CastleStatus(Enum):
+    CLOSED_AD = auto()
+    AD = auto()
+    NOT_IN_CASTLE = auto()
+
 
 class Status(Enum):
-    ERROR = auto()
-    NOT_FOUND = auto()
-    FOUND = auto()
-    INSIDE_CLOSED = auto()
-    INSIDE_AD = auto()
+    INSIDE = auto()
+    OUTSIDE = auto()
+    ELSE = auto()
+
+def check_map_or_castle() -> Status:
+    if objects['book'].exists():
+        return Status.OUTSIDE
+
+    if (
+        objects['x'].exists()
+        or objects['lord'].exists()
+        or objects['claim_daily'].exists()
+        or objects['map'].exists()
+        or objects['blur'].exists()
+    ):
+        return Status.INSIDE
+
+    return Status.ELSE
 
 
-def check_status() -> Status:
+def check_castle_status() -> CastleStatus:
     if (
         objects['map'].exists()
         and objects['lord'].exists()
         and objects['avatar'].exists()
     ):
-        return Status.INSIDE_CLOSED
+        return CastleStatus.CLOSED_AD
 
     if (
         objects["blur"].exists()
         or objects['claim_daily'].exists()
         or objects['x'].exists()
     ):
-        return Status.INSIDE_AD
+        return CastleStatus.AD
 
+    return CastleStatus.NOT_IN_CASTLE
+
+
+def check_map_status() -> MapStatus:
     if not objects['book'].exists():
-        return Status.ERROR
+        return MapStatus.NOT_AT_MAP
 
     if objects['gather'].exists():
-        return Status.FOUND
+        return MapStatus.FOUND
 
-    return Status.NOT_FOUND
+    return MapStatus.NOT_FOUND

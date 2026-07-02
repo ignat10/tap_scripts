@@ -5,7 +5,7 @@ import openpyxl
 from screen_objects import reset_screen, back
 
 from .objects import objects, ScreenObjectNames
-from .status import MineType, Status, check_status
+from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .paths import FARMS_SHEET_PATH
 from .utils import object_from_str
 
@@ -59,21 +59,26 @@ class Castle:
             print("logged in.")
             sleep(5)
 
-            while check_status() == Status.ERROR:
+            while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
                 reset_screen()
                 sleep(1)
                 print("loading...")
-            status = check_status()
-            assert(status == Status.INSIDE_AD or status == Status.INSIDE_CLOSED)
             print("loaded.")
         else:
             print(f"already logged into {self.name}")
 
     @staticmethod
     def close_ad() -> None:
-        while check_status() != Status.INSIDE_CLOSED:
-            if check_status() != Status.INSIDE_AD:
-                raise RuntimeError("I'm not inside the castle.")
+        while (status := check_castle_status()) != CastleStatus.CLOSED_AD:
+            if status == CastleStatus.NOT_IN_CASTLE:
+                for _ in range(5):
+                    back()
+                    sleep(0.1)
+                sleep(1)
+                status = check_castle_status()
+            if status == CastleStatus.NOT_IN_CASTLE:
+
+                raise RuntimeError(f"Not in castle.")
 
             if not (objects['claim_daily'].tap() or objects['x'].tap()):
                 back()
@@ -169,19 +174,17 @@ class Castle:
             objects["go"].spam_tap(4, 0.1)
             sleep(1.5)
 
-            match check_status():
-                case Status.FOUND:
+            match check_map_status():
+                case MapStatus.FOUND:
                     break
-                case Status.NOT_FOUND:
+                case MapStatus.NOT_FOUND:
                     if self.mine_type > 1:
                         self.mine_type = MineType(self.mine_type - 1)
                     else:
                         self.mine_lv -= 1
                         self.mine_type = MineType.IRON
-                case Status.ERROR:
-                    print("some chemistry error")
-                case status:
-                    raise RuntimeError(f"got Status: {status.name} when searching mine.")
+                case MapStatus.NOT_AT_MAP:
+                    raise RuntimeError(f"Not at when searching mine.")
                 
         objects['gather'].tap()
         sleep(0.2)
