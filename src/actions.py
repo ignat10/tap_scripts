@@ -45,11 +45,11 @@ class Castle:
                 sleep(1)
                 objects["login"].tap()
                 sleep(2)
-                if not object_from_str(f"google_{self.google}").tap():
+                if not objects["gmail"].tap_nth(self.google):
                     back()
                     continue
                 sleep(3)
-                if not object_from_str(f"{self.name}_account").tap():
+                if not objects["castle"].tap_nth(self.account):
                     back()
                     continue
                 sleep(1)

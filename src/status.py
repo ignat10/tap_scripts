@@ -28,7 +28,7 @@ def check_status() -> Status:
         return Status.INSIDE_CLOSED
 
     if (
-        objects["blur_map"].exists()
+        objects["blur"].exists()
         or objects['claim_daily'].exists()
         or objects['x'].exists()
     ):
