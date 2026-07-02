@@ -13,9 +13,10 @@ from .utils import object_from_str
 
 
 class Castle:
-    def __init__(self, name: str, lv: int, google: int, alliance: str):
+    def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
         self.name: ScreenObjectNames = name.replace('.', '') # type: ignore
         self.google = google
+        self.account = account
         self.lv = lv
         self.alliance = alliance
         self.mine_lv = 6
