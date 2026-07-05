@@ -5,7 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from screen_objects import ScreenObject, device_config, get_objects
 
-from . import paths
+from .paths import SAMPLES_DIR, REGIONS_DIR
 
 
 ScreenObjectNames = Literal[
@@ -70,6 +70,7 @@ ScreenObjectNames = Literal[
     "login",
     "gmail",
     "acc_list",
+    "green_castle",
     "castle",
     "confirm",
 ]
@@ -78,7 +79,7 @@ ScreenObjectNames = Literal[
 
 objects: dict[ScreenObjectNames, ScreenObject] = cast(
     dict[ScreenObjectNames, ScreenObject],
-    get_objects(paths.SAMPLES_DIR)
+    get_objects(SAMPLES_DIR, REGIONS_DIR)
 )
 
 

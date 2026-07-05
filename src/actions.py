@@ -43,7 +43,8 @@ class Castle:
                     back()
                     continue
                 sleep(3)
-                if not objects["castle"].tap_nth(self.account):
+                is_green = objects['green_castle'].exists()
+                if not objects["castle"].tap_nth(self.account - is_green):
                     back()
                     continue
                 sleep(1)
