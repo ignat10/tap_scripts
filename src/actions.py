@@ -1,7 +1,9 @@
 from time import sleep
-from typing import Iterator
+from typing import Iterator, cast
 
-import openpyxl
+from openpyxl import load_workbook
+from openpyxl.cell.cell import Cell
+
 from screen_objects import reset_screen, back
 
 from .objects import objects, ScreenObjectNames
@@ -9,21 +11,77 @@ from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_cast
 from .paths import FARMS_SHEET_PATH
 from .utils import object_from_str
 
-
 ELITE_MINES = range(10)
 
 class Castle:
-    def __init__(self, name: str, lv: int, google: int, account: int, alliance: str):
-        self.name: ScreenObjectNames = name.replace('.', '') # type: ignore
-        self.google = google
-        self.account = account
-        self.lv = lv
-        self.alliance = alliance
+    def __init__(self, name: Cell, lv: Cell, google: Cell, account: Cell, alliance: Cell):
+        self.name_cell = name
+        self.google_cell = google
+        self.account_cell = account
+        self.lv_cell = lv
+        self.alliance_cell = alliance
         self.mine_lv = 6
         self.mine_type: MineType = MineType.IRON
-        self.elite_mines = self.alliances_elite_mines.setdefault(self.alliance, iter(ELITE_MINES))
+        alliance_val = alliance.value
+        assert isinstance(alliance_val, str), f"alliance at {alliance.coordinate} should be str"
+        self.elite_mines = self.alliances_elite_mines.setdefault(alliance_val, iter(ELITE_MINES))
 
     alliances_elite_mines: dict[str, Iterator[int]] = {}
+
+    @property
+    def name(self) -> ScreenObjectNames:
+        val = self.name_cell.value
+        assert isinstance(val, str) and val in objects, f"name '{val}' is not a valid ScreenObjectNames"
+        return cast(ScreenObjectNames, val)
+
+    @name.setter
+    def name(self, value: str):
+        self.name_cell.value = value
+        save_workbook()
+
+    @property
+    def lv(self) -> int:
+        val = self.lv_cell.value
+        assert isinstance(val, int), f"level at {self.lv_cell.coordinate} should be int, got '{val}'"
+        return val
+
+    @lv.setter
+    def lv(self, value: int):
+        self.lv_cell.value = value
+        save_workbook()
+
+    @property
+    def google(self) -> int:
+        val = self.google_cell.value
+        assert isinstance(val, int), f"google at {self.google_cell.coordinate} should be int, got '{val}'"
+        return val
+
+    @google.setter
+    def google(self, value: int):
+        self.google_cell.value = value
+        save_workbook()
+
+    @property
+    def account(self) -> int:
+        val = self.account_cell.value
+        assert isinstance(val, int), f"account at {self.account_cell.coordinate} should be int, got '{val}'"
+        return val
+
+    @account.setter
+    def account(self, value: int):
+        self.account_cell.value = value
+        save_workbook()
+
+    @property
+    def alliance(self) -> str:
+        val = self.alliance_cell.value
+        assert isinstance(val, str), f"alliance at {self.alliance_cell.coordinate} should be str, got '{val}'"
+        return val
+
+    @alliance.setter
+    def alliance(self, value: str):
+        self.alliance_cell.value = value
+        save_workbook()
 
     def log_into_account(self) -> None:
         print(f"checking is current castle: {self.name}")
@@ -278,25 +336,35 @@ class Castle:
                 return False  # if there is no elites
         raise RuntimeError("all elite mines are full.")
 
-def iter_castles() -> Iterator[Castle]:
-    sheet = openpyxl.load_workbook(FARMS_SHEET_PATH).active
+
+workbook = load_workbook(FARMS_SHEET_PATH)
+sheet = workbook.active
+
+def save_workbook() -> None:
+    workbook.save(FARMS_SHEET_PATH)
+
+def iter_castles() :
     if sheet is None:
         raise ValueError("cannot load sheet")
-    
+
+    keys: list[str] = [cell.value for cell in sheet[1]] # type: ignore
     inp = input("enter from which castle do we start: ") # first row is header
 
     if not inp:
         for cell in sheet['A'][1:]:
-            if objects[cell.value.replace('.', '')].exists():
+            if not isinstance(cell.value, str):
+                raise ValueError(f"castle name {cell.value} is not a string")
+            if object_from_str(cell.value.replace('.', '')).exists():
                 start_row = cell.row
                 break
         else:
             raise RuntimeError("cannot find any castle on the screen")
     else:
         try:
-            start_row = int(inp) + 1 # because of header
+            start_row = max(int(inp), 1) + 1 # because of header
         except ValueError:
             raise ValueError(f"Entered invalid castle number: {inp}")
 
-    for row in sheet.iter_rows(min_row=start_row, values_only=True):
-        yield Castle(*row) # type: ignore
+    for row in sheet.iter_rows(min_row=start_row):
+        kwargs = dict(zip(keys, row))
+        yield Castle(**kwargs)
