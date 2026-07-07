@@ -9,14 +9,15 @@ def farming() -> None:
         castle.close_ad()
         castle.heal()
         castle.lord_skills()
-        castle.go_outside()
+        castle.to_map()
 
-        castle.get_std_mine()
-        castle.get_std_mine()
-        if not castle.get_elite_mine():
-            castle.get_std_mine()
-        if castle.lv >= 19:
-            castle.get_std_mine()
+        if not all(
+            castle.get_std_mine() if i != 2 else castle.get_elite_mine()
+            for i in range(4)
+            if castle.lv >= 19 or i <= 2
+        ):
+            castle.to_castle()
+            castle.recruit()
 
 
 def seconds():

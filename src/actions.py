@@ -148,7 +148,67 @@ class Castle:
             print("no need to go to sanctuary.")
 
     @staticmethod
-    def go_outside() -> None:
+    def to_castle() -> None:
+        print("going inside...")
+        while check_map_or_castle() != Status.INSIDE:
+            back()
+        match check_castle_status():
+            case CastleStatus.CLOSED_AD:
+                return None
+            case CastleStatus.AD:
+                while check_castle_status() != CastleStatus.CLOSED_AD:
+                    back()
+                    sleep(1)
+            case CastleStatus.NOT_IN_CASTLE:
+                raise RuntimeError("Somehow not in castle")
+
+    @staticmethod
+    def build():
+        objects['tasks'].tap()
+        sleep(0.8)
+        objects['build_task'].tap_nth(0)
+        sleep(0.5)
+        objects['hand'].spam_tap(2, 0.5)
+        objects['upgrade'].tap()
+        sleep(0.7)
+        if not objects['upgrade_blue'].tap():
+            objects['go_upgrade'].tap()
+            objects['upgrade_blue'].tap()
+
+    @staticmethod
+    def recruit():
+        objects['tasks'].tap()
+        sleep(0.8)
+        for i in range(objects['recruit_task'].count()):
+            objects['recruit_task'].tap_nth(i)
+            sleep(1)
+            objects['hand'].tap()
+            sleep(1.5)
+            objects['recruit'].tap()
+            sleep(1.5)
+            if not objects['recruit_blue'].exists():
+                back()
+                sleep(0.5)
+                objects['tasks'].tap()
+                sleep(1)
+                continue
+            objects['cavalry'].tap()
+            sleep(0.8)
+            objects['previous'].spam_tap(8, 0.02)
+            sleep(0.2)
+            objects['second'].tap()
+            sleep(0.2)
+            objects['recruit_blue'].tap()
+            sleep(0.1)
+            back()
+            sleep(0.5)
+            objects['tasks'].tap()
+            sleep(1)
+        back()
+        sleep(0.3)
+
+    @staticmethod
+    def to_map() -> None:
         print("going outside...")
         while not objects['book'].exists():
             if not objects["map"].tap():
@@ -157,7 +217,7 @@ class Castle:
             sleep(3)
         print("outside.")
 
-    def get_std_mine(self) -> None:
+    def get_std_mine(self) -> bool:
         """Go to standard mine from the map."""
 
         objects["search"].tap()
