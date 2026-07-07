@@ -247,10 +247,14 @@ class Castle:
         objects["gather"].tap()
         sleep(0.5)
         objects["set_out"].tap()
+        sleep(0.5)
         if check_map_status() == MapStatus.NOT_AT_MAP:
             back()
             sleep(1)
-        print("mine taken.")
+            return False
+        else:
+            print("mine taken.")
+            return True
 
     def get_elite_mine(self) -> bool:
         print("Elite")
