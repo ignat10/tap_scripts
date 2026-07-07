@@ -1,13 +1,100 @@
 {
+  "go": [
+    [
+      531,
+      1192
+    ],
+    null,
+    1
+  ],
+  "gather": [
+    null,
+    null,
+    6
+  ],
+  "city_15": [
+    null,
+    null,
+    5
+  ],
+  "sanctuary": [
+    null,
+    null,
+    5
+  ],
+  "haac": [
+    null,
+    null,
+    5
+  ],
+  "confirm_speed_up": [
+    null,
+    null,
+    5
+  ],
+  "task": [
+    null,
+    null,
+    6
+  ],
+  "google_3": [
+    null,
+    null,
+    5
+  ],
+  "horse": [
+    null,
+    null,
+    19
+  ],
+  "kazuru_farm5_account": [
+    null,
+    null,
+    5
+  ],
+  "second": [
+    [
+      655,
+      882
+    ],
+    "levels",
+    35
+  ],
+  "green_castle": [
+    [
+      106,
+      429
+    ],
+    "accounts",
+    2
+  ],
   "recall_all": [
     null,
     null,
     5
   ],
-  "confirm_rss": [
+  "ask_help": [
+    null,
+    null,
+    25
+  ],
+  "google_1": [
     null,
     null,
     5
+  ],
+  "go_upgrade": [
+    null,
+    null,
+    5
+  ],
+  "acc_list": [
+    [
+      304,
+      355
+    ],
+    "accounts",
+    33
   ],
   "haac_account": [
     null,
@@ -15,6 +102,11 @@
     5
   ],
   "holy_quest": [
+    null,
+    null,
+    5
+  ],
+  "holy_revival": [
     null,
     null,
     5
@@ -27,211 +119,15 @@
     null,
     1
   ],
-  "one-tap_speed_up": [
+  "hand": [
+    null,
+    null,
+    10
+  ],
+  "google_4": [
     null,
     null,
     5
-  ],
-  "city_15": [
-    null,
-    null,
-    5
-  ],
-  "iron": [
-    null,
-    null,
-    5
-  ],
-  "acc_list": [
-    null,
-    null,
-    5
-  ],
-  "claim_healed": [
-    null,
-    null,
-    5
-  ],
-  "harvest": [
-    null,
-    null,
-    5
-  ],
-  "stone": [
-    null,
-    null,
-    5
-  ],
-  "map": [
-    [
-      33,
-      1175
-    ],
-    null,
-    1
-  ],
-  "iron_type": [
-    [
-      361,
-      1032
-    ],
-    null,
-    1
-  ],
-  "google_2": [
-    null,
-    null,
-    5
-  ],
-  "hac": [
-    null,
-    null,
-    5
-  ],
-  "hac_account": [
-    null,
-    null,
-    5
-  ],
-  "speed_up": [
-    null,
-    null,
-    5
-  ],
-  "lord": [
-    [
-      643,
-      869
-    ],
-    null,
-    1
-  ],
-  "holy_revival": [
-    null,
-    null,
-    5
-  ],
-  "claim_daily": [
-    null,
-    null,
-    5
-  ],
-  "castle_0": [
-    [
-      276,
-      474
-    ],
-    null,
-    1
-  ],
-  "blue": [
-    null,
-    null,
-    1
-  ],
-  "food_type": [
-    [
-      42,
-      1054
-    ],
-    null,
-    1
-  ],
-  "use": [
-    null,
-    null,
-    5
-  ],
-  "google_1": [
-    null,
-    null,
-    5
-  ],
-  "ask_help": [
-    null,
-    null,
-    25
-  ],
-  "leo": [
-    null,
-    null,
-    5
-  ],
-  "heal": [
-    null,
-    null,
-    5
-  ],
-  "leo_account": [
-    null,
-    null,
-    5
-  ],
-  "kazuru_farm5_account": [
-    null,
-    null,
-    5
-  ],
-  "plus": [
-    null,
-    null,
-    5
-  ],
-  "stone_type": [
-    [
-      246,
-      1025
-    ],
-    null,
-    1
-  ],
-  "check": [
-    null,
-    null,
-    5
-  ],
-  "minus": [
-    null,
-    null,
-    5
-  ],
-  "kazuru_farm6_account": [
-    null,
-    null,
-    5
-  ],
-  "revive": [
-    null,
-    null,
-    5
-  ],
-  "claim_holy_water": [
-    null,
-    null,
-    5
-  ],
-  "farm,hacen": [
-    null,
-    null,
-    5
-  ],
-  "confirm_speed_up": [
-    null,
-    null,
-    5
-  ],
-  "claim_holy_quest": [
-    null,
-    null,
-    5
-  ],
-  "switch": [
-    [
-      127,
-      835
-    ],
-    null,
-    1
   ],
   "hospital_building": [
     [
@@ -241,20 +137,41 @@
     null,
     27
   ],
-  "wood": [
-    null,
-    null,
-    5
-  ],
-  "kazuru_farm6": [
-    null,
-    null,
-    5
-  ],
-  "gather_elite": [
-    null,
+  "elite_mines": [
+    [
+      377,
+      109
+    ],
     null,
     2
+  ],
+  "city_19": [
+    null,
+    null,
+    3
+  ],
+  "confirm": [
+    [
+      129,
+      691
+    ],
+    "accounts",
+    3
+  ],
+  "revive": [
+    null,
+    null,
+    5
+  ],
+  "recruit_blue": [
+    null,
+    null,
+    5
+  ],
+  "blue": [
+    null,
+    null,
+    1
   ],
   "wood_type": [
     [
@@ -264,22 +181,7 @@
     null,
     1
   ],
-  "sanctuary": [
-    null,
-    null,
-    5
-  ],
-  "hospital": [
-    null,
-    null,
-    13
-  ],
-  "castle": [
-    null,
-    null,
-    2
-  ],
-  "kazuru_farm5": [
+  "minus": [
     null,
     null,
     5
@@ -292,15 +194,92 @@
     null,
     1
   ],
-  "VIChac_account": [
+  "account": [
+    [
+      70,
+      594
+    ],
+    null,
+    4
+  ],
+  "tasks": [
+    [
+      0,
+      616
+    ],
+    null,
+    1
+  ],
+  "x": [
     null,
     null,
     5
+  ],
+  "kazuru_farm5": [
+    null,
+    null,
+    5
+  ],
+  "build_task": [
+    null,
+    null,
+    5
+  ],
+  "harvest": [
+    null,
+    null,
+    5
+  ],
+  "gather_elite": [
+    null,
+    null,
+    2
+  ],
+  "hac": [
+    null,
+    null,
+    5
+  ],
+  "heal": [
+    null,
+    null,
+    5
+  ],
+  "confirm_rss": [
+    null,
+    null,
+    5
+  ],
+  "food_type": [
+    [
+      42,
+      1054
+    ],
+    null,
+    1
   ],
   "gmail": [
     null,
     null,
     5
+  ],
+  "castle": [
+    null,
+    "accounts",
+    2
+  ],
+  "avatar": [
+    [
+      52,
+      10
+    ],
+    null,
+    1
+  ],
+  "food": [
+    null,
+    null,
+    8
   ],
   "blur_map": [
     [
@@ -310,33 +289,23 @@
     null,
     3
   ],
-  "confirm": [
-    null,
-    null,
-    5
-  ],
-  "gather_speed_up": [
-    null,
-    null,
-    5
-  ],
-  "blur": [
+  "previous": [
     [
-      0,
-      1193
+      55,
+      877
     ],
-    null,
-    8
+    "levels",
+    70
   ],
-  "city_19": [
+  "upgrade_blue": [
     null,
     null,
-    3
+    5
   ],
-  "go": [
+  "stone_type": [
     [
-      531,
-      1192
+      246,
+      1025
     ],
     null,
     1
@@ -349,46 +318,81 @@
     null,
     1
   ],
-  "farm,hacen_account": [
+  "claim_daily": [
     null,
     null,
     5
   ],
-  "google_4": [
+  "iron": [
     null,
     null,
     5
   ],
-  "gather": [
-    null,
-    null,
-    6
-  ],
-  "haac": [
+  "VIChac_account": [
     null,
     null,
     5
   ],
-  "account": [
+  "castle_0": [
     [
-      70,
-      594
-    ],
-    null,
-    4
-  ],
-  "x": [
-    null,
-    null,
-    5
-  ],
-  "avatar": [
-    [
-      52,
-      10
+      276,
+      474
     ],
     null,
     1
+  ],
+  "recruit": [
+    null,
+    null,
+    20
+  ],
+  "one-tap_speed_up": [
+    null,
+    null,
+    5
+  ],
+  "speed_up": [
+    null,
+    null,
+    5
+  ],
+  "cavalry": [
+    [
+      182,
+      103
+    ],
+    null,
+    1
+  ],
+  "stone": [
+    null,
+    null,
+    5
+  ],
+  "upgrade": [
+    null,
+    null,
+    5
+  ],
+  "kazuru_farm6_account": [
+    null,
+    null,
+    5
+  ],
+  "kazuru_farm6": [
+    null,
+    null,
+    5
+  ],
+  "confirm_claim_water": [
+    null,
+    null,
+    5
+  ],
+  "wood": [
+    null,
+    null,
+    5
   ],
   "book": [
     [
@@ -398,23 +402,117 @@
     null,
     1
   ],
-  "confirm_claim_water": [
+  "gather_speed_up": [
     null,
     null,
     5
   ],
-  "elite_mines": [
+  "check": [
+    null,
+    null,
+    5
+  ],
+  "hospital": [
+    null,
+    null,
+    13
+  ],
+  "claim_holy_water": [
+    null,
+    null,
+    5
+  ],
+  "blur": [
     [
-      377,
-      109
+      0,
+      1193
     ],
     null,
-    2
+    8
   ],
-  "VIChac": [
+  "google_2": [
     null,
     null,
     5
+  ],
+  "lord": [
+    [
+      643,
+      869
+    ],
+    null,
+    1
+  ],
+  "claim_healed": [
+    null,
+    null,
+    5
+  ],
+  "iron_type": [
+    [
+      361,
+      1032
+    ],
+    null,
+    1
+  ],
+  "map": [
+    [
+      33,
+      1175
+    ],
+    null,
+    1
+  ],
+  "hac_account": [
+    null,
+    null,
+    5
+  ],
+  "farm,hacen_account": [
+    null,
+    null,
+    5
+  ],
+  "plus": [
+    null,
+    null,
+    5
+  ],
+  "farm,hacen": [
+    null,
+    null,
+    5
+  ],
+  "use": [
+    null,
+    null,
+    5
+  ],
+  "claim_holy_quest": [
+    null,
+    null,
+    5
+  ],
+  "recruit_task": [
+    null,
+    "recruitment",
+    6
+  ],
+  "leo": [
+    null,
+    null,
+    5
+  ],
+  "leo_account": [
+    null,
+    null,
+    5
+  ],
+  "barraks": [
+    null,
+    null,
+    33
   ],
   "castle_1": [
     [
@@ -424,12 +522,15 @@
     null,
     1
   ],
-  "food": [
+  "switch": [
+    [
+      127,
+      835
+    ],
     null,
-    null,
-    8
+    1
   ],
-  "google_3": [
+  "VIChac": [
     null,
     null,
     5
