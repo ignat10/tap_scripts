@@ -138,6 +138,16 @@ class Castle:
         print("ad closed.")
 
     @staticmethod
+    def claim():
+        for _ in range(objects['horse'].count()):
+            objects['horse'].tap()
+            sleep(0.7)
+        if objects['claim'].tap():
+            sleep(1)
+            back()
+            sleep(0.4)
+
+    @staticmethod
     def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].tap()

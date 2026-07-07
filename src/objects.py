@@ -43,6 +43,7 @@ ScreenObjectNames = Literal[
     "second",
     "recruit_blue",
     "horse",
+    "claim",
     "map",
     "search",
     "food",
