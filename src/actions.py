@@ -1,5 +1,5 @@
 from time import sleep
-from typing import Iterator, cast
+from typing import Iterator, cast, SupportsInt
 
 from openpyxl import load_workbook
 from openpyxl.cell.cell import Cell
@@ -15,6 +15,21 @@ ELITE_MINES = range(10)
 
 class Castle:
     def __init__(self, name: Cell, lv: Cell, google: Cell, account: Cell, alliance: Cell):
+        name_val = name.value
+        assert isinstance(name_val, str) and name_val in objects, f"name '{name_val}' is not a valid ScreenObjectNames"
+        
+        lv_val = lv.value
+        assert isinstance(lv_val, SupportsInt), f"level at {lv.coordinate} should be int, got '{lv_val}'"
+        
+        google_val = google.value
+        assert isinstance(google_val, SupportsInt), f"google at {google.coordinate} should be int, got '{google_val}'"
+        
+        account_val = account.value
+        assert isinstance(account_val, SupportsInt), f"account at {account.coordinate} should be int, got '{account_val}'"
+        
+        alliance_val = alliance.value
+        assert isinstance(alliance_val, str), f"alliance at {alliance.coordinate} should be str"
+        
         self.name_cell = name
         self.google_cell = google
         self.account_cell = account
@@ -22,8 +37,6 @@ class Castle:
         self.alliance_cell = alliance
         self.mine_lv = 6
         self.mine_type: MineType = MineType.IRON
-        alliance_val = alliance.value
-        assert isinstance(alliance_val, str), f"alliance at {alliance.coordinate} should be str"
         self.elite_mines = self.alliances_elite_mines.setdefault(alliance_val, iter(ELITE_MINES))
 
     alliances_elite_mines: dict[str, Iterator[int]] = {}
@@ -31,7 +44,6 @@ class Castle:
     @property
     def name(self) -> ScreenObjectNames:
         val = self.name_cell.value
-        assert isinstance(val, str) and val in objects, f"name '{val}' is not a valid ScreenObjectNames"
         return cast(ScreenObjectNames, val)
 
     @name.setter
@@ -41,9 +53,7 @@ class Castle:
 
     @property
     def lv(self) -> int:
-        val = self.lv_cell.value
-        assert isinstance(val, int), f"level at {self.lv_cell.coordinate} should be int, got '{val}'"
-        return val
+        return int(cast(SupportsInt, self.lv_cell.value))
 
     @lv.setter
     def lv(self, value: int):
@@ -52,9 +62,7 @@ class Castle:
 
     @property
     def google(self) -> int:
-        val = self.google_cell.value
-        assert isinstance(val, int), f"google at {self.google_cell.coordinate} should be int, got '{val}'"
-        return val
+        return int(cast(SupportsInt, self.google_cell.value))
 
     @google.setter
     def google(self, value: int):
@@ -63,9 +71,7 @@ class Castle:
 
     @property
     def account(self) -> int:
-        val = self.account_cell.value
-        assert isinstance(val, int), f"account at {self.account_cell.coordinate} should be int, got '{val}'"
-        return val
+        return int(cast(SupportsInt, self.account_cell.value))
 
     @account.setter
     def account(self, value: int):
@@ -74,9 +80,7 @@ class Castle:
 
     @property
     def alliance(self) -> str:
-        val = self.alliance_cell.value
-        assert isinstance(val, str), f"alliance at {self.alliance_cell.coordinate} should be str, got '{val}'"
-        return val
+        return cast(str, self.alliance_cell.value)
 
     @alliance.setter
     def alliance(self, value: str):
@@ -318,6 +322,7 @@ class Castle:
         sleep(0.5)
         if check_map_status() == MapStatus.NOT_AT_MAP:
             back()
+            print("not enough horses")
             sleep(1)
             return False
         else:
@@ -357,7 +362,7 @@ def iter_castles() :
     if sheet is None:
         raise ValueError("cannot load sheet")
 
-    keys: list[str] = [cell.value for cell in sheet[1]] # type: ignore
+    keys: list[str] = [cell.value for cell in sheet[1] if cell.value is not None] # type: ignore
     inp = input("enter from which castle do we start: ") # first row is header
 
     if not inp:
