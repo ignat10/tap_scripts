@@ -1,4 +1,4 @@
-from src.objects import config
+from src.device import config
 from src.actions import iter_castles
 
 config()

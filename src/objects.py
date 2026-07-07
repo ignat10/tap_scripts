@@ -1,9 +1,6 @@
 from typing import Literal, cast
-from os import getenv
-from pathlib import Path
 
-from dotenv import load_dotenv
-from screen_objects import ScreenObject, device_config, get_objects
+from screen_objects import ScreenObject, get_objects
 
 from .paths import SAMPLES_DIR, REGIONS_DIR
 
@@ -81,13 +78,3 @@ objects: dict[ScreenObjectNames, ScreenObject] = cast(
     dict[ScreenObjectNames, ScreenObject],
     get_objects(SAMPLES_DIR, REGIONS_DIR)
 )
-
-
-def config():
-    load_dotenv()
-    adb = getenv("ADB")
-    ip = getenv("IP")
-    if adb is None:
-        raise Exception("ADB not set. set adb path in .env file.")
-    device_config(adb=Path(adb), ip=ip)
-    

@@ -1,6 +1,6 @@
 from screen_objects import get_regions
 
-from src.objects import config
+from src.device import config
 from src.paths import REGIONS_DIR
 
 config()

@@ -1,10 +1,6 @@
 from time import sleep
 
 from .actions import iter_castles
-from .objects import config
-
-
-config()
 
 
 def farming() -> None:

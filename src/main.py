@@ -1,8 +1,10 @@
+from src.device import config
 from src import strategies
 
 
 
 def main():
+    config()
     strategies.farming()
 
 

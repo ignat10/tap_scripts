@@ -1,6 +1,6 @@
 from screen_objects import reset_screen, back
 
-from src.objects import config
+from src.device import config
 from src.utils import object_from_input, object_from_str
 
 config()
