@@ -214,17 +214,6 @@ class Castle:
             sleep(1)
         else:
             print("no need to go to the hospital.")
-        if not objects["ask_help"].tap():
-            objects['hospital_building'].tap()
-        sleep(1)
-        if objects['speed_up'].tap():
-            sleep(0.5)
-            objects['one-tap_speed_up'].tap()
-            sleep(0.5)
-            objects["confirm_speed_up"].tap()
-            sleep(1.5)
-            objects["claim_healed"].tap()
-            sleep(0.5)
         if objects['sanctuary'].tap():
             print("sanctuary...")
             sleep(1)
@@ -246,6 +235,18 @@ class Castle:
             back()
         else:
             print("no need to go to sanctuary.")
+        if not objects["ask_help"].tap():
+            objects['hospital_building'].tap()
+        sleep(1)
+        if objects['speed_up'].tap():
+            sleep(0.5)
+            objects['one-tap_speed_up'].tap()
+            sleep(0.5)
+            objects["confirm_speed_up"].tap()
+            sleep(1.5)
+            objects["claim_healed"].tap()
+            sleep(0.5)
+
 
     @staticmethod
     def to_castle() -> None:
