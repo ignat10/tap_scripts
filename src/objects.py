@@ -9,6 +9,7 @@ ScreenObjectNames = Literal[
     "claim_daily",
     "blur",
     "x",
+    "x_news",
     "claim_healed",
     "hospital",
     "heal",

@@ -370,6 +370,8 @@ class Castle:
             assert (status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
             objects["book"].tap()
             sleep(0.5)
+            if objects['x_news'].tap():
+                sleep(0.5)
             objects["elite_mines"].tap()
             sleep(1)
             if objects["blue"].tap_nth(e):  # color of blue
