@@ -61,6 +61,18 @@ ScreenObjectNames = Literal[
     "city_19",
     "gather",
     "set_out",
+
+    "check_details",
+    "lord_info",
+    "march_limit_3",
+    "march_limit_2",
+    "march_limit_1",
+    "march_limit_0",
+
+
+    "more_marches",
+    "speed_up_march",
+    "withdraw",
     "book",
     "elite_mines",
     "blue",

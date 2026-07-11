@@ -12,19 +12,21 @@ def farming() -> None:
         castle.lord_skills()
         castle.to_map()
 
-        for i in range(4):
-            if i == 2:
-                if not castle.get_elite_mine():
-                    if not castle.get_std_mine():
-                        break
+        for i in range(castle.free_marches() - 1): # - 1 for elite mine
+            if castle.is_enough_troops:
+                castle.get_std_mine()
             else:
-                if castle.lv >= 19 or i != 3:
-                    if not castle.get_std_mine():
-                        break
+                break
         else:
-            continue
-        castle.to_castle()
-        castle.recruit()
+            if castle.get_elite_mine() is False:
+                castle.get_std_mine()
+
+            if castle.free_marches() == 0:
+                castle.is_enough_troops = True
+
+        if not castle.is_enough_troops:
+            castle.to_castle()
+            castle.recruit()
 
 
 def seconds():

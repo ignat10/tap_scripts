@@ -3,8 +3,10 @@ from typing import Iterator, cast, SupportsInt
 
 from openpyxl import load_workbook
 from openpyxl.cell.cell import Cell
+from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
+from openpyxl.worksheet.worksheet import Worksheet
 
-from screen_objects import reset_screen, back
+from screen_objects import reset_screen, back, screenshot
 
 from .objects import objects, ScreenObjectNames
 from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
@@ -13,31 +15,30 @@ from .utils import object_from_str
 
 ELITE_MINES = range(10)
 
+def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
+    val = cell.value
+    assert isinstance(val, typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {repr(typ)}, got '{val if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'" # type: ignore
+
 class Castle:
-    def __init__(self, name: Cell, lv: Cell, google: Cell, account: Cell, alliance: Cell):
-        name_val = name.value
-        assert isinstance(name_val, str) and name_val in objects, f"name '{name_val}' is not a valid ScreenObjectNames"
-        
-        lv_val = lv.value
-        assert isinstance(lv_val, SupportsInt), f"level at {lv.coordinate} should be int, got '{lv_val}'"
-        
-        google_val = google.value
-        assert isinstance(google_val, SupportsInt), f"google at {google.coordinate} should be int, got '{google_val}'"
-        
-        account_val = account.value
-        assert isinstance(account_val, SupportsInt), f"account at {account.coordinate} should be int, got '{account_val}'"
-        
-        alliance_val = alliance.value
-        assert isinstance(alliance_val, str), f"alliance at {alliance.coordinate} should be str"
-        
+    def __init__(self, name: Cell, lv: Cell, google: Cell, account: Cell, alliance: Cell, marches_limit: Cell):
+        cell_assert(name, str)
+        cell_assert(lv, SupportsInt)
+        cell_assert(google, SupportsInt)
+        cell_assert(account, SupportsInt)
+        cell_assert(alliance, str)
+        cell_assert(marches_limit, (int, type(None)))
+
         self.name_cell = name
         self.google_cell = google
         self.account_cell = account
         self.lv_cell = lv
         self.alliance_cell = alliance
+        self.max_marches_cell = marches_limit
+
         self.mine_lv = 6
         self.mine_type: MineType = MineType.IRON
-        self.elite_mines = self.alliances_elite_mines.setdefault(alliance_val, iter(ELITE_MINES))
+        self.is_enough_troops = True
+        self.elite_mines = self.alliances_elite_mines.setdefault(cast(str, alliance.value), iter(ELITE_MINES))
 
     alliances_elite_mines: dict[str, Iterator[int]] = {}
 
@@ -85,6 +86,33 @@ class Castle:
     @alliance.setter
     def alliance(self, value: str):
         self.alliance_cell.value = value
+        save_workbook()
+
+    @property
+    def marches(self) -> int:
+        cell = self.max_marches_cell
+        if cell.value is None:
+            objects['lord_info'].tap()
+            sleep(1)
+            objects['check_details'].tap()
+            sleep(1)
+            for i in reversed(range(4)):
+                if object_from_str(f'march_limit_{i}').exists():
+                    cell.value = i
+                    save_workbook()
+                    break
+            else:
+                screenshot()
+                raise RuntimeError("No march num found in march_limit. Check screen.png")
+            back()
+            sleep(0.3)
+            back()
+            sleep(0.2)
+        return cast(int, cell.value) + 1
+
+    @marches.setter
+    def marches(self, value: int):
+        self.max_marches_cell.value = value
         save_workbook()
 
     def log_into_account(self) -> None:
@@ -289,7 +317,15 @@ class Castle:
             sleep(3)
         print("outside.")
 
-    def get_std_mine(self) -> bool:
+    def free_marches(self) -> int:
+        limit = self.marches
+        objects['more_marches'].tap()
+        sleep(0.3)
+        busy = objects['withdraw'].count() + objects['speed_up_march'].count()
+        print(limit - busy)
+        return limit - busy
+
+    def get_std_mine(self) -> None:
         """Go to standard mine from the map."""
 
         objects["search"].tap()
@@ -323,11 +359,10 @@ class Castle:
         if check_map_status() == MapStatus.NOT_AT_MAP:
             back()
             print("not enough horses")
+            self.is_enough_troops = False
             sleep(1)
-            return False
         else:
             print("mine taken.")
-            return True
 
     def get_elite_mine(self) -> bool:
         print("Elite")
@@ -354,31 +389,36 @@ class Castle:
 
 workbook = load_workbook(FARMS_SHEET_PATH)
 sheet = workbook.active
+if sheet is None:
+    raise ValueError("No active sheet in workbook")
 
 def save_workbook() -> None:
     workbook.save(FARMS_SHEET_PATH)
 
-def iter_castles() :
-    if sheet is None:
-        raise ValueError("cannot load sheet")
+def iter_castles():
+    assert isinstance(sheet, Worksheet)
 
     keys: list[str] = [cell.value for cell in sheet[1] if cell.value is not None] # type: ignore
     inp = input("enter from which castle do we start: ") # first row is header
 
-    if not inp:
+    def check_avatar():
+        assert isinstance(sheet, Worksheet)
+
         for cell in sheet['A'][1:]:
             if not isinstance(cell.value, str):
                 raise ValueError(f"castle name {cell.value} is not a string")
-            if object_from_str(cell.value.replace('.', '')).exists():
-                start_row = cell.row
-                break
+            if object_from_str(cell.value).exists():
+                return cell.row
         else:
             raise RuntimeError("cannot find any castle on the screen")
-    else:
-        try:
-            start_row = max(int(inp), 1) + 1 # because of header
-        except ValueError:
-            raise ValueError(f"Entered invalid castle number: {inp}")
+
+    match inp:
+        case "":
+            start_row = check_avatar()
+        case "next":
+            start_row = check_avatar() + 1
+        case n:
+            start_row = max(int(n), 1) + 1 # because of header
 
     for row in sheet.iter_rows(min_row=start_row):
         kwargs = dict(zip(keys, row))
