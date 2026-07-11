@@ -167,12 +167,13 @@ class Castle:
             if not (objects['claim_daily'].tap() or objects['x'].tap()):
                 back()
             sleep(1.5)
+        sleep(0.5)
         print("ad closed.")
 
     @staticmethod
     def claim():
-        for _ in range(objects['horse'].count()):
-            objects['horse'].tap()
+        print(f"claiming {objects['horse'].count()} horses")
+        while objects['horse'].tap():
             sleep(0.7)
         if objects['claim'].tap():
             sleep(1)
@@ -349,7 +350,7 @@ class Castle:
                         self.mine_lv -= 1
                         self.mine_type = MineType.IRON
                 case MapStatus.NOT_AT_MAP:
-                    raise RuntimeError(f"Not at when searching mine.")
+                    raise RuntimeError(f"Not at map when searching mine.")
                 
         objects['gather'].tap()
         sleep(0.2)
