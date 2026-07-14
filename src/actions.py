@@ -264,17 +264,20 @@ class Castle:
             case CastleStatus.NOT_IN_CASTLE:
                 raise RuntimeError("Somehow not in castle")
 
-    @staticmethod
-    def build():
-        objects['tasks'].tap()
-        sleep(0.8)
-        objects['build_task'].tap_nth(0)
-        sleep(0.5)
-        objects['hand'].spam_tap(2, 0.5)
+    def build(self):
+        if self.lv < 15:
+            objects['castle_building'].tap()
+        else:
+            objects['tasks'].tap()
+            sleep(0.8)
+            objects['build_task'].tap_nth(0)
+            sleep(0.5)
+            objects['hand'].spam_tap(2, 0.5)
         objects['upgrade'].tap()
         sleep(0.7)
         if not objects['upgrade_blue'].tap():
             objects['go_upgrade'].tap()
+            sleep(1)
             objects['upgrade_blue'].tap()
 
     @staticmethod

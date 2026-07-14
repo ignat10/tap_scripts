@@ -31,6 +31,7 @@ ScreenObjectNames = Literal[
     "harvest",
     "gather_speed_up",
     "use",
+    "castle_building",
     "tasks",
     "build_task",
     "hand",
