@@ -2,7 +2,7 @@ from time import sleep
 from typing import Iterator, cast, SupportsInt
 
 from openpyxl import load_workbook
-from openpyxl.cell.cell import Cell
+from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -167,7 +167,7 @@ class Castle:
             if not (objects['claim_daily'].tap() or objects['x'].tap()):
                 back()
             sleep(1.5)
-        sleep(0.5)
+        sleep(1)
         print("ad closed.")
 
     @staticmethod
@@ -178,7 +178,7 @@ class Castle:
         if objects['claim'].tap():
             sleep(1)
             back()
-            sleep(0.4)
+            sleep(1)
 
     @staticmethod
     def lord_skills() -> None:
@@ -215,6 +215,17 @@ class Castle:
             sleep(1)
         else:
             print("no need to go to the hospital.")
+        if not objects["ask_help"].tap():
+            objects['hospital_building'].tap()
+        sleep(1)
+        if objects['speed_up'].tap():
+            sleep(0.5)
+            objects['one-tap_speed_up'].tap()
+            sleep(0.5)
+            objects["confirm_speed_up"].tap()
+            sleep(1.5)
+            objects["claim_healed"].tap()
+            sleep(0.5)
         if objects['sanctuary'].tap():
             print("sanctuary...")
             sleep(1)
@@ -236,17 +247,6 @@ class Castle:
             back()
         else:
             print("no need to go to sanctuary.")
-        if not objects["ask_help"].tap():
-            objects['hospital_building'].tap()
-        sleep(1)
-        if objects['speed_up'].tap():
-            sleep(0.5)
-            objects['one-tap_speed_up'].tap()
-            sleep(0.5)
-            objects["confirm_speed_up"].tap()
-            sleep(1.5)
-            objects["claim_healed"].tap()
-            sleep(0.5)
 
 
     @staticmethod
