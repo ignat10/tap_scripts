@@ -45,7 +45,6 @@ def check_map_or_castle() -> Status:
 def check_castle_status() -> CastleStatus:
     if (
         objects['map'].exists()
-        and objects['lord'].exists()
         and objects['avatar'].exists()
     ):
         return CastleStatus.CLOSED_AD
