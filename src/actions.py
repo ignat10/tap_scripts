@@ -99,8 +99,7 @@ class Castle:
         cell = self.max_marches_cell
         if cell.value is None:
             objects['lord_info'].tap()
-            sleep(1)
-            objects['check_details'].tap()
+            objects['check_details'].waitap()
             sleep(1)
             for i in reversed(range(4)):
                 if object_from_str(f'march_limit_{i}').exists():
@@ -246,12 +245,12 @@ class Castle:
             while True:
                 if objects["avatar"].tap():
                     sleep(1)
-                objects["account"].tap()
-                sleep(1)
-                objects["switch"].tap()
-                sleep(1)
-                objects["login"].tap()
-                sleep(2)
+                if objects["account"].tap():
+                    sleep(1)
+                if objects["switch"].tap():
+                    sleep(1)
+                if objects["login"].tap():
+                    sleep(2)
                 if not objects["gmail"].tap_nth(self.google):
                     back()
                     continue
@@ -260,8 +259,7 @@ class Castle:
                 if not objects["castle"].tap_nth(self.account - is_green):
                     back()
                     continue
-                sleep(1)
-                objects["confirm"].tap()
+                objects["confirm"].waitap()
                 break
             print("logged in.")
             sleep(5)
@@ -314,8 +312,8 @@ class Castle:
             sleep(0.2)
         objects["harvest"].tap()
         sleep(0.2)
-        objects["use"].tap()
-        print("harvested")
+        if objects["use"].tap():
+            print("harvested")
         objects["recall_all"].tap()
         sleep(0.2)
         if not objects["use"].tap():
@@ -331,11 +329,10 @@ class Castle:
             sleep(1)
         if objects["hospital"].tap():
             print("healing...")
+            objects["heal"].waitap()
             sleep(1)
-            objects["heal"].tap()
-            sleep(1)
-            objects['confirm_rss'].tap()
-            sleep(1)
+            if objects['confirm_rss'].tap():
+                sleep(1)
         else:
             print("no need to go to the hospital.")
         if not objects["ask_help"].tap():
@@ -344,15 +341,13 @@ class Castle:
         if objects['speed_up'].tap():
             sleep(0.5)
             objects['one-tap_speed_up'].tap()
-            sleep(0.5)
-            objects["confirm_speed_up"].tap()
-            sleep(1.5)
-            objects["claim_healed"].tap()
+            objects["confirm_speed_up"].waitap()
+            objects["claim_healed"].waitap()
             sleep(0.5)
         if objects['sanctuary'].tap():
             print("sanctuary...")
+            objects['revive'].waitap()
             sleep(1)
-            objects['revive'].tap()
             objects['claim_holy_water'].tap()
             sleep(0.5)
             if not objects['confirm_claim_water'].tap():
@@ -409,7 +404,6 @@ class Castle:
         else:
             build_need()
 
-
     def build(self):
         if self.lv < 15:
             objects['castle_building'].tap()
@@ -432,28 +426,20 @@ class Castle:
         sleep(0.8)
         for i in range(objects['recruit_task'].count()):
             objects['recruit_task'].tap_nth(i)
-            sleep(1)
-            objects['hand'].tap()
-            sleep(1.5)
-            objects['recruit'].tap()
-            sleep(1.5)
-            if not objects['recruit_blue'].exists():
-                back()
-                sleep(0.5)
-                objects['tasks'].tap()
+            objects['hand'].waitap()
+            objects['recruit'].waitap()
+            if objects['x_news'].tap():
                 sleep(1)
-                continue
-            objects['cavalry'].tap()
+            objects['cavalry'].waitap()
             sleep(0.8)
             objects['previous'].spam_tap(8, 0.02)
             sleep(0.2)
             objects['second'].tap()
             sleep(0.2)
-            objects['recruit_blue'].tap()
-            sleep(0.1)
+            if objects['recruit_blue'].tap():
+                sleep(0.1)
             back()
-            sleep(0.5)
-            objects['tasks'].tap()
+            objects['tasks'].waitap()
             sleep(1)
         back()
         sleep(0.3)
@@ -470,8 +456,8 @@ class Castle:
 
     def free_marches(self) -> int:
         limit = self.marches
-        objects['more_marches'].tap()
-        sleep(0.3)
+        if objects['more_marches'].tap():
+            sleep(0.3)
         busy = objects['withdraw'].count() + objects['speed_up_march'].count()
         print(limit - busy)
         return limit - busy
@@ -482,8 +468,7 @@ class Castle:
         objects["search"].tap()
         while True:
             print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower()}")
-            sleep(0.5)
-            object_from_str(f"{self.mine_type.name.lower()}_type").tap()
+            object_from_str(f"{self.mine_type.name.lower()}_type").waitap()
             objects["plus"].spam_tap(5, 0)
             objects["minus"].spam_tap(6 - self.mine_lv, 0)
             objects["go"].spam_tap(4, 0.1)
@@ -504,8 +489,7 @@ class Castle:
         objects['gather'].tap()
         sleep(0.2)
         objects["gather"].tap()
-        sleep(0.5)
-        objects["set_out"].tap()
+        objects["set_out"].waitap()
         sleep(0.5)
         if check_map_status() == MapStatus.NOT_AT_MAP:
             back()
@@ -529,9 +513,11 @@ class Castle:
                 sleep(2)
                 if objects["gather_elite"].tap():
                     sleep(0.5)
-                    if not objects["set_out"].tap():  # regularly I should be there
+                    objects["set_out"].waitap()  # regularly I should be there
+                    sleep(0.6)
+                    if check_map_status() == MapStatus.NOT_AT_MAP:
                         back()
-                    sleep(0.3)
+                        sleep(1)
                     return True
             else:
                 print("some chemistry error")
