@@ -1,4 +1,4 @@
-from screen_objects import reset_screen, back
+from screen_objects import reset_screen, back, Direction, SwipeSpeed
 
 from src.device import config
 from src.utils import object_from_input, object_from_str
@@ -14,6 +14,13 @@ while command := input("Enter command: "):
 
         case "tap":
             print(obj.tap())
+
+        case "swipe":
+            direction = Direction.Right
+            speed = SwipeSpeed.Slow
+            duration = float(input("Enter duration: "))
+            r = obj.swipe(direction, speed, duration)
+            print(r)
 
         case "cal":
             fixed = bool(input("fixed? "))
