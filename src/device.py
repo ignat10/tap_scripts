@@ -4,6 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from screen_objects import device_config
 
+
 def config():
     load_dotenv()
     adb = getenv("ADB")

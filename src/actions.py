@@ -1,5 +1,5 @@
-from time import sleep
 from datetime import timedelta
+from time import sleep
 from typing import Iterator, cast, SupportsInt
 
 from openpyxl import load_workbook
@@ -10,15 +10,17 @@ from openpyxl.worksheet.worksheet import Worksheet
 from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction
 
 from .objects import objects, ScreenObjectNames
-from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .paths import FARMS_SHEET_PATH
+from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .utils import object_from_str
 
 ELITE_MINES = range(10)
 
 def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
     val = cell.value
-    assert isinstance(val, typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'" # type: ignore
+    assert isinstance(val,
+                      typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'"  # type: ignore
+
 
 class Castle:
     def __init__(self, name: Cell, lv: Cell, google: Cell, account: Cell, alliance: Cell, marches_limit: Cell):
@@ -154,12 +156,12 @@ class Castle:
         kill_monsters()
         objects['bella'].wait()
         objects['bella'].spam_tap(4, 0.4)
-        challenge() # first level
+        challenge()  # first level
         kill_monsters()
         print("finished first level")
         objects['bella'].waitap()
         objects['bella'].tap()
-        challenge() # second level
+        challenge()  # second level
         kill_monsters()
         print("finished second level")
         objects['bella'].waitap()
@@ -172,7 +174,7 @@ class Castle:
         objects['bella'].waitap()
         objects['bella'].tap()
         objects['monster'].waitap()
-        challenge() # third level
+        challenge()  # third level
         kill_monsters()
         print("finished third level")
         objects['backhand'].waitap()
@@ -191,16 +193,16 @@ class Castle:
         print("upgraded castle to level 3")
         objects['kingroad'].waitap()
         self.kingroad_claim()
-        objects['kingroad_go'].waitap() # barracks task
+        objects['kingroad_go'].waitap()  # barracks task
         objects['bella'].waitap()
         objects['bella'].tap()
         objects['hand'].waitap()
         objects['hand'].waitap()
         objects['kingroad'].waitap()
         self.kingroad_claim()
-        objects['kingroad_go'].waitap() # savior of order task
+        objects['kingroad_go'].waitap()  # savior of order task
         objects['hand'].waitap()
-        objects['level'].waitap() # 4th level
+        objects['level'].waitap()  # 4th level
         objects['bright_challenge'].waitap()
         kill_monsters()
         print("finished 4th level")
@@ -285,7 +287,6 @@ class Castle:
                 sleep(1)
                 status = check_castle_status()
             if status == CastleStatus.NOT_IN_CASTLE:
-
                 raise RuntimeError(f"Not in castle.")
 
             if not (objects['claim_daily'].tap() or objects['x'].tap()):
@@ -320,7 +321,7 @@ class Castle:
             objects['use'].waitap(2)
         print("lord skills done.")
         sleep(0.8)
-    
+
     @staticmethod
     def heal() -> None:
         if objects['claim_healed'].waitap(0.5):
@@ -491,7 +492,8 @@ class Castle:
     def get_elite_mine(self) -> bool:
         print("Elite")
         for e in self.elite_mines:
-            assert (status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
+            assert (
+                       status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
             objects["book"].tap()
             if objects['x_news'].waitap(0.5):
                 sleep(0.5)
@@ -517,14 +519,16 @@ sheet = workbook.active
 if sheet is None:
     raise ValueError("No active sheet in workbook")
 
+
 def save_workbook() -> None:
     workbook.save(FARMS_SHEET_PATH)
+
 
 def iter_castles():
     assert isinstance(sheet, Worksheet)
 
-    keys: list[str] = [cell.value for cell in sheet[1] if cell.value is not None] # type: ignore
-    inp = input("enter from which castle do we start: ") # first row is header
+    keys: list[str] = [cell.value for cell in sheet[1] if cell.value is not None]  # type: ignore
+    inp = input("enter from which castle do we start: ")  # first row is header
 
     def check_avatar():
         assert isinstance(sheet, Worksheet)
@@ -543,7 +547,7 @@ def iter_castles():
         case "next":
             start_row = check_avatar() + 1
         case n if n.isdigit():
-            start_row = max(int(n), 1) + 1 # because of header
+            start_row = max(int(n), 1) + 1  # because of header
         case name:
             start_row = next(
                 i for i, cell in enumerate(sheet['A'][1:], start=2)

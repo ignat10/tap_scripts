@@ -1,7 +1,7 @@
 from screen_objects import back, Direction, SwipeSpeed, reset_screen
 
-from src.device import config
 from src.actions import iter_castles
+from src.device import config
 from src.utils import object_from_input, object_from_str
 
 
@@ -88,8 +88,7 @@ def main():
                 reset_screen()
 
         case com:
-            print(f"unknown command: {com}")
-            main()
+            raise IOError(f"unknown command: {com}")
 
 
 if __name__ == "__main__":

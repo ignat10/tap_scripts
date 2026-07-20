@@ -1,9 +1,6 @@
 from pathlib import Path
 
-
-
 _ROOT_DIR = Path(__file__).parent.parent
-
 
 DATA_DIR = _ROOT_DIR / 'data'
 SAMPLES_DIR = DATA_DIR / 'samples'
