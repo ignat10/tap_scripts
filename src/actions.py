@@ -138,8 +138,7 @@ class Castle:
         def kill_monsters():
             while not objects['quest_complete'].tap():
                 if objects['blue_bonus'].tap():
-                    sleep(0.8)
-                    objects['confirm_bonus'].tap()
+                    objects['confirm_bonus'].waitap()
                 else:
                     objects['man'].swipe(Direction.Right, SwipeSpeed.Slow, 2)
                     objects['man'].swipe(Direction.Up, SwipeSpeed.Slow, 2)
@@ -233,7 +232,7 @@ class Castle:
             back()
             sleep(0.5)
         if objects['kingroad_done'].tap():
-            sleep(1)
+            sleep(2)
             back()
             sleep(0.3)
 
@@ -249,16 +248,19 @@ class Castle:
                     sleep(1)
                 if objects["switch"].tap():
                     sleep(1)
-                if objects["login"].tap():
-                    sleep(2)
-                if not objects["gmail"].tap_nth(self.google):
+                objects["login"].waitap(3)
+                if not objects['gmail'].wait(10):
                     back()
                     continue
-                sleep(3)
+                objects["gmail"].tap_nth(self.google)
+                if not objects["acc_list"].wait(15):
+                    back()
+                    continue
                 is_green = objects['green_castle'].exists()
                 if not objects["castle"].tap_nth(self.account - is_green):
-                    back()
-                    continue
+                    screenshot()
+                    raise RuntimeError(
+                        f"cannot log into castle \n name: {self.name} \n google: {self.google} \n account: {self.account} \n check screen.png for more info")
                 objects["confirm"].waitap()
                 break
             print("logged in.")
@@ -268,6 +270,7 @@ class Castle:
                 reset_screen()
                 sleep(1)
                 print("loading...")
+                sleep(1)
             print("loaded.")
         else:
             print(f"already logged into {self.name}")
@@ -305,33 +308,28 @@ class Castle:
     def lord_skills() -> None:
         print("lord skills...")
         objects["lord"].tap()
-        sleep(1.5)
-        if objects['gather_speed_up'].tap():
-            sleep(0.5)
-            objects['use'].tap()
-            sleep(0.2)
-        objects["harvest"].tap()
-        sleep(0.2)
-        if objects["use"].tap():
+        if objects['gather_speed_up'].waitap(2):
+            objects['use'].waitap(5)
+        objects["harvest"].waitap(3)
+        if objects["use"].waitap(2):
             print("harvested")
-        objects["recall_all"].tap()
-        sleep(0.2)
-        if not objects["use"].tap():
+        objects["recall_all"].waitap(3)
+        sleep(0.1)
+        if not objects["use"].waitap(2):
             back()
-            objects['use'].tap()
+            objects['use'].waitap(2)
         print("lord skills done.")
         sleep(0.8)
     
     @staticmethod
     def heal() -> None:
-        if objects['claim_healed'].tap():
+        if objects['claim_healed'].waitap(0.5):
             print("claimed healed")
             sleep(1)
-        if objects["hospital"].tap():
+        if objects["hospital"].waitap(1):
             print("healing...")
             objects["heal"].waitap()
-            sleep(1)
-            if objects['confirm_rss'].tap():
+            if objects['confirm_rss'].waitap(1.5):
                 sleep(1)
         else:
             print("no need to go to the hospital.")
@@ -463,7 +461,7 @@ class Castle:
             objects["plus"].spam_tap(5, 0)
             objects["minus"].spam_tap(6 - self.mine_lv, 0)
             objects["go"].spam_tap(4, 0.1)
-            sleep(1.5)
+            objects['gather'].wait(1.5)
 
             match check_map_status():
                 case MapStatus.FOUND:
@@ -495,15 +493,12 @@ class Castle:
         for e in self.elite_mines:
             assert (status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
             objects["book"].tap()
-            sleep(0.5)
-            if objects['x_news'].tap():
+            if objects['x_news'].waitap(0.5):
                 sleep(0.5)
             objects["elite_mines"].tap()
-            sleep(2)
+            objects['blue'].wait(1)
             if objects["blue"].tap_nth(e):  # color of blue
-                sleep(2)
-                if objects["gather"].tap():
-                    sleep(0.5)
+                if objects["gather"].waitap(2.5):
                     objects["set_out"].waitap()  # regularly I should be there
                     sleep(0.6)
                     if check_map_status() == MapStatus.NOT_AT_MAP:
