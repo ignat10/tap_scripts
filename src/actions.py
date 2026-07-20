@@ -6,7 +6,7 @@ from openpyxl import load_workbook
 from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from openpyxl.worksheet.worksheet import Worksheet
-
+from keyboard import send
 from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction
 
 from .objects import objects, ScreenObjectNames
@@ -16,6 +16,9 @@ from .utils import object_from_str
 
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
+
+def shake() -> None:
+    send("f9")
 
 def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
     val = cell.value
@@ -307,6 +310,8 @@ class Castle:
             sleep(1)
             back()
             sleep(1)
+        shake()
+        sleep(3)
 
     @staticmethod
     def lord_skills() -> None:
