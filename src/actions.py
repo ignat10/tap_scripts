@@ -14,6 +14,7 @@ from .paths import FARMS_SHEET_PATH
 from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .utils import object_from_str
 
+MAX_MINE_LV = 6
 ELITE_MINES = range(10)
 
 def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
@@ -43,7 +44,7 @@ class Castle:
         self.alliance_cell = alliance
         self.max_marches_cell = marches_limit
 
-        self.mine_lv = 6
+        self.mine_lv = MAX_MINE_LV
         self.mine_type: MineType = MineType.IRON
         self.is_enough_troops = True
         self.elite_mines = self.alliances_elite_mines.setdefault(cast(str, alliance.value), iter(ELITE_MINES))
@@ -295,8 +296,10 @@ class Castle:
         sleep(1)
         print("ad closed.")
 
-    @staticmethod
-    def claim():
+    @classmethod
+    def claim(cls) -> None:
+        if check_castle_status() == CastleStatus.AD:
+            cls.close_ad()
         print(f"claiming {objects['horse'].count()} horses")
         while objects['horse'].tap():
             sleep(0.7)
@@ -320,6 +323,7 @@ class Castle:
             back()
             objects['use'].waitap(2)
         print("lord skills done.")
+        reset_screen()
         sleep(0.8)
 
     @staticmethod
@@ -449,14 +453,14 @@ class Castle:
         if objects['more_marches'].tap():
             sleep(0.3)
         busy = objects['withdraw'].count() + objects['speed_up_march'].count()
-        print(limit - busy)
+        print(f"free marches: {limit - busy}")
         return limit - busy
 
     def get_std_mine(self) -> None:
         """Go to standard mine from the map."""
 
         objects["search"].tap()
-        while True:
+        for _ in range(MAX_MINE_LV * MineType.IRON):
             print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower()}")
             object_from_str(f"{self.mine_type.name.lower()}_type").waitap()
             objects["plus"].spam_tap(5, 0)
@@ -475,7 +479,10 @@ class Castle:
                         self.mine_type = MineType.IRON
                 case MapStatus.NOT_AT_MAP:
                     raise RuntimeError(f"Not at map when searching mine.")
-                
+        else:
+            screenshot()
+            raise RuntimeError(f"cannot find standard mine. check screen.png")
+
         objects['gather'].tap()
         sleep(0.2)
         objects["gather"].tap()
