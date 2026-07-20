@@ -335,37 +335,28 @@ class Castle:
                 sleep(1)
         else:
             print("no need to go to the hospital.")
-        if not objects["ask_help"].tap():
-            objects['hospital_building'].tap()
-        sleep(1)
-        if objects['speed_up'].tap():
-            sleep(0.5)
-            objects['one-tap_speed_up'].tap()
-            objects["confirm_speed_up"].waitap()
-            objects["claim_healed"].waitap()
-            sleep(0.5)
-        if objects['sanctuary'].tap():
+        objects["ask_help"].waitap(1)
+        if objects['sanctuary'].waitap(1.6):
             print("sanctuary...")
             objects['revive'].waitap()
-            sleep(1)
-            objects['claim_holy_water'].tap()
-            sleep(0.5)
-            if not objects['confirm_claim_water'].tap():
-                sleep(0.5)
-                objects['holy_quest'].tap()
-                sleep(0.5)
-                objects['claim_holy_quest'].tap()
-                sleep(0.5)
-                if objects['confirm_claim_water'].tap():
+            objects['claim_holy_water'].waitap(1)
+            if not objects['confirm_claim_water'].waitap(0.5):
+                objects['holy_quest'].waitap(0.5)
+                objects['claim_holy_quest'].waitap(1)
+                if objects['confirm_claim_water'].waitap(1):
                     sleep(0.5)
-                objects['holy_revival'].tap()
-            sleep(0.5)
-            objects['revive'].tap()
+                objects['holy_revival'].waitap(0.8)
+            objects['revive'].waitap(1)
             sleep(0.3)
             back()
         else:
             print("no need to go to sanctuary.")
-
+        objects['hospital_building'].waitap(0.7)
+        if objects['speed_up'].waitap(1.5):
+            objects['one-tap_speed_up'].waitap()
+            objects["confirm_speed_up"].waitap()
+            objects["claim_healed"].waitap()
+            sleep(0.5)
 
     @staticmethod
     def to_castle() -> None:
