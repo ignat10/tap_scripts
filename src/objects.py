@@ -79,7 +79,6 @@ ScreenObjectNames = Literal[
     "elite_mines",
     "blue",
     "check",
-    "gather_elite",
 
     "leo",
     "haac",

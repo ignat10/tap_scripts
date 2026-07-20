@@ -508,10 +508,10 @@ class Castle:
             if objects['x_news'].tap():
                 sleep(0.5)
             objects["elite_mines"].tap()
-            sleep(1)
+            sleep(2)
             if objects["blue"].tap_nth(e):  # color of blue
                 sleep(2)
-                if objects["gather_elite"].tap():
+                if objects["gather"].tap():
                     sleep(0.5)
                     objects["set_out"].waitap()  # regularly I should be there
                     sleep(0.6)
