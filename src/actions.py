@@ -102,6 +102,7 @@ class Castle:
 
     @property
     def marches(self) -> int:
+        """gets available marches value"""
         cell = self.max_marches_cell
         if cell.value is None:
             objects['lord_info'].tap()
@@ -123,10 +124,12 @@ class Castle:
 
     @marches.setter
     def marches(self, value: int):
+        """sets marches value and saves to .xlsx"""
         self.max_marches_cell.value = value
         save_workbook()
 
     def new_account(self) -> None:
+        """creates new account, upgrades castle to level 4. from city or map."""
         if objects['avatar'].tap():
             objects['account'].waitap()
             objects['new_game'].waitap()
@@ -231,6 +234,7 @@ class Castle:
 
     @staticmethod
     def kingroad_claim():
+        """claims completed kingroad tasks"""
         if objects['kingroad'].tap():
             sleep(0.8)
         while objects['kingroad_claim'].tap():
@@ -243,6 +247,7 @@ class Castle:
             sleep(0.3)
 
     def log_into_account(self) -> None:
+        """logs into current account. from city or map."""
         print(f"checking is current castle: {self.name}")
         if not objects[self.name].exists():
             print(f"logging into {self.name}")
@@ -283,6 +288,7 @@ class Castle:
 
     @staticmethod
     def close_ad() -> None:
+        """closes ad. from city"""
         while (status := check_castle_status()) != CastleStatus.CLOSED_AD:
             if status == CastleStatus.NOT_IN_CASTLE:
                 for _ in range(5):
@@ -301,6 +307,7 @@ class Castle:
 
     @classmethod
     def claim(cls) -> None:
+        """claims recruited troops, gift, and RSS. from city"""
         if check_castle_status() == CastleStatus.AD:
             cls.close_ad()
         print(f"claiming {objects['horse'].count()} horses")
@@ -315,6 +322,7 @@ class Castle:
 
     @staticmethod
     def lord_skills() -> None:
+        """use lord skills, harvest, gather speed up, recall all. from city or map"""
         print("lord skills...")
         objects["lord"].tap()
         if objects['gather_speed_up'].waitap(2):
@@ -333,6 +341,7 @@ class Castle:
 
     @staticmethod
     def heal() -> None:
+        """heal troops in hospital and sanctuary, then claim healed. from castle."""
         if objects['claim_healed'].waitap(0.5):
             print("claimed healed")
             sleep(1)
@@ -368,6 +377,7 @@ class Castle:
 
     @staticmethod
     def to_castle() -> None:
+        """goes to castle. from map."""
         print("going inside...")
         while check_map_or_castle() != Status.INSIDE:
             back()
@@ -381,18 +391,21 @@ class Castle:
             case CastleStatus.NOT_IN_CASTLE:
                 raise RuntimeError("Somehow not in castle")
 
-    def upgrade_castle(self):
-        def build_need():
-            if objects['upgrade_blue'].tap():
+    @classmethod
+    def _build_need(cls) -> None:
+        """builds required for upgrade buildings. from upgrade menu."""
+        if objects['upgrade_blue'].tap():
+            sleep(0.5)
+        else:
+            if objects['go_upgrade'].tap():
                 sleep(0.5)
+                cls._build_need()
             else:
-                if objects['go_upgrade'].tap():
-                    sleep(0.5)
-                    build_need()
-                else:
-                    screenshot()
-                    raise RuntimeError("cannot find upgrade buttons. check screen.png")
+                screenshot()
+                raise RuntimeError("cannot find upgrade buttons. check screen.png")
 
+    def upgrade_castle(self):
+        """upgrades castle or required buildings. from city."""
         objects['castle_building'].waitap()
         objects['upgrade'].waitap()
         sleep(1)
@@ -401,26 +414,21 @@ class Castle:
         if objects['upgrade_blue'].tap():
             self.lv += 1
         else:
-            build_need()
+            self._build_need()
 
     def build(self):
-        if self.lv < 15:
-            objects['castle_building'].tap()
-        else:
-            objects['tasks'].tap()
-            sleep(0.8)
-            objects['build_task'].tap_nth(0)
-            sleep(0.5)
-            objects['hand'].spam_tap(2, 0.5)
+        objects['tasks'].tap()
+        sleep(0.8)
+        objects['build_task'].tap_nth(0)
+        sleep(0.5)
+        objects['hand'].spam_tap(2, 0.5)
         objects['upgrade'].tap()
         sleep(0.7)
-        if not objects['upgrade_blue'].tap():
-            objects['go_upgrade'].tap()
-            sleep(1)
-            objects['upgrade_blue'].tap()
+        self._build_need()
 
     @staticmethod
     def recruit():
+        """recruits horses. from the city."""
         objects['tasks'].tap()
         sleep(0.8)
         for i in range(objects['recruit_task'].count()):
@@ -445,6 +453,7 @@ class Castle:
 
     @staticmethod
     def to_map() -> None:
+        """Goes to map from inside city"""
         print("going outside...")
         while not objects['book'].exists():
             if not objects["map"].tap():
@@ -454,6 +463,7 @@ class Castle:
         print("outside.")
 
     def free_marches(self) -> int:
+        """get number of available marches of current castle"""
         limit = self.marches
         if objects['more_marches'].tap():
             sleep(0.3)
@@ -462,7 +472,7 @@ class Castle:
         return limit - busy
 
     def get_std_mine(self) -> None:
-        """Go to standard mine from the map."""
+        """Gets standard mine from the map."""
 
         objects["search"].tap()
         for _ in range(MAX_MINE_LV * MineType.IRON):
@@ -502,6 +512,7 @@ class Castle:
             print("mine taken.")
 
     def get_elite_mine(self) -> bool:
+        """Gets elite mine from the map."""
         print("Elite")
         for e in self.elite_mines:
             assert (
