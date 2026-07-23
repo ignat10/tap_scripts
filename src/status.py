@@ -36,8 +36,7 @@ def check_map_or_castle() -> Status:
         return Status.OUTSIDE
 
     if (
-            objects['x'].exists()
-            or objects['lord'].exists()
+            objects['lord'].exists()
             or objects['claim_daily'].exists()
             or objects['map'].exists()
             or objects['blur'].exists()
@@ -49,10 +48,7 @@ def check_map_or_castle() -> Status:
 
 def check_castle_status() -> CastleStatus:
     reset_screen()
-    if (
-            objects['map'].exists()
-            and objects['avatar'].exists()
-    ):
+    if objects['map'].exists():
         return CastleStatus.CLOSED_AD
 
     if (

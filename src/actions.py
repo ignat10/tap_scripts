@@ -7,12 +7,14 @@ from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from openpyxl.worksheet.worksheet import Worksheet
 from keyboard import send
-from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction
+from screen_objects import ScreenObject, reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center
 
-from .objects import objects, ScreenObjectNames
+from .objects import objects, resources_technology, equipment, ScreenObjectNames
 from .paths import FARMS_SHEET_PATH
 from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
-from .utils import object_from_str
+from .utils import object_from_str, log_raise
+
+none_type = type(None)
 
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
@@ -22,8 +24,7 @@ def shake() -> None:
 
 def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
     val = cell.value
-    assert isinstance(val,
-                      typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'"  # type: ignore
+    assert isinstance(val,typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val.__repr__() if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula, none_type)) else "value doesn't impl repr method"}'"  # type: ignore
 
 
 class Castle:
@@ -32,7 +33,6 @@ class Castle:
             lv.value = 1
             save_workbook()
 
-        none_type = type(None)
         cell_assert(name, str)
         cell_assert(lv, SupportsInt)
         cell_assert(google, (SupportsInt, none_type))
@@ -47,6 +47,8 @@ class Castle:
         self.alliance_cell = alliance
         self.max_marches_cell = marches_limit
 
+        self.shook = False
+        self.stamina = True
         self.mine_lv = MAX_MINE_LV
         self.mine_type: MineType = MineType.IRON
         self.is_enough_troops = True
@@ -104,29 +106,23 @@ class Castle:
     def marches(self) -> int:
         """gets available marches value"""
         cell = self.max_marches_cell
-        if cell.value is None:
-            objects['lord_info'].tap()
-            objects['check_details'].waitap()
-            sleep(1)
-            for i in reversed(range(4)):
-                if object_from_str(f'march_limit_{i}').exists():
-                    cell.value = i
-                    save_workbook()
-                    break
-            else:
-                screenshot()
-                raise RuntimeError("No march num found in march_limit. Check screen.png")
-            back()
-            sleep(0.3)
-            back()
-            sleep(0.2)
-        return cast(int, cell.value) + 1
+        val = cell.value
+        if val is None:
+            self.check_marches()
+            val = cell.value
+        assert isinstance(val, int)
+        return val + 1
 
     @marches.setter
     def marches(self, value: int):
         """sets marches value and saves to .xlsx"""
         self.max_marches_cell.value = value
         save_workbook()
+
+    @staticmethod
+    def close_bella():
+        while objects['bella'].tap():
+            sleep(0.5)
 
     def new_account(self) -> None:
         """creates new account, upgrades castle to level 4. from city or map."""
@@ -135,6 +131,7 @@ class Castle:
             objects['new_game'].waitap()
             objects['confirm'].waitap()
             objects['realm'].waitap()
+            print("account created")
             sleep(6)
 
         objects['man'].wait()
@@ -144,33 +141,22 @@ class Castle:
         objects['man'].swipe(Direction.Up, SwipeSpeed.Slow, 0.8)
         objects['man'].swipe(Direction.Right, SwipeSpeed.Slow, 0.6)
 
-        def kill_monsters():
-            while not objects['quest_complete'].tap():
-                if objects['blue_bonus'].tap():
-                    objects['confirm_bonus'].waitap()
-                else:
-                    objects['man'].swipe(Direction.Right, SwipeSpeed.Slow, 2)
-                    objects['man'].swipe(Direction.Up, SwipeSpeed.Slow, 2)
-                    objects['man'].swipe(Direction.Left, SwipeSpeed.Slow, 2)
-                    objects['man'].swipe(Direction.Down, SwipeSpeed.Slow, 2)
-                reset_screen()
-            sleep(1)
-
         def challenge():
             objects['level'].waitap()
             objects['challenge'].waitap()
 
-        kill_monsters()
+        self.kill_monsters()
+        print("finished 0 level")
         objects['bella'].wait()
         objects['bella'].spam_tap(4, 0.4)
         challenge()  # first level
-        kill_monsters()
-        print("finished first level")
+        self.kill_monsters()
+        print("finished 1st level")
         objects['bella'].waitap()
         objects['bella'].tap()
         challenge()  # second level
-        kill_monsters()
-        print("finished second level")
+        self.kill_monsters()
+        print("finished 2nd level")
         objects['bella'].waitap()
         objects['bella'].tap()
         objects['backhand'].waitap()
@@ -180,10 +166,10 @@ class Castle:
         self.lv = 2
         objects['bella'].waitap()
         objects['bella'].tap()
-        objects['monster'].waitap()
+        objects['new_monster'].waitap()
         challenge()  # third level
-        kill_monsters()
-        print("finished third level")
+        self.kill_monsters()
+        print("finished 3rd level")
         objects['backhand'].waitap()
         objects['bella'].waitap()
         objects['bella'].tap()
@@ -211,7 +197,7 @@ class Castle:
         objects['hand'].waitap()
         objects['level'].waitap()  # 4th level
         objects['bright_challenge'].waitap()
-        kill_monsters()
+        self.kill_monsters()
         print("finished 4th level")
         objects['bella'].waitap()
         objects['bella'].tap()
@@ -221,7 +207,7 @@ class Castle:
         back()
         objects['level'].waitap()
         objects['bright_challenge'].waitap()
-        kill_monsters()
+        self.kill_monsters()
         print("finished 5th level")
         objects['heroic_evolution'].waitap()
         objects['evolve'].waitap()
@@ -231,9 +217,120 @@ class Castle:
         self.to_castle()
         self.upgrade_castle()
         self.upgrade_castle()
+        print("link account!")
 
     @staticmethod
-    def kingroad_claim():
+    def kill_monsters() -> None:
+        def bonus_or(direction: Direction):
+            if objects['blue_bonus'].tap():
+                sleep(0.8)
+            if objects['confirm_bonus'].tap():
+                sleep(0.8)
+            objects['man'].swipe(direction, SwipeSpeed.Slow, 5)
+            reset_screen()
+        while not (objects['quest_complete'].tap() or objects['quit'].tap()):
+            bonus_or(Direction.Right)
+            bonus_or(Direction.Up)
+            bonus_or(Direction.Left)
+            bonus_or(Direction.Down)
+            reset_screen()
+        sleep(1)
+
+    def check_level(self) -> None:
+        objects['avatar'].waitap(2)
+        sleep(0.5)
+        for lv in range(4, 20):
+            if object_from_str(f'castle_level_{lv}').exists():
+                self.lv = lv
+                back()
+                sleep(0.2)
+                break
+        else:
+            log_raise("not recognized any level.")
+
+    def check_marches(self) -> None:
+        objects['lord_info'].waitap()
+        objects['check_details'].waitap()
+        sleep(1)
+        for i in reversed(range(4)):
+            if object_from_str(f'march_limit_{i}').exists():
+                self.marches = i
+                save_workbook()
+                break
+        else:
+            log_raise("No march num found in march_limit.")
+        back()
+        sleep(0.3)
+        back()
+        sleep(0.2)
+
+    def kingroad_task(self) -> None:
+        self.kingroad_claim()
+        if objects['kingroad'].tap():
+            sleep(1)
+        if objects['kingroad_go'].waitap(8):
+            sleep(0.5)
+            if objects['loading'].exists():
+                objects['book'].wait()
+            self.close_bella()
+            while objects['hand'].waitap(1) or objects['map_hand'].tap():
+                print("tapped hand")
+                if objects['heroic_evoluation_blue'].waitap(0.7):
+                    objects['evolve'].waitap(5)
+                objects['go_blue'].tap()
+                objects['free'].tap()
+
+            print("no more hands")
+            if objects['arrow'].spam_tap(2, 0.5):
+                while not objects['attack'].waitap(1.5):
+                    tap_center()
+                objects['set_out'].waitap(3)
+
+            if objects['check'].exists():
+                objects['gather'].waitap(10)
+                sleep(1)
+                objects['gather'].waitap(4)
+                objects['set_out'].waitap(5)
+                back()
+
+            if objects['alliance_bonuses'].exists():
+                back()
+                sleep(1)
+            if objects['join'].tap():
+                back()
+            else:
+                objects['apply'].tap_each()
+
+            if objects['bright_challenge'].tap():
+                sleep(2)
+            if objects['man'].exists():
+                self.kill_monsters()
+
+            if objects['research'].exists():
+                if not self.speed_up():
+                    self.research()
+
+            if objects['forge'].exists():
+                self.forge()
+
+            if objects['recruit'].tap() or objects['upgrade'].tap():
+                sleep(1)
+
+            objects['free'].tap() or objects['upgrade_blue'].tap() or objects['recruit_blue'].tap()
+            objects['get_now'].tap()
+
+            if objects['unlock'].tap():
+                print("beast unlocked")
+                sleep(10)
+
+            if objects['unlock_land'].tap():
+                sleep(0.5)
+
+            self.speed_up()
+            self.close_ad()
+
+    @classmethod
+    def kingroad_claim(cls):
         """claims completed kingroad tasks"""
         if objects['kingroad'].tap():
             sleep(0.8)
@@ -245,6 +342,7 @@ class Castle:
             sleep(2)
             back()
             sleep(0.3)
+            cls.close_ad()
 
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
@@ -289,36 +387,92 @@ class Castle:
     @staticmethod
     def close_ad() -> None:
         """closes ad. from city"""
-        while (status := check_castle_status()) != CastleStatus.CLOSED_AD:
-            if status == CastleStatus.NOT_IN_CASTLE:
-                for _ in range(5):
+        if check_castle_status() == CastleStatus.CLOSED_AD:
+            return
+        reset_screen()
+        while check_castle_status() != CastleStatus.CLOSED_AD:
+            objects['bella'].spam_tap(5, 0.3)
+            objects['continue_game'].tap()
+            objects['x'].tap()
+            objects['x_new'].tap()
+            objects['x_news'].tap()
+            objects['claim_daily'].tap()
+            if check_castle_status() != CastleStatus.CLOSED_AD:
+                for _ in range(3):
                     back()
                     sleep(0.1)
-                sleep(1)
-                status = check_castle_status()
-            if status == CastleStatus.NOT_IN_CASTLE:
-                raise RuntimeError(f"Not in castle.")
-
-            if not (objects['claim_daily'].tap() or objects['x'].tap()):
-                back()
-            sleep(1.5)
-        sleep(1)
+                sleep(0.4)
+            reset_screen()
+            if check_castle_status() == CastleStatus.CLOSED_AD:
+                return
+            tap_center()
+            objects['map'].wait(1.5)
+        sleep(0.5)
         print("ad closed.")
 
-    @classmethod
-    def claim(cls) -> None:
+    def claim_rss(self):
+        if not self.shook:
+            shake()
+            sleep(3)
+            self.shook = True
+
+    @staticmethod
+    def claim_quest():
+        if objects['quest'].tap():
+            sleep(1)
+            while objects['daily_quest_claim'].waitap(0.4):
+                back()
+            while objects['claim_daily_quest'].waitap(0.4):
+                back()
+            sleep(1.5)
+            objects['growth_quest'].tap()
+            for _ in range(3):
+                while objects['claim_growth_quest'].waitap(3):
+                    if not objects['reward'].waitap(10):
+                        back()
+                        sleep(1)
+                        back()
+                if not objects['another_growth_quest'].waitap(2):
+                    break
+            back()
+
+    def claim(self) -> None:
         """claims recruited troops, gift, and RSS. from city"""
-        if check_castle_status() == CastleStatus.AD:
-            cls.close_ad()
-        print(f"claiming {objects['horse'].count()} horses")
-        while objects['horse'].tap():
-            sleep(0.7)
+        self.close_ad()
+        if objects['horse'].exists():
+            print("claiming horses")
+            objects['horse'].tap_each()
         if objects['claim'].tap():
             sleep(1)
             back()
             sleep(1)
-        shake()
-        sleep(3)
+        objects['help'].tap()
+        self.claim_rss()
+
+    @staticmethod
+    def events():
+        if objects['events'].waitap(1):
+            sleep(1)
+        for n in range(objects['event'].count()):
+            objects['event'].tap_nth(n)
+            sleep(1)
+            objects['event_claim'].tap_each()
+            for _ in range(objects['!'].count()):
+                objects['!'].tap()
+                sleep(0.5)
+                def claims():
+                    count = objects['event_claim'].count()
+                    objects['event_claim'].tap_each()
+                    sleep(1)
+                    for _ in range(count):
+                        back()
+                        sleep(0.3)
+                claims()
+                claims()
+            while objects['event_arrow'].tap():
+                sleep(1)
+            back()
+            sleep(0.5)
 
     @staticmethod
     def lord_skills() -> None:
@@ -339,21 +493,20 @@ class Castle:
         reset_screen()
         sleep(0.8)
 
-    @staticmethod
-    def heal() -> None:
+    @classmethod
+    def heal(cls) -> None:
         """heal troops in hospital and sanctuary, then claim healed. from castle."""
-        if objects['claim_healed'].waitap(0.5):
+        if objects['claim_healed'].tap():
             print("claimed healed")
             sleep(1)
-        if objects["hospital"].waitap(1):
+        if objects["hospital"].waitap(0.2):
             print("healing...")
             objects["heal"].waitap()
             if objects['confirm_rss'].waitap(1.5):
                 sleep(1)
-        else:
-            print("no need to go to the hospital.")
-        objects["ask_help"].waitap(1)
-        if objects['sanctuary'].waitap(1.6):
+        if objects["ask_help"].waitap(0.2):
+            sleep(1.6)
+        if objects['sanctuary'].waitap(0.2):
             print("sanctuary...")
             objects['revive'].waitap()
             objects['claim_holy_water'].waitap(1)
@@ -366,35 +519,125 @@ class Castle:
             objects['revive'].waitap(1)
             sleep(0.3)
             back()
-        else:
-            print("no need to go to sanctuary.")
-        objects['hospital_building'].waitap(0.7)
-        if objects['speed_up'].waitap(1.5):
-            objects['one-tap_speed_up'].waitap()
-            objects["confirm_speed_up"].waitap()
-            objects["claim_healed"].waitap()
-            sleep(0.5)
+            sleep(0.8)
+        if objects['hospital_building'].waitap(0.2):
+            sleep(1)
+        cls.speed_up()
+        objects['claim_healed'].tap()
 
     @staticmethod
-    def to_castle() -> None:
+    def speed_up() -> bool:
+        if objects['speed_up'].tap() or objects['speed_up_blue'].tap():
+            sleep(0.5)
+        if objects['one-tap_speed_up'].tap():
+            if objects["confirm_speed_up"].waitap(3):
+                sleep(1)
+                return True
+        return False
+
+    @classmethod
+    def to_castle(cls) -> None:
         """goes to castle. from map."""
         print("going inside...")
         while check_map_or_castle() != Status.INSIDE:
             back()
-        match check_castle_status():
-            case CastleStatus.CLOSED_AD:
-                return None
-            case CastleStatus.AD:
-                while check_castle_status() != CastleStatus.CLOSED_AD:
-                    back()
-                    sleep(1)
-            case CastleStatus.NOT_IN_CASTLE:
-                raise RuntimeError("Somehow not in castle")
+        print("inside")
+        cls.close_ad()
+
+    def research(self) -> None:
+        marches = self.marches
+        if not objects['research'].tap():
+            if not objects['college'].tap() and objects['research'].waitap(1):
+                self.to_map()
+                self.to_castle()
+            if objects['college'].tap():
+                if not objects['research'].waitap(3):
+                    log_raise("not found research button.")
+            else:
+                log_raise("not found college.")
+        done = False
+        match marches:
+            case 1:
+                if self.lv >= 5:
+                    print("unlocking 1st additional marche")
+                    objects['military'].waitap()
+                    if not objects['legion'].waitap(0.5):
+                        if not objects['expansion'].tap():
+                            if not objects['draft'].tap():
+                                log_raise("not found what to research.")
+                    done = True
+            case 2:
+                if self.lv >= 12:
+                    print("unlocking 2nd additional marche")
+                    objects['military'].waitap()
+                    objects['column'].swipe(Direction.Up, SwipeSpeed.Normal, 1)
+                    if not objects['legion'].waitap(0.5):
+                        if not objects['leadership'].tap():
+                            if not objects['horseshoes'].tap():
+                                log_raise("not found what to research.")
+                    done = True
+            case 3:
+                if self.lv >= 19:
+                    print("unlocking 3rd additional marche")
+                    objects['military'].waitap()
+                    objects['column'].swipe(Direction.Up, SwipeSpeed.Turbo, 0.7)
+                    if not objects['legion'].waitap(0.5):
+                        if not objects['horseshoes'].tap():
+                            if not objects['expansion'].tap():
+                                if not objects['draft'].tap():
+                                    log_raise("not found what to research.")
+                    done = True
+            case n if n != 4:
+                log_raise(f"marches should be in range 1..4, got {n}")
+
+        if done:
+            objects['research_blue'].waitap(1)
+            back()
+            back()
+            return
+
+        print("researching resources techno.")
+        objects['resources'].waitap(10)
+        sleep(1)
+        for techno in resources_technology:
+            techno.waitap(3)
+            if objects['research_blue'].waitap(1.5):
+                break
+            else:
+                back()
+        back()
+        back()
+
+    @staticmethod
+    def forge():
+        if objects['forge'].tap():
+            sleep(0.5)
+        max_item: ScreenObject | None = None
+        max_num = 0
+        for item in equipment:
+            item.tap()
+            sleep(0.5)
+            n = objects['forge_green'].count()
+            if n >= max_num:
+                max_num = n
+                max_item = item
+            back()
+            sleep(0.5)
+        if max_item is not None:
+            max_item.tap()
+            objects['forge_green'].wait(10)
+            objects['forge_green'].tap_nth(max_num - 1)
+            if objects['+'].waitap(1):
+                objects['select'].waitap(3)
+            objects['forge_blue'].waitap(1)
+            back()
+            back()
+            back()
 
     @classmethod
     def _build_need(cls) -> None:
         """builds required for upgrade buildings. from upgrade menu."""
-        if objects['upgrade_blue'].tap():
+        if objects['free'].tap() or objects['upgrade_blue'].tap():
             sleep(0.5)
         else:
             if objects['go_upgrade'].tap():
@@ -411,7 +654,7 @@ class Castle:
         sleep(1)
         if self.lv == 2:
             sleep(3)
-        if objects['upgrade_blue'].tap():
+        if objects['free'].tap() or objects['upgrade_blue'].tap():
             self.lv += 1
         else:
             self._build_need()
@@ -451,15 +694,16 @@ class Castle:
         back()
         sleep(0.3)
 
-    @staticmethod
-    def to_map() -> None:
+    @classmethod
+    def to_map(cls) -> None:
         """Goes to map from inside city"""
         print("going outside...")
         while not objects['book'].exists():
-            if not objects["map"].tap():
-                back()
-            reset_screen()
-            sleep(3)
+            if objects["map"].tap() and objects['loading'].wait(1):
+                objects['book'].wait()
+                break
+            else:
+                cls.close_ad()
         print("outside.")
 
     def free_marches(self) -> int:
@@ -470,6 +714,24 @@ class Castle:
         busy = objects['withdraw'].count() + objects['speed_up_march'].count()
         print(f"free marches: {limit - busy}")
         return limit - busy
+
+    def kill_monster(self) -> None:
+        if not self.stamina:
+            return
+        self.to_map()
+        objects['search'].tap()
+        objects['monster'].waitap(2)
+        objects['go'].waitap(2)
+        objects['arrow'].wait()
+        objects['arrow'].spam_tap(2, 0.2)
+        while not objects['attack'].waitap(0.5):
+            tap_center()
+        objects['set_out'].waitap(2)
+        sleep(0.5)
+        if check_map_status() == MapStatus.NOT_AT_MAP:
+            self.stamina = False
+            back()
+            back()
 
     def get_std_mine(self) -> None:
         """Gets standard mine from the map."""
