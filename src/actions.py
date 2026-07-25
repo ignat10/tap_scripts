@@ -1,3 +1,4 @@
+# TODO: add claim_mail method
 from datetime import timedelta
 from time import sleep
 from typing import Iterator, cast, SupportsInt
@@ -270,9 +271,9 @@ class Castle:
             sleep(1)
         if objects['kingroad_go'].waitap(8):
             sleep(0.5)
+            self.close_bella()
             if objects['loading'].exists():
                 objects['book'].wait()
-            self.close_bella()
             while objects['hand'].waitap(1) or objects['map_hand'].tap():
                 print("tapped hand")
                 if objects['heroic_evoluation_blue'].waitap(0.7):
@@ -281,50 +282,69 @@ class Castle:
                 objects['free'].tap()
 
             print("no more hands")
+            reset_screen()
             if objects['arrow'].spam_tap(2, 0.5):
+                print("killing monster")
                 while not objects['attack'].waitap(1.5):
                     tap_center()
                 objects['set_out'].waitap(3)
 
-            if objects['check'].exists():
+            elif objects['check'].exists():
+                print("gathering")
                 objects['gather'].waitap(10)
                 sleep(1)
                 objects['gather'].waitap(4)
                 objects['set_out'].waitap(5)
                 back()
 
-            if objects['alliance_bonuses'].exists():
+            elif objects['alliance_bonuses'].exists():
+                print("getting into alliance")
                 back()
                 sleep(1)
+
             if objects['join'].tap():
                 back()
             else:
                 objects['apply'].tap_each()
 
             if objects['bright_challenge'].tap():
-                sleep(2)
+                print("challenging")
+                if not objects['man'].wait(10):
+                    log_raise("not found man.")
             if objects['man'].exists():
                 self.kill_monsters()
-
-            if objects['research'].exists():
-                if not self.speed_up():
-                    self.research()
-
-            if objects['forge'].exists():
-                self.forge()
-
-            if objects['recruit'].tap() or objects['upgrade'].tap():
-                sleep(1)
-
-            objects['free'].tap() or objects['upgrade_blue'].tap() or objects['recruit_blue'].tap()
-            objects['get_now'].tap()
 
             if objects['unlock'].tap():
                 print("beast unlocked")
                 sleep(10)
 
-            if objects['unlock_land'].tap():
+            elif objects['unlock_land'].tap():
+                print("unlocked land")
                 sleep(0.5)
+
+            elif objects['forge'].exists():
+                self.forge()
+
+            elif objects['research'].exists():
+                if not self.speed_up():
+                    self.research()
+
+            elif objects['recruit'].tap():
+                print("recruiting")
+                objects['recruit_blue'].waitap(2)
+
+            if objects['upgrade'].tap():
+                print("upgrading")
+                sleep(0.7)
+            self._build_need()
+
+            if objects['stragglers'].waitap(1):
+                sleep(1)
+                print("killing stragglers")
+                self.close_bella()
+                objects['suppress'].waitap(2)
+                objects['set_out'].waitap(2)
+                self.to_castle()
 
             self.speed_up()
             self.close_ad()
@@ -457,8 +477,8 @@ class Castle:
             objects['event'].tap_nth(n)
             sleep(1)
             objects['event_claim'].tap_each()
-            for _ in range(objects['!'].count()):
-                objects['!'].tap()
+            for i in range(objects['!'].count()):
+                objects['!'].tap_nth(i)
                 sleep(0.5)
                 def claims():
                     count = objects['event_claim'].count()
@@ -610,6 +630,7 @@ class Castle:
 
     @staticmethod
     def forge():
+        print("forging")
         if objects['forge'].tap():
             sleep(0.5)
         max_item: ScreenObject | None = None
@@ -635,19 +656,26 @@ class Castle:
             back()
 
     @classmethod
-    def _build_need(cls) -> None:
+    def _build_need(cls) -> bool:
         """builds required for upgrade buildings. from upgrade menu."""
-        if objects['free'].tap() or objects['upgrade_blue'].tap():
-            sleep(0.5)
-        else:
-            if objects['go_upgrade'].tap():
+        reset_screen()
+        if objects['free'].tap():
+            sleep(0.3)
+        elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap():
+            if not objects['hammer_200'].waitap(2):
+                objects['get_now'].tap()
                 sleep(0.5)
-                cls._build_need()
-            else:
-                screenshot()
-                raise RuntimeError("cannot find upgrade buttons. check screen.png")
+                cls.speed_up()
+            if not objects['upgrade_blue'].waitap(2):
+                objects['big_upgrade_blue'].tap()
+        elif objects['go_upgrade'].tap():
+            sleep(0.5)
+            cls._build_need()
+        else:
+            return False
+        return True
 
-    def upgrade_castle(self):
+    def upgrade_castle(self) -> None:
         """upgrades castle or required buildings. from city."""
         objects['castle_building'].waitap()
         objects['upgrade'].waitap()
@@ -659,18 +687,20 @@ class Castle:
         else:
             self._build_need()
 
-    def build(self):
-        objects['tasks'].tap()
-        sleep(0.8)
-        objects['build_task'].tap_nth(0)
-        sleep(0.5)
-        objects['hand'].spam_tap(2, 0.5)
-        objects['upgrade'].tap()
-        sleep(0.7)
-        self._build_need()
+    def build(self) -> None:
+        print("building")
+        if objects['tasks'].tap():
+            objects['build_task'].wait(1)
+        if objects['build_task'].tap_nth(0):
+            objects['hand'].wait(0.8)
+        if objects['hand'].spam_tap(2, 0.5):
+            objects['upgrade'].wait(2)
+        if objects['upgrade'].tap():
+            sleep(0.4)
+            self._build_need()
 
     @staticmethod
-    def recruit():
+    def recruit() -> None:
         """recruits horses. from the city."""
         objects['tasks'].tap()
         sleep(0.8)

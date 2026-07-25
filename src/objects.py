@@ -48,8 +48,10 @@ ScreenObjectNames = Literal[
 
     "upgrade",
     "upgrade_blue",
+    "big_upgrade_blue",
     "go_upgrade",
     "get_now",
+    "hammer_200",
 
     "recruit_task",
     "recruit",
@@ -109,6 +111,8 @@ ScreenObjectNames = Literal[
     "unlock_land",
     "map",
 
+    "stragglers",
+    "suppress",
     "search",
     "food",
     "wood",
