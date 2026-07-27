@@ -14,10 +14,13 @@ def main():
             castle.close_ad()
             castle.check_level()
             castle.check_marches()
+            castle.claim_mail()
             for i in range(100):
+                if i % 40 == 0:
+                    castle.upgrade_lord_skills()
                 if i % 5 == 1:
                     castle.kill_monster()
-                    castle.to_castle()
+                    castle.close_ad()
                 if i % 15 == 2:
                     castle.events()
                 if i % 20 == 3:
@@ -33,7 +36,7 @@ def main():
                 castle.close_ad()
                 castle.claim()
                 castle.heal()
-                castle.lord_skills()
+                castle.use_lord_skills()
                 castle.to_map()
 
                 for i in range(castle.free_marches() - 1):  # - 1 for elite mine

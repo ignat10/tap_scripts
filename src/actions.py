@@ -10,7 +10,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 from keyboard import send
 from screen_objects import ScreenObject, reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center
 
-from .objects import objects, resources_technology, equipment, ScreenObjectNames
+from .objects import objects, resources_technology, castle_levels, equipment, ScreenObjectNames
 from .paths import FARMS_SHEET_PATH
 from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .utils import object_from_str, log_raise
@@ -182,7 +182,7 @@ class Castle:
         objects['kingroad'].waitap()
         self.kingroad_claim()
         self.to_map()
-        self.to_castle()
+        self.close_ad()
         self.upgrade_castle()
         print("upgraded castle to level 3")
         objects['kingroad'].waitap()
@@ -215,7 +215,7 @@ class Castle:
         back()
         back()
         self.to_map()
-        self.to_castle()
+        self.close_ad()
         self.upgrade_castle()
         self.upgrade_castle()
         print("link account!")
@@ -238,16 +238,16 @@ class Castle:
         sleep(1)
 
     def check_level(self) -> None:
-        objects['avatar'].waitap(2)
+        objects['avatar'].tap()
         sleep(0.5)
-        for lv in range(4, 20):
-            if object_from_str(f'castle_level_{lv}').exists():
+        for lv, obj in castle_levels.items():
+            if obj.exists():
                 self.lv = lv
                 back()
                 sleep(0.2)
                 break
         else:
-            log_raise("not recognized any level.")
+            log_raise("not recognized any castle level.")
 
     def check_marches(self) -> None:
         objects['lord_info'].waitap()
@@ -344,7 +344,7 @@ class Castle:
                 self.close_bella()
                 objects['suppress'].waitap(2)
                 objects['set_out'].waitap(2)
-                self.to_castle()
+                self.close_ad()
 
             self.speed_up()
             self.close_ad()
@@ -406,7 +406,7 @@ class Castle:
 
     @staticmethod
     def close_ad() -> None:
-        """closes ad. from city"""
+        """closes ad. from city or map"""
         if check_castle_status() == CastleStatus.CLOSED_AD:
             return
         reset_screen()
@@ -422,12 +422,10 @@ class Castle:
                     back()
                     sleep(0.1)
                 sleep(0.4)
-            reset_screen()
             if check_castle_status() == CastleStatus.CLOSED_AD:
-                return
+                break
             tap_center()
-            objects['map'].wait(1.5)
-        sleep(0.5)
+            objects['map'].wait(0.4)
         print("ad closed.")
 
     def claim_rss(self):
@@ -455,6 +453,18 @@ class Castle:
                 if not objects['another_growth_quest'].waitap(2):
                     break
             back()
+
+    @classmethod
+    def claim_mail(cls) -> None:
+        objects['mail'].tap()
+        while objects['mail_reward'].waitap(2):
+            if not objects['read_claim_all'].waitap(5):
+                log_raise("cannot find 'read & claim all' button.")
+            if not objects['confirm_read_all'].waitap(5):
+                log_raise("cannot find 'confirm read & claim all' button.")
+            cls.close_ad()
+            objects['mail'].waitap(3)
+        cls.close_ad()
 
     def claim(self) -> None:
         """claims recruited troops, gift, and RSS. from city"""
@@ -494,8 +504,21 @@ class Castle:
             back()
             sleep(0.5)
 
+    @classmethod
+    def upgrade_lord_skills(cls):
+        objects['lord_info'].tap()
+        if not objects['lord_skills'].waitap(3):
+            print("cannot find 'lord skills' button.")
+        if not objects['development_skills'].waitap(3):
+            log_raise("cannot find 'development skills' button.")
+        sleep(0.3)
+        while not objects['skill_points_0'].exists():
+            while not objects['lord_skill'].waitap(1):
+                objects['skills_back'].swipe(Direction.Up, SwipeSpeed.Fast, 0.4)
+            objects['upgrade_to_max'].waitap(3)
+
     @staticmethod
-    def lord_skills() -> None:
+    def use_lord_skills() -> None:
         """use lord skills, harvest, gather speed up, recall all. from city or map"""
         print("lord skills...")
         objects["lord"].tap()
@@ -555,21 +578,12 @@ class Castle:
                 return True
         return False
 
-    @classmethod
-    def to_castle(cls) -> None:
-        """goes to castle. from map."""
-        print("going inside...")
-        while check_map_or_castle() != Status.INSIDE:
-            back()
-        print("inside")
-        cls.close_ad()
-
     def research(self) -> None:
         marches = self.marches
         if not objects['research'].tap():
             if not objects['college'].tap() and objects['research'].waitap(1):
                 self.to_map()
-                self.to_castle()
+                self.close_ad()
             if objects['college'].tap():
                 if not objects['research'].waitap(3):
                     log_raise("not found research button.")
@@ -668,7 +682,7 @@ class Castle:
                 cls.speed_up()
             if not objects['upgrade_blue'].waitap(2):
                 objects['big_upgrade_blue'].tap()
-        elif objects['go_upgrade'].tap():
+        elif objects['go_upgrade'].tap() or objects['hand'].tap():
             sleep(0.5)
             cls._build_need()
         else:
