@@ -108,6 +108,12 @@ ScreenObjectNames = Literal[
     "event_claim",
     "!",
     "event_arrow",
+
+    "mail",
+    "mail_reward",
+    "read_claim_all",
+    "confirm_read_all",
+
     "unlock_land",
     "map",
 
@@ -130,13 +136,21 @@ ScreenObjectNames = Literal[
     "gather",
     "set_out",
 
-    "check_details",
+
     "lord_info",
+
+    "check_details",
     "march_limit_3",
     "march_limit_2",
     "march_limit_1",
     "march_limit_0",
 
+    "lord_skills",
+    "development_skills",
+    "lord_skill",
+    "upgrade_to_max",
+    "skill_points_0",
+    "skills_back",
 
     "more_marches",
     "speed_up_march",
@@ -212,4 +226,10 @@ resources_technology = {
     objects['load_boost'],
     objects['sickle'],
     objects['axe'],
+}
+
+castle_levels = {
+    int(name[13]): obj
+    for name, obj in objects.items()
+    if name.startswith(f'castle_level_')
 }
