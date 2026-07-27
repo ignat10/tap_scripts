@@ -14,7 +14,7 @@ def object_from_input() -> ScreenObject:
 
 def object_from_str(name: str) -> ScreenObject:
     if name not in object_names:
-        log_raise(f"Object {name} not recognised.")
+        raise KeyError(f"Object {name} not recognised.")
     return objects[cast(ScreenObjectNames, name)]
 
 
