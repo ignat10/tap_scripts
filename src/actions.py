@@ -385,17 +385,19 @@ class Castle:
     @classmethod
     def kingroad_claim(cls):
         """claims completed kingroad tasks"""
-        if objects['kingroad'].tap():
-            sleep(0.8)
-        while objects['kingroad_claim'].tap():
-            sleep(1)
-            back()
-            sleep(0.5)
-        if objects['kingroad_done'].tap():
+        objects['kingroad'].tap()
+        if objects['kingroad_done'].waitap(1):
+            print("finished kingroad chapter!")
             sleep(2)
             back()
             sleep(0.3)
             cls.close_ad()
+        else:
+            reset_screen()
+            while objects['kingroad_claim'].waitap(0.7):
+                print("claimed kingroad task!")
+                sleep(1)
+                back()
 
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
