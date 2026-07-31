@@ -1,4 +1,3 @@
-# TODO: add claim_mail method
 from datetime import timedelta
 from time import sleep
 from typing import Iterator, SupportsInt
@@ -469,7 +468,7 @@ class Castle:
     @classmethod
     def claim_mail(cls) -> None:
         objects['mail'].tap()
-        while objects['mail_reward'].waitap(2):
+        while objects['mail_reward'].waitap(1):
             if not objects['read_claim_all'].waitap(5):
                 log_raise("cannot find 'read & claim all' button.")
             if not objects['confirm_read_all'].waitap(5):
