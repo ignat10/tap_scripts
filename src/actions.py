@@ -1,16 +1,16 @@
 # TODO: add claim_mail method
 from datetime import timedelta
 from time import sleep
-from typing import Iterator, cast, SupportsInt
+from typing import Iterator, SupportsInt
 
 from openpyxl import load_workbook
 from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from openpyxl.worksheet.worksheet import Worksheet
 from keyboard import send
-from screen_objects import ScreenObject, reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center
+from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center, start_app, close_app
 
-from .objects import objects, resources_technology, castle_levels, equipment, ScreenObjectNames
+from .objects import *
 from .paths import FARMS_SHEET_PATH
 from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .utils import object_from_str, log_raise
@@ -19,6 +19,13 @@ none_type = type(None)
 
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
+
+
+def restart_app():
+    close_app()
+    sleep(3)
+    start_app()
+    Castle.load()
 
 def shake() -> None:
     send("f9")
@@ -421,10 +428,15 @@ class Castle:
                 for _ in range(3):
                     back()
                     sleep(0.1)
-                sleep(0.4)
+                sleep(0.6)
+            if objects['no'].tap():
+                sleep(1)
             if check_castle_status() == CastleStatus.CLOSED_AD:
                 break
-            tap_center()
+            if objects['frozen_screen'].exists():
+                restart_app()
+            else:
+                tap_center()
             objects['map'].wait(0.4)
         print("ad closed.")
 

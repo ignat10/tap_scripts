@@ -202,6 +202,16 @@ ScreenObjectNames = Literal[
     "green_castle",
     "castle",
     "confirm",
+    "no",
+    "frozen_screen",
+
+    "castle_level_4",
+    "castle_level_5",
+    "castle_level_6",
+    "castle_level_7",
+    "castle_level_8",
+    "castle_level_9",
+    "castle_level_10",
 ]
 
 
