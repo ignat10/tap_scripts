@@ -422,15 +422,18 @@ class Castle:
                 break
             print("logged in.")
             sleep(5)
-
-            while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
-                reset_screen()
-                sleep(1)
-                print("loading...")
-                sleep(1)
-            print("loaded.")
+            self.load()
         else:
             print(f"already logged into {self.name}")
+
+    @staticmethod
+    def load():
+        while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
+            reset_screen()
+            sleep(1)
+            print("loading...")
+            sleep(1)
+        print("loaded.")
 
     @classmethod
     def close_ad(cls) -> None:
