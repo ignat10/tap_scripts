@@ -196,6 +196,7 @@ ScreenObjectNames = Literal[
     "evolve",
     "free",
     "unlock",
+    "check_beast",
     "login",
     "gmail",
     "acc_list",

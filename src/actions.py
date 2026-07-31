@@ -410,20 +410,28 @@ class Castle:
         else:
             print(f"already logged into {self.name}")
 
-    @staticmethod
-    def close_ad() -> None:
+    @classmethod
+    def close_ad(cls) -> None:
         """closes ad. from city or map"""
         if check_castle_status() == CastleStatus.CLOSED_AD:
             return
         reset_screen()
         while check_castle_status() != CastleStatus.CLOSED_AD:
-            objects['bella'].spam_tap(5, 0.3)
+            if cls.close_bella():
+                print("closed bella. looking for hand.")
+                sleep(1)
+                while objects['hand'].waitap(1):
+                    sleep(0.5)
+                print("end hand.")
             objects['continue_game'].tap()
             objects['x'].tap()
             objects['x_new'].tap()
             objects['x_news'].tap()
             objects['claim_daily'].tap()
-            if check_castle_status() != CastleStatus.CLOSED_AD:
+            objects['check_beast'].tap()
+            if check_castle_status() == CastleStatus.CLOSED_AD:
+                break
+            else:
                 for _ in range(3):
                     back()
                     sleep(0.1)
