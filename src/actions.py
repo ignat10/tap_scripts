@@ -680,24 +680,29 @@ class Castle:
             back()
             back()
 
-    @classmethod
-    def _build_need(cls) -> bool:
+    def _build_need(self) -> bool:
         """builds required for upgrade buildings. from upgrade menu."""
         reset_screen()
         if objects['free'].tap():
+            print("built for free.")
             sleep(0.3)
         elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap():
             if not objects['hammer_200'].waitap(2):
-                objects['get_now'].tap()
-                sleep(0.5)
-                cls.speed_up()
-            if not objects['upgrade_blue'].waitap(2):
-                objects['big_upgrade_blue'].tap()
+                if objects['get_now'].tap():
+                    sleep(0.5)
+                    self.speed_up()
+                else:
+                    for name, obj in resources_need.items():
+                        if obj.exists():
+                            self.need_rss.add(MineType[name.upper()])
+                            print(f"not enough {name}")
+            objects['upgrade_blue'].waitap(1) or objects['big_upgrade_blue'].tap()
         elif objects['go_upgrade'].tap() or objects['hand'].tap():
             sleep(0.5)
-            cls._build_need()
+            self._build_need()
         else:
             return False
+        self.close_ad()
         return True
 
     def upgrade_castle(self) -> None:
@@ -714,15 +719,14 @@ class Castle:
 
     def build(self) -> None:
         print("building")
-        if objects['tasks'].tap():
-            objects['build_task'].wait(1)
-        if objects['build_task'].tap_nth(0):
-            objects['hand'].wait(0.8)
-        if objects['hand'].spam_tap(2, 0.5):
-            objects['upgrade'].wait(2)
+        objects['tasks'].tap()
+        objects['build_task'].waitap(2)
+        sleep(0.7)
+        objects['hand'].waitap(1.5)
+        sleep(0.6)
         if objects['upgrade'].tap():
-            sleep(0.4)
-            self._build_need()
+            sleep(1)
+        self._build_need()
 
     @staticmethod
     def recruit() -> None:
