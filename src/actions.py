@@ -580,8 +580,7 @@ class Castle:
         reset_screen()
         sleep(0.8)
 
-    @classmethod
-    def heal(cls) -> None:
+    def heal(self) -> None:
         """heal troops in hospital and sanctuary, then claim healed. from castle."""
         if objects['claim_healed'].tap():
             print("claimed healed")
@@ -609,18 +608,20 @@ class Castle:
             sleep(0.8)
         if objects['hospital_building'].waitap(0.2):
             sleep(1)
-        cls.speed_up()
+        self.speed_up()
         objects['claim_healed'].tap()
 
-    @staticmethod
-    def speed_up() -> bool:
+    def speed_up(self) -> bool:
         if objects['speed_up'].tap() or objects['speed_up_blue'].tap():
             sleep(0.5)
-        if objects['one-tap_speed_up'].tap():
-            if objects["confirm_speed_up"].waitap(3):
-                sleep(1)
-                return True
-        return False
+            self.has_speed = False
+        if objects['one-tap_speed_up'].tap() and objects["confirm_speed_up"].waitap(3):
+            sleep(1)
+            self.has_speed = True
+            return True
+        else:
+            self.close_ad()
+            return False
 
     def research(self) -> None:
         marches = self.marches
