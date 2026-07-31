@@ -28,6 +28,8 @@ def restart_app():
 
 def shake() -> None:
     send("f9")
+    sleep(1.1)
+    send("f9")
 
 def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
     val = cell.value
@@ -128,9 +130,12 @@ class Castle:
         save_workbook()
 
     @staticmethod
-    def close_bella():
-        while objects['bella'].tap():
+    def close_bella() -> bool:
+        if not objects['bella'].exists():
+            return False
+        while objects['bella'].waitap(0.5):
             sleep(0.5)
+        return True
 
     def new_account(self) -> None:
         """creates new account, upgrades castle to level 4. from city or map."""
@@ -472,11 +477,10 @@ class Castle:
             objects['map'].wait(0.4)
         print("ad closed.")
 
-    def claim_rss(self):
-        if not self.shook:
-            shake()
-            sleep(3)
-            self.shook = True
+    @staticmethod
+    def claim_rss():
+        shake()
+        sleep(3)
 
     @staticmethod
     def claim_quest():
@@ -521,7 +525,6 @@ class Castle:
             back()
             sleep(1)
         objects['help'].tap()
-        self.claim_rss()
 
     @staticmethod
     def events():
