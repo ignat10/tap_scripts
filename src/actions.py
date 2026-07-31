@@ -14,8 +14,6 @@ from .paths import FARMS_SHEET_PATH
 from .status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from .utils import object_from_str, log_raise
 
-none_type = type(None)
-
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
 
@@ -33,7 +31,7 @@ def shake() -> None:
 
 def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
     val = cell.value
-    assert isinstance(val,typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val.__repr__() if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula, none_type)) else "value doesn't impl repr method"}'"  # type: ignore
+    assert isinstance(val, typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val.__repr__() if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'"  # type: ignore
 
 
 class Castle:
@@ -44,10 +42,14 @@ class Castle:
 
         cell_assert(name, str)
         cell_assert(lv, SupportsInt)
-        cell_assert(google, (SupportsInt, none_type))
-        cell_assert(account, (SupportsInt, none_type))
-        cell_assert(alliance, (str, none_type))
-        cell_assert(marches_limit, (int, none_type))
+        if google.value is not None:
+            cell_assert(google, SupportsInt)
+        if account.value is not None:
+            cell_assert(account, SupportsInt)
+        if alliance.value is not None:
+            cell_assert(alliance, str)
+        if marches_limit.value is not None:
+            cell_assert(marches_limit, SupportsInt)
 
         self.name_cell = name
         self.google_cell = google
@@ -262,8 +264,10 @@ class Castle:
             log_raise("not recognized any castle level.")
 
     def check_marches(self) -> None:
-        objects['lord_info'].waitap()
-        objects['check_details'].waitap()
+        if not objects['lord_info'].waitap(5):
+            log_raise("No lord info found.")
+        if not objects['check_details'].waitap(5):
+            log_raise("No check_details found.")
         sleep(1)
         for i in reversed(range(4)):
             if object_from_str(f'march_limit_{i}').exists():
@@ -279,8 +283,9 @@ class Castle:
 
     def kingroad_task(self) -> None:
         self.kingroad_claim()
-        if objects['kingroad'].tap():
-            sleep(1)
+        if not objects['kingroad'].tap():
+            objects['hand'].tap()
+        sleep(1)
         if objects['kingroad_go'].waitap(8):
             sleep(0.5)
             self.close_bella()
@@ -292,6 +297,7 @@ class Castle:
                     objects['evolve'].waitap(5)
                 objects['go_blue'].tap()
                 objects['free'].tap()
+                objects['kingroad_go'].tap()
 
             print("no more hands")
             reset_screen()
@@ -343,7 +349,8 @@ class Castle:
 
             elif objects['recruit'].tap():
                 print("recruiting")
-                objects['recruit_blue'].waitap(2)
+                objects['recruit_blue'].wait(2)
+            objects['recruit_blue'].waitap(2)
 
             if objects['upgrade'].tap():
                 print("upgrading")
@@ -557,7 +564,7 @@ class Castle:
     def upgrade_lord_skills(cls):
         objects['lord_info'].tap()
         if not objects['lord_skills'].waitap(3):
-            print("cannot find 'lord skills' button.")
+            log_raise("cannot find 'lord skills' button.")
         if not objects['development_skills'].waitap(3):
             log_raise("cannot find 'development skills' button.")
         sleep(0.3)
@@ -662,7 +669,7 @@ class Castle:
                     done = True
             case 3:
                 if self.lv >= 19:
-                    print("unlocking 3rd additional marche")
+                    print("unlocking 3rd additional march")
                     objects['military'].waitap()
                     objects['column'].swipe(Direction.Up, SwipeSpeed.Turbo, 0.7)
                     if not objects['legion'].waitap(0.5):
@@ -877,8 +884,7 @@ class Castle:
         """Gets elite mine from the map."""
         print("Elite")
         for e in self.elite_mines:
-            assert (
-                       status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
+            assert (status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
             objects["book"].tap()
             if objects['x_news'].waitap(0.5):
                 sleep(0.5)
