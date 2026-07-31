@@ -1,4 +1,4 @@
-from screen_objects import back, Direction, SwipeSpeed, reset_screen, tap_center
+from screen_objects import back, Direction, SwipeSpeed, reset_screen, tap_center, start_app
 
 from src.actions import iter_castles
 from src.device import config
@@ -10,25 +10,32 @@ def main():
     castles = iter_castles()
     match input("which script to run? {farming, grow, action, object}: "):
         case "grow":
-            castle = castles.__next__()
-            castle.close_ad()
-            castle.check_level()
-            castle.check_marches()
-            castle.claim_mail()
-            for i in range(100):
-                if i % 40 == 0:
-                    castle.upgrade_lord_skills()
-                if i % 5 == 1:
-                    castle.kill_monster()
-                    castle.close_ad()
-                if i % 15 == 2:
-                    castle.events()
-                if i % 20 == 3:
-                    castle.claim_quest()
-                castle.claim()
-                castle.heal()
-                castle.kingroad_task()
-                print("made some kingroad task")
+            start_app()
+            for castle in castles:
+                castle.load()
+                castle.close_ad()
+                castle.check_level()
+                castle.check_marches()
+                castle.claim_mail()
+                for i in range(100):
+                    if i % 49 == 0:
+                        castle.claim_rss()
+                    if i % 40 == 0:
+                        castle.upgrade_lord_skills()
+                    if i % 5 == 1:
+                        castle.kill_monster()
+                        castle.close_ad()
+                    if i % 15 == 2:
+                        castle.events()
+                    if i % 20 == 3:
+                        castle.claim_quest()
+                    castle.claim()
+                    castle.heal()
+                    if castle.has_speed and not castle.need_rss:
+                        castle.kingroad_task()
+                    else:
+                        castle.build()
+                    print("made some kingroad task")
 
         case "farming":
             for castle in castles:
