@@ -52,6 +52,10 @@ ScreenObjectNames = Literal[
     "go_upgrade",
     "get_now",
     "hammer_200",
+    "need_food",
+    "need_wood",
+    "need_stone",
+    "need_iron",
 
     "recruit_task",
     "recruit",
@@ -252,4 +256,10 @@ castle_levels = {
     int(name[13]): obj
     for name, obj in objects.items()
     if name.startswith(f'castle_level_')
+}
+
+resources_need = {
+    name.removeprefix("need_"): obj
+    for name, obj in objects.items()
+    if name.startswith("need_")
 }

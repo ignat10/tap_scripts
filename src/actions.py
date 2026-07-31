@@ -54,7 +54,8 @@ class Castle:
         self.alliance_cell = alliance
         self.max_marches_cell = marches_limit
 
-        self.shook = False
+        self.has_speed = True
+        self.need_rss: set[MineType] = set()
         self.stamina = True
         self.mine_lv = MAX_MINE_LV
         self.mine_type: MineType = MineType.IRON
@@ -826,8 +827,10 @@ class Castle:
 
         objects["search"].tap()
         for _ in range(MAX_MINE_LV * MineType.IRON):
-            print(f"searching mine. lv {self.mine_lv} {self.mine_type.name.lower()}")
-            object_from_str(f"{self.mine_type.name.lower()}_type").waitap()
+            need_type = need if (need := self.need_rss.__iter__().__next__()) is not None else self.mine_type
+            type_name = need_type.name.lower()
+            print(f"searching mine. lv {self.mine_lv} {type_name}")
+            object_from_str(f"{type_name}_type").waitap()
             objects["plus"].spam_tap(5, 0)
             objects["minus"].spam_tap(6 - self.mine_lv, 0)
             objects["go"].spam_tap(4, 0.1)
