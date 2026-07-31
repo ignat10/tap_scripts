@@ -344,13 +344,34 @@ class Castle:
                 sleep(0.7)
             self._build_need()
 
-            if objects['stragglers'].waitap(1):
+            if objects['fortify'].tap():
+                objects['one-tap_upgrade'].waitap(2)
+                objects['use_all'].waitap(3)
+
+            if objects['sell'].tap():
+                print("shop")
+                sleep(1)
+                objects['shell'].tap_each()
+                objects['buy'].waitap(2)
+                for i in range(objects['shell'].count()):
+                    objects['shell'].wait()
+                    objects['shell'].tap_nth(i)
+                    if objects['confirm_shell'].waitap(1):
+                        break
+                back()
+
+            if objects['stragglers'].tap():
                 sleep(1)
                 print("killing stragglers")
                 self.close_bella()
                 objects['suppress'].waitap(2)
                 objects['set_out'].waitap(2)
                 self.close_ad()
+
+            if objects['alliance_donate'].tap():
+                sleep(1)
+                objects['donate_blue'].spam_tap(4, 0.6)
+                objects['donate_confirm'].waitap(3)
 
             self.speed_up()
             self.close_ad()

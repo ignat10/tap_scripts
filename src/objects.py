@@ -94,6 +94,9 @@ ScreenObjectNames = Literal[
     "join",
     "apply",
     "help",
+    "alliance_donate",
+    "donate_blue",
+    "donate_confirm",
 
     "quest",
     "daily_quest_claim",
@@ -114,7 +117,17 @@ ScreenObjectNames = Literal[
     "read_claim_all",
     "confirm_read_all",
 
+    "fortify",
+    "one-tap_upgrade",
+    "use_all",
+
+    "sell",
+    "buy",
+    "shell",
+    "confirm_shell",
+
     "unlock_land",
+    "shell",
     "map",
 
     "stragglers",
