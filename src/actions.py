@@ -286,6 +286,7 @@ class Castle:
         if not objects['kingroad'].tap():
             objects['hand'].tap()
         sleep(1)
+        upgrade = objects['start_upgrading'].exists()
         if objects['kingroad_go'].waitap(8):
             sleep(0.5)
             self.close_bella()
@@ -339,6 +340,9 @@ class Castle:
             elif objects['unlock_land'].tap():
                 print("unlocked land")
                 sleep(0.5)
+
+            elif upgrade and objects['upgrade'].tap():
+                self._build_need()
 
             elif objects['forge'].exists():
                 self.forge()

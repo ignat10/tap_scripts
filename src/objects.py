@@ -203,6 +203,8 @@ ScreenObjectNames = Literal[
     "kingroad_claim",
     "kingroad_go",
     "kingroad_done",
+    "start_upgrading",
+
     "heroic_evolution",
     "heroic_evoluation_blue",
     "go_blue",
