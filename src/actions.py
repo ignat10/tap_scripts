@@ -7,7 +7,7 @@ from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from openpyxl.worksheet.worksheet import Worksheet
 from keyboard import send
-from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center, start_app, close_app
+from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center, swipe_center, start_app, close_app
 
 from .objects import *
 from .paths import FARMS_SHEET_PATH
@@ -560,8 +560,8 @@ class Castle:
             back()
             sleep(0.5)
 
-    @classmethod
-    def upgrade_lord_skills(cls):
+    @staticmethod
+    def upgrade_lord_skills():
         objects['lord_info'].tap()
         if not objects['lord_skills'].waitap(3):
             log_raise("cannot find 'lord skills' button.")
@@ -569,9 +569,17 @@ class Castle:
             log_raise("cannot find 'development skills' button.")
         sleep(0.3)
         while not objects['skill_points_0'].exists():
+            if objects['upgrade_to_max'].exists():
+                back()
+                sleep(0.3)
+                break
             while not objects['lord_skill'].waitap(1):
-                objects['skills_back'].swipe(Direction.Up, SwipeSpeed.Fast, 0.4)
+                swipe_center(Direction.Up, SwipeSpeed.Fast, 0.4)
             objects['upgrade_to_max'].waitap(3)
+        back()
+        sleep(0.3)
+        back()
+        sleep(0.2)
 
     @staticmethod
     def use_lord_skills() -> None:
