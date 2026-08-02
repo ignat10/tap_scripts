@@ -33,8 +33,9 @@ def main():
                     castle.heal()
                     if castle.has_speed and not castle.need_rss:
                         castle.kingroad_task()
-                    else:
-                        castle.build()
+                    elif not castle.build():
+                        print("don't know what to do in this castle.")
+                        break
                     print("made some kingroad task")
 
         case "farming":

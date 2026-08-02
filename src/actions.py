@@ -780,7 +780,7 @@ class Castle:
         else:
             self._build_need()
 
-    def build(self) -> None:
+    def build(self) -> bool:
         print("building")
         objects['tasks'].tap()
         objects['build_task'].waitap(2)
@@ -789,7 +789,9 @@ class Castle:
         sleep(0.6)
         if objects['upgrade'].tap():
             sleep(1)
-        self._build_need()
+            return self._build_need()
+        else:
+            return False
 
     @staticmethod
     def recruit() -> None:
