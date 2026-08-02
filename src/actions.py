@@ -1,5 +1,5 @@
 from datetime import timedelta
-from time import sleep
+from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
 
 from openpyxl import load_workbook
@@ -442,8 +442,12 @@ class Castle:
 
     @staticmethod
     def load():
+        start = perf_counter()
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
+            now = perf_counter()
+            if now - start > 30:
+                reset_screen()
             sleep(1)
             print("loading...")
             sleep(1)
