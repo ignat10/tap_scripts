@@ -226,6 +226,7 @@ ScreenObjectNames = Literal[
     "castle_level_8",
     "castle_level_9",
     "castle_level_10",
+    "castle_level_11"
 ]
 
 
