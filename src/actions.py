@@ -253,10 +253,11 @@ class Castle:
 
     def check_level(self) -> None:
         objects['avatar'].tap()
-        sleep(0.5)
-        for lv, obj in castle_levels.items():
+        if not objects['account'].wait(5):
+            log_raise("not recognized account button.")
+        for level, obj in castle_levels.items():
             if obj.exists():
-                self.lv = lv
+                self.lv = level
                 back()
                 sleep(0.2)
                 break
