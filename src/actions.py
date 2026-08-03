@@ -641,7 +641,9 @@ class Castle:
         objects['claim_healed'].tap()
 
     def speed_up(self) -> bool:
-        if objects['speed_up'].tap() or objects['speed_up_blue'].tap():
+        if objects['no_speed'].exists():
+            self.has_speed = False
+        elif objects['speed_up'].tap() or objects['speed_up_blue'].tap():
             sleep(0.5)
             self.has_speed = False
         if objects['one-tap_speed_up'].tap() and objects["confirm_speed_up"].waitap(3):
