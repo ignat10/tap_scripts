@@ -265,10 +265,8 @@ class Castle:
         log_raise("No castle level found.")
 
     def check_marches(self) -> None:
-        if not objects['lord_info'].waitap(5):
-            log_raise("No lord info found.")
-        if not objects['check_details'].waitap(5):
-            log_raise("No check_details found.")
+        objects['lord_info'].force_waitap(5)
+        objects['check_details'].force_waitap(5)
         sleep(1)
         for i in reversed(range(4)):
             if object_from_str(f'march_limit_{i}').exists():
@@ -329,8 +327,7 @@ class Castle:
 
             if objects['bright_challenge'].tap():
                 print("challenging")
-                if not objects['man'].wait(10):
-                    log_raise("not found man.")
+                objects['man'].force_wait(10)
             if objects['man'].exists():
                 self.kill_monsters()
 
@@ -433,10 +430,7 @@ class Castle:
                     back()
                     continue
                 is_green = objects['green_castle'].exists()
-                if not objects["castle"].tap_nth(self.account - is_green):
-                    screenshot()
-                    raise RuntimeError(
-                        f"cannot log into castle \n name: {self.name} \n google: {self.google} \n account: {self.account} \n check screen.png for more info")
+                objects["castle"].force_tap_nth(self.account - is_green)
                 objects["confirm"].waitap()
                 break
             print("logged in.")
@@ -524,10 +518,8 @@ class Castle:
     def claim_mail(cls) -> None:
         objects['mail'].tap()
         while objects['mail_reward'].waitap(1):
-            if not objects['read_claim_all'].waitap(5):
-                log_raise("cannot find 'read & claim all' button.")
-            if not objects['confirm_read_all'].waitap(5):
-                log_raise("cannot find 'confirm read & claim all' button.")
+            objects['read_claim_all'].force_waitap(5)
+            objects['confirm_read_all'].force_waitap(5)
             cls.close_ad()
             objects['mail'].waitap(3)
         cls.close_ad()
@@ -572,10 +564,8 @@ class Castle:
     @staticmethod
     def upgrade_lord_skills():
         objects['lord_info'].tap()
-        if not objects['lord_skills'].waitap(3):
-            log_raise("cannot find 'lord skills' button.")
-        if not objects['development_skills'].waitap(3):
-            log_raise("cannot find 'development skills' button.")
+        objects['lord_skills'].force_waitap(3)
+        objects['development_skills'].force_waitap(3)
         sleep(0.3)
         while not objects['skill_points_0'].exists():
             if objects['upgrade_to_max'].exists():
@@ -584,7 +574,7 @@ class Castle:
                 break
             while not objects['lord_skill'].waitap(1):
                 swipe_center(Direction.Up, SwipeSpeed.Fast, 0.4)
-            objects['upgrade_to_max'].waitap(3)
+            objects['upgrade_to_max'].force_waitap(3)
         back()
         sleep(0.3)
         back()
@@ -660,11 +650,6 @@ class Castle:
             if not objects['college'].tap() and objects['research'].waitap(1):
                 self.to_map()
                 self.close_ad()
-            if objects['college'].tap():
-                if not objects['research'].waitap(3):
-                    log_raise("not found research button.")
-            else:
-                log_raise("not found college.")
         done = False
         match marches:
             case 1:
@@ -679,6 +664,8 @@ class Castle:
             case 2:
                 if self.lv >= 12:
                     print("unlocking 2nd additional marche")
+            objects['college'].force_tap()
+            objects['research'].force_waitap(3)
                     objects['military'].waitap()
                     objects['column'].swipe(Direction.Up, SwipeSpeed.Normal, 1)
                     if not objects['legion'].waitap(0.5):
