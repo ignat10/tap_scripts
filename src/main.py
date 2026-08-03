@@ -34,6 +34,12 @@ def main():
                     if castle.has_speed and not castle.need_rss:
                         castle.kingroad_task()
                     elif not castle.build():
+                        castle.recruit()
+                        castle.to_map()
+                        if castle.free_marches() != 0 and castle.is_enough_troops and not castle.get_elite_mine():
+                            castle.get_std_mine()
+                        while castle.free_marches() >= 1 and castle.is_enough_troops:
+                            castle.get_std_mine()
                         print("don't know what to do in this castle.")
                         break
                     print("made some kingroad task")
