@@ -650,60 +650,48 @@ class Castle:
             if not objects['college'].tap() and objects['research'].waitap(1):
                 self.to_map()
                 self.close_ad()
-        done = False
-        match marches:
-            case 1:
-                if self.lv >= 5:
-                    print("unlocking 1st additional marche")
-                    objects['military'].waitap()
-                    if not objects['legion'].waitap(0.5):
-                        if not objects['expansion'].tap():
-                            if not objects['draft'].tap():
-                                log_raise("not found what to research.")
-                    done = True
-            case 2:
-                if self.lv >= 12:
-                    print("unlocking 2nd additional marche")
             objects['college'].force_tap()
             objects['research'].force_waitap(3)
+        match marches, self.lv:
+            case 1, lv if lv >= 5:
+                print("unlocking 2nd march")
+                objects['military'].waitap()
+                if not objects['legion'].waitap(0.5):
+                    if not objects['expansion'].tap():
+                        objects['draft'].force_tap()
+            case 2, lv if lv >= 12:
+                    print("unlocking 3rd march")
                     objects['military'].waitap()
                     objects['column'].swipe(Direction.Up, SwipeSpeed.Normal, 1)
                     if not objects['legion'].waitap(0.5):
                         if not objects['leadership'].tap():
-                            if not objects['horseshoes'].tap():
-                                log_raise("not found what to research.")
-                    done = True
-            case 3:
-                if self.lv >= 19:
-                    print("unlocking 3rd additional march")
+                            objects['horseshoes'].force_tap()
+            case 3, lv if lv >= 19:
+                    print("unlocking 4th march")
                     objects['military'].waitap()
                     objects['column'].swipe(Direction.Up, SwipeSpeed.Turbo, 0.7)
                     if not objects['legion'].waitap(0.5):
                         if not objects['horseshoes'].tap():
                             if not objects['expansion'].tap():
-                                if not objects['draft'].tap():
-                                    log_raise("not found what to research.")
-                    done = True
-            case n if n != 4:
-                log_raise(f"marches should be in range 1..4, got {n}")
+                                objects['draft'].force_tap()
+            case 4, _:
+                print("researching resources technology.")
+                objects['resources'].force_waitap(3)
+                sleep(1)
+                for techno in resources_technology:
+                    techno.waitap(3)
+                    if objects['research_blue'].wait(1.5):
+                        break
+                    else:
+                        back()
+            case n:
+                raise ValueError(f"marches should be in range 1..4, got {n}")
 
-        if done:
-            objects['research_blue'].waitap(1)
-            back()
-            back()
-            return
-
-        print("researching resources techno.")
-        objects['resources'].waitap(10)
-        sleep(1)
-        for techno in resources_technology:
-            techno.waitap(3)
-            if objects['research_blue'].waitap(1.5):
-                break
-            else:
-                back()
+        objects['research_blue'].waitap(1)
         back()
+        sleep(0.3)
         back()
+        sleep(0.3)
 
     @staticmethod
     def forge():
