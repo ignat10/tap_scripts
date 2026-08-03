@@ -253,16 +253,16 @@ class Castle:
 
     def check_level(self) -> None:
         objects['avatar'].tap()
-        if not objects['account'].wait(5):
-            log_raise("not recognized account button.")
+        objects['account'].force_wait(5)
+        reset_screen()
+        sleep(2)
         for level, obj in castle_levels.items():
             if obj.exists():
                 self.lv = level
                 back()
                 sleep(0.2)
-                break
-        else:
-            log_raise("not recognized any castle level.")
+                return
+        log_raise("No castle level found.")
 
     def check_marches(self) -> None:
         if not objects['lord_info'].waitap(5):
