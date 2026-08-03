@@ -297,7 +297,8 @@ class Castle:
                     objects['evolve'].waitap(5)
                 objects['go_blue'].tap()
                 objects['free'].tap()
-                objects['kingroad_go'].tap()
+                if objects['kingroad_go'].tap():
+                    print("tapped kingroad go inside hand loop")
 
             print("no more hands")
             reset_screen()
@@ -445,9 +446,10 @@ class Castle:
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
             now = perf_counter()
-            if now - start > 30:
-                reset_screen()
-            sleep(1)
+            if now - start > 60:
+                print("loading timeout. restart app.")
+                restart_app()
+                start = perf_counter()
             print("loading...")
             sleep(1)
         print("loaded.")
@@ -586,10 +588,9 @@ class Castle:
         print("lord skills...")
         objects["lord"].tap()
         if objects['gather_speed_up'].waitap(2):
-            objects['use'].waitap(5)
-        objects["harvest"].waitap(3)
-        if objects["use"].waitap(2):
-            print("harvested")
+            objects['use'].waitap(2)
+        if objects["harvest"].waitap(2):
+            objects["use"].waitap(2)
         objects["recall_all"].waitap(3)
         sleep(0.1)
         if not objects["use"].waitap(2):
@@ -727,7 +728,9 @@ class Castle:
             print("built for free.")
             sleep(0.3)
         elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap():
-            if not objects['hammer_200'].waitap(2):
+            if objects['confirm_rss'].waitap(2):
+                return True
+            if not objects['hammer_200'].tap():
                 if objects['get_now'].tap():
                     sleep(0.5)
                     self.speed_up()
@@ -735,7 +738,7 @@ class Castle:
                     for name, obj in resources_need.items():
                         if obj.exists():
                             self.need_rss.add(MineType[name.upper()])
-                            print(f"not enough {name}")
+                            print(f"Not enough {name}")
             objects['upgrade_blue'].waitap(1) or objects['big_upgrade_blue'].tap()
         elif objects['go_upgrade'].tap() or objects['hand'].tap():
             sleep(0.5)
@@ -770,25 +773,25 @@ class Castle:
         else:
             return False
 
-    @staticmethod
-    def recruit() -> None:
+    def recruit(self) -> None:
         """recruits horses. from the city."""
+        print("recruiting")
         objects['tasks'].tap()
         sleep(0.8)
         for i in range(objects['recruit_task'].count()):
             objects['recruit_task'].tap_nth(i)
-            objects['hand'].waitap()
-            objects['recruit'].waitap()
+            objects['hand'].waitap(4)
+            objects['recruit'].waitap(4)
             if objects['x_news'].tap():
                 sleep(1)
-            objects['cavalry'].waitap()
+            objects['cavalry'].waitap(3)
             sleep(0.8)
             objects['previous'].spam_tap(8, 0.02)
             sleep(0.2)
             objects['second'].tap()
             sleep(0.2)
-            if objects['recruit_blue'].tap():
-                sleep(0.1)
+            if not objects['recruit_blue'].tap():
+                self.speed_up()
             back()
             objects['tasks'].waitap()
             sleep(1)
@@ -839,7 +842,7 @@ class Castle:
 
         objects["search"].tap()
         for _ in range(MAX_MINE_LV * MineType.IRON):
-            need_type = need if (need := self.need_rss.__iter__().__next__()) is not None else self.mine_type
+            need_type = next(iter(self.need_rss), self.mine_type)
             type_name = need_type.name.lower()
             print(f"searching mine. lv {self.mine_lv} {type_name}")
             object_from_str(f"{type_name}_type").waitap()
