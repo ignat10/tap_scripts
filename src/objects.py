@@ -91,8 +91,10 @@ ScreenObjectNames = Literal[
     "draft",
     "expansion",
     "legion",
+    "leadership",
     "horseshoes",
     "research_blue",
+    "go_research",
 
     "claim",
     "alliance_bonuses",

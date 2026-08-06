@@ -347,6 +347,11 @@ class Castle:
             elif objects['forge'].exists():
                 self.forge()
 
+            elif objects['go_research'].tap():
+                if objects['horseshoes'].waitap(2):
+                    sleep(0.5)
+                    objects['research_blue'].waitap(2)
+
             elif objects['research'].exists():
                 if not self.speed_up():
                     self.research()
