@@ -1,6 +1,7 @@
 from datetime import timedelta
 from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
+from random import randrange
 
 from openpyxl import load_workbook
 from openpyxl.cell import Cell
@@ -375,6 +376,11 @@ class Castle:
                     if objects['confirm_shell'].waitap(1):
                         break
                 back()
+
+            if not objects['green'].tap():
+                if objects['switch_level'].tap():
+                    for _ in range(4):
+                        objects['green'].force_tap_nth(randrange(15))
 
             if objects['stragglers'].tap():
                 sleep(1)

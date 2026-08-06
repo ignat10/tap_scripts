@@ -131,6 +131,9 @@ ScreenObjectNames = Literal[
     "shell",
     "confirm_shell",
 
+    "switch_level",
+    "green",
+
     "unlock_land",
     "shell",
     "map",
