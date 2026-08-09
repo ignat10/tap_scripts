@@ -31,7 +31,7 @@ def shake() -> None:
     sleep(1.1)
     send("f9")
 
-def cell_assert(cell: Cell, typ: type | tuple[type, type]) -> None:
+def cell_assert(cell: Cell, typ: type) -> None:
     val = cell.value
     assert isinstance(val, typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val.__repr__() if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'"  # type: ignore
 
@@ -94,8 +94,8 @@ class Castle:
         save_workbook()
 
     @property
-    def google(self) -> int:
-        return int(cast(SupportsInt, self.google_cell.value))
+    def google(self) -> int | None:
+        return cast(int | None, self.google_cell.value)
 
     @google.setter
     def google(self, value: int):
@@ -103,8 +103,8 @@ class Castle:
         save_workbook()
 
     @property
-    def account(self) -> int:
-        return int(cast(SupportsInt, self.account_cell.value))
+    def account(self) -> int | None:
+        return int(val) if isinstance(val := self.account_cell.value, SupportsInt) else None
 
     @account.setter
     def account(self, value: int):
