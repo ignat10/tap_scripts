@@ -249,6 +249,7 @@ class Castle:
         for level, obj in castle_levels.items():
             if obj.exists():
                 self.lv = level
+                print(f"saved self level {level}")
                 back()
                 sleep(0.2)
                 return
@@ -337,7 +338,7 @@ class Castle:
 
             if objects['unlock'].tap():
                 print("beast unlocked")
-                sleep(10)
+                sleep(20)
 
             elif objects['unlock_land'].tap():
                 print("unlocked land")
@@ -459,7 +460,7 @@ class Castle:
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
             now = perf_counter()
-            if now - start > 60:
+            if now - start > 200:
                 print("loading timeout. restart app.")
                 restart_app()
                 start = perf_counter()
@@ -589,6 +590,7 @@ class Castle:
                 break
             while not objects['lord_skill'].waitap(1):
                 swipe_center(Direction.Up, SwipeSpeed.Fast, 0.4)
+                sleep(1)
             objects['upgrade_to_max'].force_waitap(3)
         back()
         sleep(0.3)
@@ -655,6 +657,8 @@ class Castle:
             self.has_speed = True
             return True
         else:
+            if not self.has_speed:
+                print(f"castle {self.name} has no more speed up.")
             self.close_ad()
             return False
 
@@ -670,7 +674,7 @@ class Castle:
             case 1, lv if lv >= 5:
                 print("unlocking 2nd march")
                 objects['military'].waitap()
-                if not objects['legion'].waitap(0.5):
+                if not objects['legion'].waitap(1.5):
                     if not objects['expansion'].tap():
                         objects['draft'].force_tap()
             case 2, lv if lv >= 12:
@@ -805,7 +809,7 @@ class Castle:
             if not objects['recruit_blue'].tap():
                 self.speed_up()
             back()
-            objects['tasks'].waitap()
+            objects['tasks'].waitap(5)
             sleep(1)
         back()
         sleep(0.3)
@@ -903,11 +907,11 @@ class Castle:
             objects["book"].tap()
             if objects['x_news'].waitap(0.5):
                 sleep(0.5)
-            objects["elite_mines"].tap()
-            objects['blue'].wait(1)
+            objects["elite_mines"].force_waitap(4)
+            objects['blue'].wait(2)
             if objects["blue"].tap_nth(e):  # color of blue
                 if objects["gather"].waitap(2.5):
-                    objects["set_out"].waitap()  # regularly I should be there
+                    objects["set_out"].force_waitap(5)  # regularly I should be there
                     sleep(0.6)
                     if check_map_status() == MapStatus.NOT_AT_MAP:
                         back()
