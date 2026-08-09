@@ -770,11 +770,11 @@ class Castle:
         if objects['free'].tap():
             print("built for free.")
             sleep(0.3)
-        elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap():
+        elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap() or objects['hammer_use'].exists():
             if objects['confirm_rss'].waitap(2):
                 return True
-            if not objects['hammer_200'].tap():
                 if objects['get_now'].tap():
+            if not (objects['hammer_use'] or objects['hammer_200'].tap()):
                     sleep(0.5)
                     self.speed_up()
                 else:

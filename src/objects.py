@@ -55,6 +55,7 @@ ScreenObjectNames = Literal[
     "big_upgrade_blue",
     "go_upgrade",
     "get_now",
+    "hammer_use",
     "hammer_200",
     "need_food",
     "need_wood",
