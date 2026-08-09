@@ -186,6 +186,8 @@ ScreenObjectNames = Literal[
     'farm,hacen',
     "kazuru_farm5",
     "kazuru_farm6",
+    "new",
+    "zahino",
 
     "avatar",
     "account",
