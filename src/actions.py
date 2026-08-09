@@ -425,7 +425,8 @@ class Castle:
 
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
-        print(f"checking is current castle: {self.name}")
+        gmail = self.google
+        assert gmail is not None, f"called log_into_account for {self.name}, but google not set in {FARMS_SHEET_PATH}"
         if not objects[self.name].exists():
             print(f"logging into {self.name}")
 
@@ -440,12 +441,12 @@ class Castle:
                 if not objects['gmail'].wait(10):
                     back()
                     continue
-                objects["gmail"].tap_nth(self.google)
+                objects["gmail"].tap_nth(gmail)
                 if not objects["acc_list"].wait(15):
                     back()
                     continue
                 is_green = objects['green_castle'].exists()
-                objects["castle"].force_tap_nth(self.account - is_green)
+                objects["castle"].force_tap_nth(max(self.account - is_green, 0))
                 objects["confirm"].waitap()
                 break
             print("logged in.")
