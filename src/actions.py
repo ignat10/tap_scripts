@@ -122,13 +122,14 @@ class Castle:
 
     @property
     def marches(self) -> int:
-        """gets available marches value"""
+        """gets available marches value. From 1 to 4"""
         cell = self.max_marches_cell
         val = cell.value
         if val is None:
             self.check_marches()
             val = cell.value
         assert isinstance(val, int)
+        assert 0 <= val <= 3, f"additional marches value must be in range 0..3, got {val}"
         return val + 1
 
     @marches.setter
@@ -696,8 +697,6 @@ class Castle:
                         break
                     else:
                         back()
-            case n:
-                raise ValueError(f"marches should be in range 1..4, got {n}")
 
         objects['research_blue'].waitap(1)
         back()
