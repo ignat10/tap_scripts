@@ -190,7 +190,8 @@ class Castle:
         objects['backhand'].force_waitap()
         sleep(1)
         self.close_bella()
-        objects['kingroad'].force_wait(20)
+        objects['kingroad'].force_waitap(20)
+        back()
         self.bind_account()
         self.change_name()
         print(f"account created, bound, named, upgraded to castle level {self.lv}")
@@ -394,8 +395,8 @@ class Castle:
                 sleep(1)
                 print("killing stragglers")
                 self.close_bella()
-                objects['suppress'].waitap(2)
-                objects['set_out'].waitap(2)
+                objects['suppress'].force_waitap(10)
+                objects['set_out'].force_waitap(10)
                 self.close_ad()
 
             if objects['alliance_donate'].tap():
@@ -693,7 +694,7 @@ class Castle:
                         if not objects['horseshoes'].tap():
                             if not objects['expansion'].tap():
                                 objects['draft'].force_tap()
-            case 4, _:
+            case _:
                 print("researching resources technology.")
                 objects['resources'].force_waitap(3)
                 sleep(1)
