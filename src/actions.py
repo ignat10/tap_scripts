@@ -161,86 +161,49 @@ class Castle:
         sleep(6)
         objects['man'].swipe(Direction.Up, SwipeSpeed.Slow, 0.8)
         objects['man'].swipe(Direction.Right, SwipeSpeed.Slow, 0.6)
-
-        def challenge():
-            objects['level'].waitap()
-            objects['challenge'].waitap()
-
         self.kill_monsters()
         print("finished 0 level")
-        objects['bella'].wait()
-        objects['bella'].spam_tap(4, 0.4)
-        challenge()  # first level
+        objects['bella'].force_wait(15)
+        self.close_bella()
+        self._challenge()  # first level
         self.kill_monsters()
         print("finished 1st level")
-        objects['bella'].waitap()
-        objects['bella'].tap()
-        challenge()  # second level
+        sleep(1)
+        self.close_bella()
+        self._challenge()
         self.kill_monsters()
         print("finished 2nd level")
-        objects['bella'].waitap()
-        objects['bella'].tap()
-        objects['backhand'].waitap()
-        objects['first_castle'].waitap()
-        objects['upgrade'].waitap()
-        objects['upgrade_blue'].waitap()
+        self.close_bella()
+        objects['backhand'].force_waitap()
+        objects['first_castle'].force_waitap()
+        objects['upgrade'].force_waitap()
+        objects['upgrade_blue'].force_waitap()
         self.lv = 2
-        objects['bella'].waitap()
-        objects['bella'].tap()
-        objects['new_monster'].waitap()
-        challenge()  # third level
+        objects['bella'].force_wait(15)
+        self.close_bella()
+        objects['new_monster'].force_waitap()
+        self._challenge()
         self.kill_monsters()
         print("finished 3rd level")
-        objects['backhand'].waitap()
-        objects['bella'].waitap()
-        objects['bella'].tap()
-        objects['kingroad'].waitap()
-        objects['kingroad_go'].waitap()
-        objects['hand'].waitap()
-        objects['hand'].waitap()
-        objects['upgrade_blue'].waitap()
-        objects['kingroad'].waitap()
-        self.kingroad_claim()
-        self.to_map()
-        self.close_ad()
-        self.upgrade_castle()
-        print("upgraded castle to level 3")
-        objects['kingroad'].waitap()
-        self.kingroad_claim()
-        objects['kingroad_go'].waitap()  # barracks task
-        objects['bella'].waitap()
-        objects['bella'].tap()
-        objects['hand'].waitap()
-        objects['hand'].waitap()
-        objects['kingroad'].waitap()
-        self.kingroad_claim()
-        objects['kingroad_go'].waitap()  # savior of order task
-        objects['hand'].waitap()
-        objects['level'].waitap()  # 4th level
-        objects['bright_challenge'].waitap()
-        self.kill_monsters()
-        print("finished 4th level")
-        objects['bella'].waitap()
-        objects['bella'].tap()
-        objects['bella'].tap()
-        objects['heroic_evolution'].waitap()
-        objects['evolve'].waitap()
-        back()
-        objects['level'].waitap()
-        objects['bright_challenge'].waitap()
-        self.kill_monsters()
-        print("finished 5th level")
-        objects['heroic_evolution'].waitap()
-        objects['evolve'].waitap()
-        back()
-        back()
-        self.to_map()
-        self.close_ad()
-        self.upgrade_castle()
-        self.upgrade_castle()
+        objects['backhand'].force_waitap()
+        sleep(1)
+        self.close_bella()
+        objects['kingroad'].force_wait(20)
         self.bind_account()
         self.change_name()
         print(f"account created, bound, named, upgraded to castle level {self.lv}")
+
+    @classmethod
+    def _challenge(cls) -> None:
+        print("challenging")
+        if not objects['level'].waitap(2):
+            objects['hand'].tap()
+        if not objects['challenge'].waitap(3):
+            objects['bright_challenge'].force_waitap()
+        if objects['heroic_evoluation_blue'].waitap(1):
+            objects['evolve'].waitap(3)
+            back()
+            cls._challenge()
 
     @staticmethod
     def kill_monsters() -> None:
@@ -249,7 +212,7 @@ class Castle:
                 sleep(0.8)
             if objects['confirm_bonus'].tap():
                 sleep(0.8)
-            objects['man'].swipe(direction, SwipeSpeed.Slow, 5)
+            swipe_center(direction, SwipeSpeed.Slow, 4)
             reset_screen()
         while not (objects['quest_complete'].tap() or objects['quit'].tap()):
             bonus_or(Direction.Right)
@@ -364,9 +327,9 @@ class Castle:
             else:
                 objects['apply'].tap_each()
 
-            if objects['bright_challenge'].tap():
-                print("challenging")
-                objects['man'].force_wait(10)
+            if objects['bright_challenge'].exists():
+                self._challenge()
+                objects['man'].force_wait(20)
             if objects['man'].exists():
                 self.kill_monsters()
 
