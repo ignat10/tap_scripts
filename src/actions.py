@@ -142,8 +142,8 @@ class Castle:
     def close_bella() -> bool:
         if not objects['bella'].exists():
             return False
-        while objects['bella'].waitap(0.5):
-            sleep(0.5)
+        while objects['bella'].tap():
+            sleep(1)
         return True
 
     def new_account(self) -> None:
@@ -174,6 +174,7 @@ class Castle:
         self._challenge()
         self.kill_monsters()
         print("finished 2nd level")
+        objects['bella'].force_wait()
         self.close_bella()
         objects['backhand'].force_waitap()
         objects['first_castle'].force_waitap()
