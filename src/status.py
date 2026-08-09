@@ -1,15 +1,15 @@
-from enum import Enum, IntEnum, auto
+from enum import Enum, auto
 
 from screen_objects import reset_screen
 
 from .objects import objects
 
 
-class MineType(IntEnum):
-    FOOD = 1
-    WOOD = 2
-    STONE = 3
-    IRON = 4
+class MineType(Enum):
+    IRON = auto()
+    STONE = auto()
+    WOOD = auto()
+    FOOD = auto()
 
 
 class MapStatus(Enum):

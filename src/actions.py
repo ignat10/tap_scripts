@@ -2,6 +2,7 @@ from datetime import timedelta
 from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
 from random import randrange
+from itertools import chain
 
 from openpyxl import load_workbook
 from openpyxl.cell import Cell
@@ -60,10 +61,14 @@ class Castle:
         self.max_marches_cell = marches_limit
 
         self.has_speed = True
-        self.need_rss: set[MineType] = set()
+        self.need_rss: MineType | None = None
         self.stamina = True
-        self.mine_lv = MAX_MINE_LV
-        self.mine_type: MineType = MineType.IRON
+        self.mine_type = (
+            (level, mine)
+            for level in [5, 6, 4, 3, 2, 1,]
+            for mine in MineType
+            if mine == MineType.FOOD or mine == MineType.WOOD or (mine == MineType.STONE and self.lv >= 10) or (mine == MineType.IRON and self.lv >= 15)
+        )
         self.is_enough_troops = True
         self.elite_mines = self.alliances_elite_mines.setdefault(cast(str, alliance.value), iter(ELITE_MINES))
 
@@ -780,8 +785,9 @@ class Castle:
                 else:
                     for name, obj in resources_need.items():
                         if obj.exists():
-                            self.need_rss.add(MineType[name.upper()])
+                            self.need_rss = MineType[name.upper()]
                             print(f"Not enough {name}")
+                            break
             objects['upgrade_blue'].waitap(1) or objects['big_upgrade_blue'].tap()
         elif objects['go_upgrade'].tap() or objects['hand'].tap():
             sleep(0.5)
@@ -894,44 +900,37 @@ class Castle:
     def get_std_mine(self) -> None:
         """Gets standard mine from the map."""
 
-        objects["search"].tap()
-        for _ in range(MAX_MINE_LV * MineType.IRON):
-            need_type = next(iter(self.need_rss), self.mine_type)
+        objects["search"].force_tap()
+        need_level = reversed(range(MAX_MINE_LV))
+        for _ in range(24):
+            level, need_type = (next(need_level), self.need_rss) if self.need_rss is not None else next(self.mine_type)
             type_name = need_type.name.lower()
-            print(f"searching mine. lv {self.mine_lv} {type_name}")
+            print(f"searching mine. lv {level} {type_name}")
             object_from_str(f"{type_name}_type").waitap()
             objects["plus"].spam_tap(5, 0)
-            objects["minus"].spam_tap(6 - self.mine_lv, 0)
+            objects["minus"].spam_tap(MAX_MINE_LV - level, 0)
             objects["go"].spam_tap(4, 0.1)
-            objects['gather'].wait(1.5)
+            objects['gather'].wait(2)
 
             match check_map_status():
                 case MapStatus.FOUND:
-                    break
-                case MapStatus.NOT_FOUND:
-                    if self.mine_type > 1:
-                        self.mine_type = MineType(self.mine_type - 1)
+                    objects['gather'].force_tap()
+                    objects["gather"].force_waitap(0.7)
+                    objects["set_out"].force_waitap(5)
+                    sleep(0.5)
+                    if check_map_status() == MapStatus.NOT_AT_MAP:
+                        back()
+                        print("not enough horses")
+                        self.is_enough_troops = False
+                        sleep(1)
                     else:
-                        self.mine_lv -= 1
-                        self.mine_type = MineType.IRON
+                        print("mine taken.")
+                        self.mine_type = chain([(level, need_type)], self.mine_type)
+                    return
                 case MapStatus.NOT_AT_MAP:
-                    raise RuntimeError(f"Not at map when searching mine.")
+                    log_raise(f"Not at map when searching mine.")
         else:
-            screenshot()
-            raise RuntimeError(f"cannot find standard mine. check screen.png")
-
-        objects['gather'].tap()
-        sleep(0.2)
-        objects["gather"].tap()
-        objects["set_out"].waitap()
-        sleep(0.5)
-        if check_map_status() == MapStatus.NOT_AT_MAP:
-            back()
-            print("not enough horses")
-            self.is_enough_troops = False
-            sleep(1)
-        else:
-            print("mine taken.")
+            log_raise(f"cannot find standard mine. check screen.png")
 
     def get_elite_mine(self) -> bool:
         """Gets elite mine from the map."""
