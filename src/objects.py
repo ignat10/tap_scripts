@@ -189,6 +189,10 @@ ScreenObjectNames = Literal[
 
     "avatar",
     "account",
+    "bind",
+    "change_name",
+    "2-16_characters",
+    "change_name_green",
     "switch",
     "new_game",
     "realm",

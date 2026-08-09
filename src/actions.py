@@ -7,8 +7,8 @@ from openpyxl import load_workbook
 from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from openpyxl.worksheet.worksheet import Worksheet
-from keyboard import send
-from screen_objects import reset_screen, back, screenshot, SwipeSpeed, Direction, tap_center, swipe_center, start_app, close_app
+from keyboard import send, write
+from screen_objects import reset_screen, back, SwipeSpeed, Direction, tap_center, swipe_center, start_app, close_app
 
 from .objects import *
 from .paths import FARMS_SHEET_PATH
@@ -233,7 +233,9 @@ class Castle:
         self.close_ad()
         self.upgrade_castle()
         self.upgrade_castle()
-        print("link account!")
+        self.bind_account()
+        self.change_name()
+        print(f"account created, bound, named, upgraded to castle level {self.lv}")
 
     @staticmethod
     def kill_monsters() -> None:
@@ -251,6 +253,23 @@ class Castle:
             bonus_or(Direction.Down)
             reset_screen()
         sleep(1)
+
+    def change_name(self) -> None:
+        objects['avatar'].force_waitap(3)
+        if objects['x_news'].waitap(1.3):
+            sleep(1)
+        objects['change_name'].force_waitap(4)
+        objects['2-16_characters'].force_waitap(5)
+        sleep(0.8)
+        write(self.name)
+        sleep(2)
+        objects['change_name_green'].force_waitap(5)
+        sleep(1)
+        if objects['change_name_green'].exists():
+            log_raise(f"Name {self.name} already taken.")
+        back()
+        sleep(0.5)
+        print("name has been changed")
 
     def check_level(self) -> None:
         objects['avatar'].tap()
@@ -280,6 +299,22 @@ class Castle:
         sleep(0.3)
         back()
         sleep(0.2)
+
+    def bind_account(self):
+        gmail = self.google
+        assert sheet is not None
+        assert gmail is not None, f"google not set for {self.name}. Please set it manually in {FARMS_SHEET_PATH}."
+        object_from_str(self.name).force_tap()
+        objects['account'].force_waitap(3)
+        objects['bind'].force_waitap(3)
+        objects['gmail'].force_wait(15)
+        objects['gmail'].force_tap_nth(gmail)
+        account_number = sheet['C'][1:].count(gmail) - 1 # self account
+        print(f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}")
+        self.account = account_number
+        back()
+        back()
+        sleep(0.7)
 
     def kingroad_task(self) -> None:
         self.kingroad_claim()
