@@ -86,7 +86,6 @@ ScreenObjectNames = Literal[
     "research",
     "resources",
     "military",
-    "column",
     "plow",
     "saw",
     "sickle",
@@ -154,8 +153,6 @@ ScreenObjectNames = Literal[
     "stone_type",
     "iron_type",
     "go",
-    "city_15",
-    "city_19",
     "gather",
     "set_out",
 
@@ -173,7 +170,6 @@ ScreenObjectNames = Literal[
     "lord_skill",
     "upgrade_to_max",
     "skill_points_0",
-    "skills_back",
 
     "more_marches",
     "speed_up_march",
@@ -203,7 +199,6 @@ ScreenObjectNames = Literal[
     "man",
     "blue_bonus",
     "confirm_bonus",
-    "try_again",
     "quit",
     "quest_complete",
     "bella",

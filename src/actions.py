@@ -677,7 +677,7 @@ class Castle:
     def speed_up(self) -> bool:
         if objects['no_speed'].exists():
             self.has_speed = False
-        elif objects['speed_up'].tap() or objects['speed_up_blue'].tap():
+        elif objects['speed_up'].tap() or objects['speed_up_blue'].tap() or objects['get_now'].tap():
             sleep(0.5)
             self.has_speed = False
         if objects['one-tap_speed_up'].tap() and objects["confirm_speed_up"].waitap(3):
@@ -706,15 +706,15 @@ class Castle:
             case 2, lv if lv >= 12:
                     print("unlocking 3rd march")
                     objects['military'].waitap()
-                    objects['column'].swipe(Direction.Up, SwipeSpeed.Normal, 1)
-                    if not objects['legion'].waitap(0.5):
+                    swipe_center(Direction.Up, SwipeSpeed.Normal, 1)
+                    if not objects['legion'].waitap(1.5):
                         if not objects['leadership'].tap():
                             objects['horseshoes'].force_tap()
             case 3, lv if lv >= 19:
                     print("unlocking 4th march")
                     objects['military'].waitap()
-                    objects['column'].swipe(Direction.Up, SwipeSpeed.Turbo, 0.7)
-                    if not objects['legion'].waitap(0.5):
+                    swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.7)
+                    if not objects['legion'].waitap(1.5):
                         if not objects['horseshoes'].tap():
                             if not objects['expansion'].tap():
                                 objects['draft'].force_tap()
@@ -773,8 +773,8 @@ class Castle:
         elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap() or objects['hammer_use'].exists():
             if objects['confirm_rss'].waitap(2):
                 return True
-                if objects['get_now'].tap():
             if not (objects['hammer_use'] or objects['hammer_200'].tap()):
+                if objects['get_now'].exists():
                     sleep(0.5)
                     self.speed_up()
                 else:
