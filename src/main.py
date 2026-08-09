@@ -1,8 +1,7 @@
-from screen_objects import back, Direction, SwipeSpeed, reset_screen, tap_center, start_app
+from screen_objects import start_app
 
 from src.actions import iter_castles, Castle
 from src.device import config
-from src.utils import object_from_input, object_from_str
 
 
 def main():
@@ -71,65 +70,6 @@ def main():
                 if not castle.is_enough_troops:
                     castle.close_ad()
                     castle.recruit()
-
-        case "action":
-            castle = next(iter_castles())
-
-            while command := input("Enter action: "):
-                func = getattr(castle, command)
-                func()
-
-        case "object":
-            obj = object_from_input()
-
-            while command := input("Enter command: "):
-                match command:
-                    case "exists":
-                        print(obj.exists())
-
-                    case "tap":
-                        print(obj.tap())
-
-                    case "tap_each":
-                        obj.tap_each()
-
-                    case "tap_center":
-                        tap_center()
-
-                    case "swipe":
-                        direction = Direction.Up
-                        speed = SwipeSpeed.Turbo
-                        duration = float(input("Enter duration: "))
-                        r = obj.swipe(direction, speed, duration)
-                        print(r)
-
-                    case "cal":
-                        fixed = bool(input("fixed? "))
-                        region = inp if (inp := input("region: ")) else None
-                        n = int(inp) if (inp := input("n: ")) else None
-
-                        obj.calibrate(fixed, region, n)
-
-                    case cmd if cmd.startswith("spam"):
-                        [n, i] = cmd.split()[1:]
-                        r = obj.spam_tap(int(n), int(i))
-                        print(r)
-
-                    case cmd if cmd.startswith("tap"):
-                        n = cmd.split()[1]
-                        r = obj.tap_nth(int(n))
-                        print(r)
-
-                    case "count":
-                        print(obj.count())
-
-                    case 'back':
-                        back()
-
-                    case o:
-                        obj = object_from_str(o)
-
-                reset_screen()
 
         case com:
             raise IOError(f"unknown command: {com}")
