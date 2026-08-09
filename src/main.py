@@ -1,6 +1,6 @@
 from screen_objects import back, Direction, SwipeSpeed, reset_screen, tap_center, start_app
 
-from src.actions import iter_castles
+from src.actions import iter_castles, Castle
 from src.device import config
 from src.utils import object_from_input, object_from_str
 
@@ -8,11 +8,13 @@ from src.utils import object_from_input, object_from_str
 def main():
     config()
     castles = iter_castles()
-    match input("which script to run? {farming, grow, action, object}: "):
+    start_app()
+    Castle.load()
+    Castle.close_ad()
+    match input("which script to run: farming or grow?: "):
         case "grow":
-            start_app()
             for castle in castles:
-                castle.load()
+                castle.log_into_account()
                 castle.close_ad()
                 castle.check_level()
                 castle.check_marches()
@@ -25,8 +27,8 @@ def main():
                     if i % 5 == 1:
                         castle.kill_monster()
                         castle.close_ad()
-                    if i % 15 == 2:
-                        castle.events()
+                    # if i % 15 == 2:
+                    #     castle.events()
                     if i % 20 == 3:
                         castle.claim_quest()
                     castle.claim()
@@ -49,6 +51,7 @@ def main():
                 castle.log_into_account()
                 castle.close_ad()
                 castle.claim()
+                castle.claim_rss()
                 castle.heal()
                 castle.use_lord_skills()
                 castle.to_map()
@@ -66,7 +69,7 @@ def main():
                         castle.is_enough_troops = True
 
                 if not castle.is_enough_troops:
-                    castle.to_castle()
+                    castle.close_ad()
                     castle.recruit()
 
         case "action":
