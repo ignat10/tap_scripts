@@ -230,6 +230,7 @@ ScreenObjectNames = Literal[
     "no",
     "frozen_screen",
 
+    "castle_level_3",
     "castle_level_4",
     "castle_level_5",
     "castle_level_6",
@@ -237,7 +238,9 @@ ScreenObjectNames = Literal[
     "castle_level_8",
     "castle_level_9",
     "castle_level_10",
-    "castle_level_11"
+    "castle_level_11",
+    "castle_level_15",
+    "castle_level_19",
 ]
 
 
@@ -265,7 +268,7 @@ resources_technology = {
 }
 
 castle_levels = {
-    int(name[13]): obj
+    int(name[13:]): obj
     for name, obj in objects.items()
     if name.startswith(f'castle_level_')
 }
