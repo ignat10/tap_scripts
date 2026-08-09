@@ -338,11 +338,8 @@ class Castle:
 
             print("no more hands")
             reset_screen()
-            if objects['arrow'].spam_tap(2, 0.5):
-                print("killing monster")
-                while not objects['attack'].waitap(1.5):
-                    tap_center()
-                objects['set_out'].waitap(3)
+            if objects['arrow'].exists():
+                self.kill_monster()
 
             elif objects['check'].exists():
                 print("gathering")
@@ -869,15 +866,26 @@ class Castle:
         if not self.stamina:
             return
         self.to_map()
-        objects['search'].tap()
-        objects['monster'].waitap(2)
-        objects['go'].waitap(2)
-        objects['arrow'].wait()
+        if objects['search'].tap():
+            objects['monster'].force_wait(10)
+        if objects['monster'].tap():
+            objects['go'].force_wait(10)
+        if objects['go'].tap():
+            objects['arrow'].force_wait(10)
         objects['arrow'].spam_tap(2, 0.2)
         while not objects['attack'].waitap(0.5):
-            tap_center()
-        objects['set_out'].waitap(2)
-        sleep(0.5)
+            if objects['quick_search'].tap():
+                objects['map_hand'].force_waitap(3)
+                objects['arrow'].force_wait(3)
+                objects['arrow'].spam_tap(2, 0.5)
+            else:
+                tap_center()
+        objects['set_out'].force_waitap(2)
+        if objects['use_stamina'].waitap(1  ):
+            objects['confirm_use_stamina'].force_waitap(3)
+            back()
+            objects['set_out'].force_waitap(3)
+            sleep(1)
         if check_map_status() == MapStatus.NOT_AT_MAP:
             self.stamina = False
             back()

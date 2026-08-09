@@ -42,6 +42,9 @@ ScreenObjectNames = Literal[
     "monster",
     "arrow",
     "attack",
+    "quick_search",
+    "use_stamina",
+    "confirm_use_stamina",
 
     "castle_building",
     "tasks",
