@@ -292,11 +292,17 @@ class Castle:
     def bind_account(self):
         gmail = self.google
         assert gmail is not None, f"google not set for {self.name}. Please set it manually in {FARMS_SHEET_PATH}."
-        object_from_str(self.name).force_tap()
-        objects['account'].force_waitap(3)
-        objects['bind'].force_waitap(3)
-        objects['gmail'].force_wait(15)
-        objects['gmail'].force_tap_nth(gmail)
+        while True:
+            object_from_str(self.name).force_tap()
+            objects['account'].force_waitap(3)
+            objects['bind'].force_waitap(3)
+            while not objects['gmail'].wait(15):
+                objects['bind'].tap()
+            objects['gmail'].force_tap_nth(gmail)
+            if objects['undo_bind'].wait(3):
+                break
+            restart_app()
+            self.close_ad()
         account_number = get_column("google").count(gmail) - 1 # self account
         print(f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}")
         self.account = account_number
