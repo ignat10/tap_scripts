@@ -2,7 +2,7 @@ from enum import Enum, auto
 
 from screen_objects import reset_screen
 
-from .objects import objects
+from src.objects import objects
 
 
 class MineType(Enum):

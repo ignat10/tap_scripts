@@ -1,5 +1,5 @@
 from src.device import config
-from src.actions import iter_castles
+from src.castles import iter_castles
 
 config()
 castle = next(iter_castles())

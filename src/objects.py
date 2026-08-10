@@ -2,7 +2,7 @@ from typing import Literal, cast
 
 from screen_objects import ScreenObject, get_objects
 
-from .paths import SAMPLES_DIR, REGIONS_DIR
+from src.paths import SAMPLES_DIR, REGIONS_DIR
 
 
 ScreenObjectNames = Literal[

@@ -2,18 +2,18 @@ import pytest
 
 from typing import get_args
 
-from src import objects
+from src.objects import ScreenObjectNames, objects
 
 
 
 @pytest.fixture
 def literal_names() -> set[str]:
-    return set(get_args(objects.ScreenObjectNames))
+    return set(get_args(ScreenObjectNames))
 
 
 @pytest.fixture
 def data_names() -> set[str]:
-    return set(objects.objects)
+    return set(objects)
 
 
 def test_data_names_contains_literal(

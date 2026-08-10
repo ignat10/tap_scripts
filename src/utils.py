@@ -2,7 +2,7 @@ from typing import cast
 
 from screen_objects import screenshot
 
-from .objects import ScreenObjectNames, objects, ScreenObject
+from src.objects import ScreenObjectNames, objects, ScreenObject
 
 object_names = objects.keys()
 

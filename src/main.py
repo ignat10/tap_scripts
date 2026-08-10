@@ -1,7 +1,8 @@
 from screen_objects import start_app
 
-from src.actions import iter_castles, Castle
 from src.device import config
+from src.castles import iter_castles
+from src.actions import Castle
 
 
 def main():
