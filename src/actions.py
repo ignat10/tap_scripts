@@ -30,7 +30,7 @@ from src.objects import (
 )
 from src.paths import FARMS_SHEET_PATH
 from src.status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
-from src.worksheet import save_workbook, sheet
+from src.worksheet import save_workbook, get_column
 from src.utils import object_from_str, log_raise
 
 MAX_MINE_LV = 6
@@ -291,14 +291,13 @@ class Castle:
 
     def bind_account(self):
         gmail = self.google
-        assert sheet is not None
         assert gmail is not None, f"google not set for {self.name}. Please set it manually in {FARMS_SHEET_PATH}."
         object_from_str(self.name).force_tap()
         objects['account'].force_waitap(3)
         objects['bind'].force_waitap(3)
         objects['gmail'].force_wait(15)
         objects['gmail'].force_tap_nth(gmail)
-        account_number = sheet['C'][1:].count(gmail) - 1 # self account
+        account_number = get_column("google").count(gmail) - 1 # self account
         print(f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}")
         self.account = account_number
         back()
