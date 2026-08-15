@@ -4,7 +4,6 @@ from screen_objects import ScreenObject, get_objects
 
 from src.paths import SAMPLES_DIR, REGIONS_DIR
 
-
 ScreenObjectNames = Literal[
     "claim_daily",
     "blur",

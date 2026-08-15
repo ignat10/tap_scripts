@@ -1,28 +1,28 @@
 from datetime import timedelta
+from itertools import chain
+from random import randrange, choice
 from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
-from random import randrange, choice
-from itertools import chain
 from typing import cast
 
+from keyboard import send, write
 from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
-from keyboard import send, write
 from screen_objects import (
-    reset_screen,
     back,
-    SwipeSpeed,
-    Direction,
     tap_center,
     swipe_center,
     start_app,
     close_app,
-    ScreenObject
+    reset_screen,
+    SwipeSpeed,
+    Direction,
+    ScreenObject,
 )
 
 from src.objects import (
-    ScreenObjectNames,
     objects,
+    ScreenObjectNames,
     equipment,
     resources_technology,
     castle_levels,
@@ -30,9 +30,10 @@ from src.objects import (
     march_limits,
 )
 from src.paths import FARMS_SHEET_PATH
-from src.status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
-from src.worksheet import save_workbook, get_column
+from src.status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, \
+    check_map_status
 from src.utils import log_raise
+from src.worksheet import save_workbook, get_column
 
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
@@ -82,7 +83,7 @@ class Castle:
         self.stamina = True
         self.mine_type = (
             (level, mine)
-            for level in [5, 6, 4, 3, 2, 1,]
+            for level in [5, 6, 4, 3, 2, 1]
             for mine in MineType
             if mine == MineType.FOOD or mine == MineType.WOOD or (mine == MineType.STONE and self.lv >= 10) or (mine == MineType.IRON and self.lv >= 15)
         )

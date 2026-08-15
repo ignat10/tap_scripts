@@ -1,9 +1,9 @@
 from sqlite3 import connect
 
 from src.actions import Castle
-from src.worksheet import get_row, keys
 from src.paths import CASTLES_DB_PATH
 from src.worksheet import get_column
+from src.worksheet import get_row, keys
 
 
 def iter_castles():
