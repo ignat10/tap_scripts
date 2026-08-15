@@ -946,3 +946,62 @@ class Castle:
                 back()
                 return False  # if there is no elites
         raise RuntimeError("all elite mines are full.")
+
+    def farming(self):
+        self.log_into_account()
+        self.claim()
+        self.claim_rss()
+        self.heal()
+        self.use_lord_skills()
+        self.to_map()
+
+        for i in range(self.free_marches() - 1):  # - 1 for elite mine
+            if self.is_enough_troops:
+                self.get_std_mine()
+            else:
+                break
+        else:
+            if not self.get_elite_mine():
+                self.get_std_mine()
+
+            if self.free_marches() == 0:
+                self.is_enough_troops = True
+
+        if not self.is_enough_troops:
+            self.close_ad()
+            self.recruit()
+
+    def grow(self):
+        self.log_into_account()
+        for i in range(200):
+            if i % 60 == 0:
+                self.claim_mail()
+                self.bind_account()
+            if i % 55 == 0:
+                self.check_level()
+                self.check_marches()
+            if i % 50 == 0:
+                self.claim_rss()
+            if i % 40 == 0:
+                self.upgrade_lord_skills()
+            if i % 5 == 1:
+                self.kill_monster()
+                self.close_ad()
+            # if i % 15 == 2:
+            #     self.events()
+            if i % 20 == 3:
+                self.claim_quest()
+            self.claim()
+            self.heal()
+            if self.has_speed and not self.need_rss:
+                self.kingroad_task()
+            elif not self.build():
+                self.recruit()
+                self.to_map()
+                if self.free_marches() != 0 and self.is_enough_troops and not self.get_elite_mine():
+                    self.get_std_mine()
+                while self.free_marches() >= 1 and self.is_enough_troops:
+                    self.get_std_mine()
+                print("don't know what to do in this self.")
+                break
+            print("made some task")
