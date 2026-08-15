@@ -31,7 +31,7 @@ from src.objects import (
 from src.paths import FARMS_SHEET_PATH
 from src.status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
 from src.worksheet import save_workbook, get_column
-from src.utils import object_from_str, log_raise
+from src.utils import log_raise
 
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)

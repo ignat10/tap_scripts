@@ -11,3 +11,6 @@ __pycache__/
 !data/samples/**
 
 .env
+
+/data/castles.db
+/data/instances.json

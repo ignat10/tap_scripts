@@ -1,9 +1,10 @@
-from screen_objects import get_regions
+from screen_objects import device_config, get_regions
 
-from src.device import config
 from src.paths import REGIONS_DIR
 
-config()
+
+device_config()
+
 regions = get_regions(REGIONS_DIR)
 
 while key := input("enter region name: "):

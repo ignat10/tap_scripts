@@ -1,5 +1,6 @@
-from screen_objects import screenshot
-from src.device import config
+from screen_objects import device_config, screenshot
 
-config()
+
+device_config()
+
 screenshot()

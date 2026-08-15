@@ -1,10 +1,11 @@
-from screen_objects import tap_center, Direction, SwipeSpeed, back, reset_screen
+from screen_objects import device_config, Direction, SwipeSpeed, ScreenObject, tap_center, back, reset_screen
 
-from src.device import config
-from src.utils import object_from_str
+from src.objects import objects
 
-config()
-obj = None
+
+device_config()
+
+obj: ScreenObject | None = None
 
 while command := input("Enter command: "):
     match command:
@@ -59,6 +60,6 @@ while command := input("Enter command: "):
             back()
 
         case o:
-            obj = object_from_str(o)
+            obj = objects[o]
 
     reset_screen()

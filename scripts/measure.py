@@ -1,11 +1,14 @@
 from json import load
 from time import perf_counter
 
-from src.device import config
+from screen_objects import device_config
+
 from src.objects import objects
 
-config()
-objects.values().__iter__().__next__().exists()
+
+device_config()
+
+objects.values().__iter__().__next__().exists() # screencap
 
 with open("data/objects.json") as f:
     data = load(f)

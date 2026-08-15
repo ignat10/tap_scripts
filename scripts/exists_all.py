@@ -1,7 +1,9 @@
-from src.device import config
+from screen_objects import device_config
+
 from src.objects import objects
 
-config()
+
+device_config()
 
 existing_objects = {
     name
