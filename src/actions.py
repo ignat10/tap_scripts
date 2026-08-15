@@ -1,7 +1,7 @@
 from datetime import timedelta
 from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
-from random import randrange
+from random import randrange, choice
 from itertools import chain
 from typing import cast
 
@@ -42,7 +42,6 @@ def restart_app():
     close_app()
     sleep(3)
     start_app()
-    Castle.load()
 
 def shake() -> None:
     send("f9")
@@ -209,8 +208,10 @@ class Castle:
         sleep(1)
         self.close_bella()
         objects['kingroad'].force_waitap(20)
+        sleep(1)
         back()
         self.bind_account()
+        self.claim_mail()
         self.change_name()
         print(f"account created, bound, named, upgraded to castle level {self.lv}")
 
@@ -220,7 +221,8 @@ class Castle:
         if not objects['level'].waitap(2):
             objects['hand'].tap()
         if not objects['challenge'].waitap(3):
-            objects['bright_challenge'].force_waitap()
+            if not objects['bright_challenge'].tap():
+                cls._challenge()
         if objects['heroic_evoluation_blue'].waitap(1):
             objects['evolve'].waitap(3)
             back()
@@ -228,19 +230,14 @@ class Castle:
 
     @staticmethod
     def kill_monsters() -> None:
-        def bonus_or(direction: Direction):
+        directions = (Direction.Up, Direction.Down, Direction.Right, Direction.Left)
+        while not (objects['quest_complete'].tap() or objects['quit'].tap()):
             if objects['blue_bonus'].tap():
-                sleep(0.8)
+                objects['confirm_bonus'].wait(3)
             if objects['confirm_bonus'].tap():
                 sleep(0.8)
-            swipe_center(direction, SwipeSpeed.Slow, 4)
-            reset_screen()
-        while not (objects['quest_complete'].tap() or objects['quit'].tap()):
-            bonus_or(Direction.Right)
-            bonus_or(Direction.Up)
-            bonus_or(Direction.Left)
-            bonus_or(Direction.Down)
-            reset_screen()
+            else:
+                swipe_center(choice(directions), SwipeSpeed.Slow, 4)
         sleep(1)
 
     def change_name(self) -> None:
@@ -248,6 +245,7 @@ class Castle:
         if objects['x_news'].waitap(1.3):
             sleep(1)
         objects['change_name'].force_waitap(4)
+        sleep(0.6)
         objects['2-16_characters'].force_waitap(5)
         sleep(0.8)
         write(self.name)
@@ -278,10 +276,9 @@ class Castle:
         objects['lord_info'].force_waitap(5)
         objects['check_details'].force_waitap(5)
         sleep(1)
-        for i in reversed(range(4)):
-            if object_from_str(f'march_limit_{i}').exists():
-                self.marches = i
-                save_workbook()
+        for limit, obj in march_limits.items():
+            if obj.exists():
+                self.marches = limit
                 break
         else:
             log_raise("No march num found in march_limit.")
@@ -291,39 +288,37 @@ class Castle:
         sleep(0.2)
 
     def bind_account(self):
+        if self.account is not None:
+            return
         gmail = self.google
         assert gmail is not None, f"google not set for {self.name}. Please set it manually in {FARMS_SHEET_PATH}."
-        while True:
-            object_from_str(self.name).force_tap()
-            objects['account'].force_waitap(3)
+        objects[self.name].force_tap()
+        objects['account'].force_waitap(3)
+        if not objects['undo_bind'].exists():
             objects['bind'].force_waitap(3)
-            while not objects['gmail'].wait(15):
-                objects['bind'].tap()
-            objects['gmail'].force_tap_nth(gmail)
-            if objects['undo_bind'].wait(3):
-                break
-            restart_app()
-            self.close_ad()
-        account_number = get_column("google").count(gmail) - 1 # self account
-        print(f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}")
-        self.account = account_number
-        back()
-        back()
-        sleep(0.7)
+            objects['gmail'].wait(15)
+            objects['gmail'].tap_nth(gmail)
+        if objects['undo_bind'].wait(5):
+            account_number = get_column("google").count(gmail) - 1 # self account
+            print(f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}")
+            self.account = account_number
+        self.close_ad()
 
     def kingroad_task(self) -> None:
         self.kingroad_claim()
+        print("doing kingroad task")
         if not objects['kingroad'].tap():
             objects['hand'].tap()
         sleep(1)
         upgrade = objects['start_upgrading'].exists()
+        if upgrade:
+            print("kingroad task start upgrading")
         if objects['kingroad_go'].waitap(8):
             sleep(0.5)
             self.close_bella()
             if objects['loading'].exists():
                 objects['book'].wait()
             while objects['hand'].waitap(1) or objects['map_hand'].tap():
-                print("tapped hand")
                 if objects['heroic_evoluation_blue'].waitap(0.7):
                     objects['evolve'].waitap(5)
                 objects['go_blue'].tap()
@@ -353,12 +348,6 @@ class Castle:
                 back()
             else:
                 objects['apply'].tap_each()
-
-            if objects['bright_challenge'].exists():
-                self._challenge()
-                objects['man'].force_wait(20)
-            if objects['man'].exists():
-                self.kill_monsters()
 
             if objects['unlock'].tap():
                 print("beast unlocked")
@@ -427,6 +416,12 @@ class Castle:
                 objects['donate_blue'].spam_tap(4, 0.6)
                 objects['donate_confirm'].waitap(3)
 
+            elif objects['bright_challenge'].exists():
+                self._challenge()
+                objects['man'].force_wait(20)
+            if objects['man'].exists():
+                self.kill_monsters()
+
             self.speed_up()
             self.close_ad()
 
@@ -450,7 +445,9 @@ class Castle:
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
         gmail = self.google
+        account = self.account
         assert gmail is not None, f"called log_into_account for {self.name}, but google not set in {FARMS_SHEET_PATH}"
+        assert account is not None, f"called log_into_account for {self.name}, but account not set in {FARMS_SHEET_PATH} {self.account_cell.coordinate}"
         if not objects[self.name].exists():
             print(f"logging into {self.name}")
 
@@ -470,7 +467,7 @@ class Castle:
                     back()
                     continue
                 is_green = objects['green_castle'].exists()
-                objects["castle"].force_tap_nth(max(self.account - is_green, 0))
+                objects["castle"].force_tap_nth(max(account - is_green, 0))
                 objects["confirm"].waitap()
                 break
             print("logged in.")
@@ -479,9 +476,10 @@ class Castle:
         else:
             print(f"already logged into {self.name}")
 
-    @staticmethod
-    def load():
+    @classmethod
+    def load(cls):
         start = perf_counter()
+        print("loading")
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
             now = perf_counter()
@@ -489,9 +487,9 @@ class Castle:
                 print("loading timeout. restart app.")
                 restart_app()
                 start = perf_counter()
-            print("loading...")
             sleep(1)
         print("loaded.")
+        cls.close_ad()
 
     @classmethod
     def close_ad(cls) -> None:
@@ -504,7 +502,7 @@ class Castle:
                 print("closed bella. looking for hand.")
                 sleep(1)
                 while objects['hand'].waitap(1):
-                    sleep(0.5)
+                    objects['unlock'].waitap(0.6)
                 print("end hand.")
             objects['continue_game'].tap()
             objects['x'].tap()
@@ -525,6 +523,7 @@ class Castle:
                 break
             if objects['frozen_screen'].exists():
                 restart_app()
+                cls.load()
             else:
                 tap_center()
             objects['map'].wait(0.4)
@@ -565,9 +564,10 @@ class Castle:
             objects['mail'].waitap(3)
         cls.close_ad()
 
-    def claim(self) -> None:
+    @classmethod
+    def claim(cls) -> None:
         """claims recruited troops, gift, and RSS. from city"""
-        self.close_ad()
+        cls.close_ad()
         if objects['horse'].exists():
             print("claiming horses")
             objects['horse'].tap_each()
@@ -720,13 +720,13 @@ class Castle:
             case _:
                 print("researching resources technology.")
                 objects['resources'].force_waitap(3)
-                sleep(1)
+                sleep(2)
                 for techno in resources_technology:
-                    techno.waitap(3)
-                    if objects['research_blue'].wait(1.5):
-                        break
-                    else:
-                        back()
+                    if techno.tap():
+                        if objects['research_blue'].wait(1.5):
+                            break
+                        else:
+                            back()
 
         objects['research_blue'].waitap(1)
         back()
@@ -735,14 +735,14 @@ class Castle:
         sleep(0.3)
 
     @staticmethod
-    def forge():
+    def forge() -> None:
         print("forging")
         if objects['forge'].tap():
             sleep(0.5)
         max_item: ScreenObject | None = None
         max_num = 0
         for item in equipment:
-            item.tap()
+            item.force_tap()
             sleep(0.5)
             n = objects['forge_green'].count()
             if n >= max_num:
@@ -770,15 +770,15 @@ class Castle:
         elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap() or objects['hammer_use'].exists():
             if objects['confirm_rss'].waitap(2):
                 return True
-            if not (objects['hammer_use'] or objects['hammer_200'].tap()):
+            if not (objects['hammer_use'].tap() or objects['hammer_200'].tap()):
                 if objects['get_now'].exists():
                     sleep(0.5)
                     self.speed_up()
                 else:
-                    for name, obj in resources_need.items():
+                    for need_type, obj in resources_need.items():
                         if obj.exists():
-                            self.need_rss = MineType[name.upper()]
-                            print(f"Not enough {name}")
+                            self.need_rss = MineType[need_type]
+                            print(f"Not enough {need_type} to upgrade.")
                             break
             objects['upgrade_blue'].waitap(1) or objects['big_upgrade_blue'].tap()
         elif objects['go_upgrade'].tap() or objects['hand'].tap():
@@ -867,10 +867,13 @@ class Castle:
         if objects['search'].tap():
             objects['monster'].force_wait(10)
         if objects['monster'].tap():
+            sleep(0.6)
+        if objects['plus'].tap():
             objects['go'].force_wait(10)
-        if objects['go'].tap():
+        if objects['go'].spam_tap(5, 0.1):
             objects['arrow'].force_wait(10)
         objects['arrow'].spam_tap(2, 0.2)
+        start = perf_counter()
         while not objects['attack'].waitap(0.5):
             if objects['quick_search'].tap():
                 objects['map_hand'].force_waitap(3)
@@ -878,8 +881,11 @@ class Castle:
                 objects['arrow'].spam_tap(2, 0.5)
             else:
                 tap_center()
-        objects['set_out'].force_waitap(2)
-        if objects['use_stamina'].waitap(1  ):
+            if perf_counter() - start > 30:
+                self.close_ad()
+                return
+        objects['set_out'].waitap(2)
+        if objects['use_stamina'].waitap(1):
             objects['confirm_use_stamina'].force_waitap(3)
             back()
             objects['set_out'].force_waitap(3)
