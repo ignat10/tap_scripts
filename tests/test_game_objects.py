@@ -13,7 +13,7 @@ def literal_names() -> set[str]:
 
 @pytest.fixture
 def data_names() -> set[str]:
-    return set(objects)
+    return set(objects.keys())
 
 
 def test_data_names_contains_literal(

@@ -1,15 +1,13 @@
 from enum import Enum, auto
 
-from screen_objects import reset_screen
-
 from src.objects import objects
 
 
 class MineType(Enum):
-    IRON = auto()
-    STONE = auto()
-    WOOD = auto()
-    FOOD = auto()
+    IRON = objects['iron_type']
+    STONE = objects['stone_type']
+    WOOD = objects['wood_type']
+    FOOD = objects['food_type']
 
 
 class MapStatus(Enum):
@@ -31,7 +29,6 @@ class Status(Enum):
 
 
 def check_map_or_castle() -> Status:
-    reset_screen()
     if objects['book'].exists():
         return Status.OUTSIDE
 
@@ -47,7 +44,6 @@ def check_map_or_castle() -> Status:
 
 
 def check_castle_status() -> CastleStatus:
-    reset_screen()
     if objects['map'].exists():
         return CastleStatus.CLOSED_AD
 
@@ -62,7 +58,6 @@ def check_castle_status() -> CastleStatus:
 
 
 def check_map_status() -> MapStatus:
-    reset_screen()
     if not objects['book'].exists():
         return MapStatus.NOT_AT_MAP
 

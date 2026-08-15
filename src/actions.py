@@ -27,6 +27,7 @@ from src.objects import (
     resources_technology,
     castle_levels,
     resources_need,
+    march_limits,
 )
 from src.paths import FARMS_SHEET_PATH
 from src.status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, check_map_status
@@ -895,9 +896,8 @@ class Castle:
         need_level = reversed(range(MAX_MINE_LV))
         for _ in range(24):
             level, need_type = (next(need_level), self.need_rss) if self.need_rss is not None else next(self.mine_type)
-            type_name = need_type.name.lower()
-            print(f"searching mine. lv {level} {type_name}")
-            object_from_str(f"{type_name}_type").waitap()
+            print(f"searching mine. lv {level} {need_type.name.lower()}")
+            need_type.value.force_waitap(15)
             objects["plus"].spam_tap(5, 0)
             objects["minus"].spam_tap(MAX_MINE_LV - level, 0)
             objects["go"].spam_tap(4, 0.1)

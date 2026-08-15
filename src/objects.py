@@ -187,6 +187,7 @@ ScreenObjectNames = Literal[
     "kazuru_farm5",
     "kazuru_farm6",
     "new",
+    "zuchin",
     "zahino",
 
     "avatar",
@@ -276,8 +277,14 @@ castle_levels = {
     if name.startswith(f'castle_level_')
 }
 
-resources_need = {
+resources_need: dict[str, ScreenObject] = {
     name.removeprefix("need_"): obj
     for name, obj in objects.items()
     if name.startswith("need_")
+}
+
+march_limits: dict[int, ScreenObject] = {
+    int(name[12]): obj
+    for name, obj in objects.items()
+    if name.startswith("march_limit_")
 }
