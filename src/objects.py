@@ -155,7 +155,6 @@ ScreenObjectNames = Literal[
     "gather",
     "set_out",
 
-
     "lord_info",
 
     "check_details",
@@ -232,6 +231,7 @@ ScreenObjectNames = Literal[
     "confirm",
     "no",
     "frozen_screen",
+    "exit_game",
 
     "castle_level_3",
     "castle_level_4",
@@ -245,8 +245,6 @@ ScreenObjectNames = Literal[
     "castle_level_15",
     "castle_level_19",
 ]
-
-
 
 objects: dict[ScreenObjectNames, ScreenObject] = cast(
     dict[ScreenObjectNames, ScreenObject],

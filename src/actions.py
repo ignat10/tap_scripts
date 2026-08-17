@@ -453,6 +453,11 @@ class Castle:
             print(f"logging into {self.name}")
 
             while True:
+                sleep(1)
+                if objects['exit_game'].exists():
+                    print("invalid token.")
+                    restart_app()
+                    self.load()
                 if objects["avatar"].tap():
                     sleep(1)
                 if objects["account"].tap():
@@ -505,6 +510,9 @@ class Castle:
                 while objects['hand'].waitap(1):
                     objects['unlock'].waitap(0.6)
                 print("end hand.")
+            if objects['exit_game'].exists():
+                restart_app()
+                cls.load()
             objects['continue_game'].tap()
             objects['x'].tap()
             objects['x_new'].tap()
