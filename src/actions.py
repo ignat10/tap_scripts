@@ -916,6 +916,9 @@ class Castle:
     def get_std_mine(self) -> None:
         """Gets standard mine from the map."""
 
+        if self.free_marches() == 0:
+            return
+
         objects["search"].force_tap()
         need_level = reversed(range(MAX_MINE_LV))
         for _ in range(24):
