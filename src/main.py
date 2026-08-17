@@ -3,7 +3,7 @@ from json import load
 
 from screen_objects import start_app
 
-from src.castles import iter_castles
+from src.castles import iter_castles, Castle
 from src.device import launch_instance
 from src.paths import INSTANCES_PATH
 
@@ -20,13 +20,12 @@ def main():
         serials: dict[str, str] = load(file)
         serial = serials[instance_name]
     launch_instance(instance_name, serial)
+    start_app()
+    Castle.load()
 
-    castles = iter_castles()
     command = input("which script to run: farming or grow?: ")
 
-    for castle in castles:
-        start_app()
-        castle.load()
+    for castle in iter_castles():
         castle.__getattribute__(command)()
 
 
