@@ -12,6 +12,7 @@ def get_sheet() -> Worksheet:
     assert isinstance(_sheet, Worksheet), "No active sheet in workbook"
     return _sheet
 
+
 def save_workbook() -> None:
     workbook.save(FARMS_SHEET_PATH)
 
@@ -26,7 +27,7 @@ def get_column(column: str) -> list:
 def get_row(row: str) -> list[Cell]:
     for row_values in get_sheet().iter_rows():
         if row_values[0].value == row:
-            return list(row_values) # type: ignore
+            return list(row_values)  # type: ignore
     raise ValueError(f"Row {row} not found in worksheet. possible row names: {get_sheet()['A']}")
 
 
