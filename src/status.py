@@ -22,27 +22,6 @@ class CastleStatus(Enum):
     NOT_IN_CASTLE = auto()
 
 
-class Status(Enum):
-    INSIDE = auto()
-    OUTSIDE = auto()
-    ELSE = auto()
-
-
-def check_map_or_castle() -> Status:
-    if objects['book'].exists():
-        return Status.OUTSIDE
-
-    if (
-            objects['lord'].exists()
-            or objects['claim_daily'].exists()
-            or objects['map'].exists()
-            or objects['blur'].exists()
-    ):
-        return Status.INSIDE
-
-    return Status.ELSE
-
-
 def check_castle_status() -> CastleStatus:
     if objects['map'].exists():
         return CastleStatus.CLOSED_AD

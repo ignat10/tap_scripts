@@ -30,8 +30,7 @@ from src.objects import (
     march_limits,
 )
 from src.paths import FARMS_SHEET_PATH
-from src.status import Status, CastleStatus, MapStatus, MineType, check_map_or_castle, check_castle_status, \
-    check_map_status
+from src.status import CastleStatus, MapStatus, MineType, check_castle_status, check_map_status
 from src.utils import log_raise
 from src.worksheet import save_workbook, get_column
 
@@ -940,27 +939,37 @@ class Castle:
 
     def get_elite_mine(self) -> bool:
         """Gets elite mine from the map."""
+        blue = next(self.elite_mines, None)
+        if blue is None:
+            return False
+
         print("Elite")
-        for e in self.elite_mines:
-            assert (status := check_map_or_castle()) == Status.OUTSIDE, f"unexpected status while getting elite mine: {status}"
-            objects["book"].tap()
-            if objects['x_news'].waitap(0.5):
-                sleep(0.5)
-            objects["elite_mines"].force_waitap(4)
-            objects['blue'].wait(2)
-            if objects["blue"].tap_nth(e):  # color of blue
-                if objects["gather"].waitap(2.5):
-                    objects["set_out"].force_waitap(5)  # regularly I should be there
-                    sleep(0.6)
-                    if check_map_status() == MapStatus.NOT_AT_MAP:
-                        back()
-                        sleep(1)
-                    return True
-            else:
-                print("some chemistry error")
-                back()
-                return False  # if there is no elites
-        raise RuntimeError("all elite mines are full.")
+        objects["book"].force_tap()
+
+        if objects['x_news'].waitap(0.5):
+            sleep(0.75)
+
+        objects["elite_mines"].force_waitap(4)
+        sleep(1)
+        objects['blue'].wait(3)
+
+        if not objects["blue"].tap_nth(blue):
+            back()
+            sleep(1)
+            return False
+
+        if not objects["gather"].waitap(3):
+            return self.get_elite_mine()
+
+        objects["set_out"].force_waitap(5)
+        sleep(1.5)
+
+        if check_map_status() == MapStatus.NOT_AT_MAP:
+            self.is_enough_troops = False
+            back()
+            sleep(1.5)
+
+        return True
 
     def farming(self):
         self.log_into_account()
@@ -1013,8 +1022,9 @@ class Castle:
             elif not self.build():
                 self.recruit()
                 self.to_map()
-                if self.free_marches() != 0 and self.is_enough_troops and not self.get_elite_mine():
-                    self.get_std_mine()
+                if self.free_marches() != 0 and self.is_enough_troops:
+                    if not self.get_elite_mine():
+                        self.get_std_mine()
                 while self.free_marches() >= 1 and self.is_enough_troops:
                     self.get_std_mine()
                 print("don't know what to do in this self.")
