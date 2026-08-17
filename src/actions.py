@@ -5,7 +5,7 @@ from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
 from typing import cast
 
-from keyboard import send, write
+from keyboard import write
 from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from screen_objects import (
@@ -20,6 +20,7 @@ from screen_objects import (
     ScreenObject,
 )
 
+from src.device import shake
 from src.objects import (
     objects,
     ScreenObjectNames,
@@ -43,10 +44,6 @@ def restart_app():
     sleep(3)
     start_app()
 
-def shake() -> None:
-    send("f9")
-    sleep(1.1)
-    send("f9")
 
 def cell_assert(cell: Cell, typ: type) -> None:
     val = cell.value

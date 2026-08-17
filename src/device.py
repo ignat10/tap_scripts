@@ -13,7 +13,9 @@ def _instances():
 
 
 def launch_instance(name: str, serial: str) -> None:
+    global instance_name
     assert name in _instances(), f"instance {name} not found in instances: {_instances()}"
+    instance_name = name
 
     run(['ldconsole', 'launch', '--name', name])
     sleep(1)
@@ -21,3 +23,11 @@ def launch_instance(name: str, serial: str) -> None:
         pass
     device_config(serial=serial, app="camel")
     print("loaded instance")
+
+
+instance_name: str | None = None
+
+
+def shake() -> None:
+    assert instance_name is not None, "Call launch_instance before shake"
+    run(['ldconsole', 'action', '--name', instance_name, '--key call.shake', '--value null'])
