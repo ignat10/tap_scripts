@@ -819,6 +819,19 @@ class Castle:
         else:
             return False
 
+    def claim_recruits(self) -> None:
+        print("claiming recruits")
+        objects['tasks'].tap()
+        objects['recruit_task'].wait(5)
+        for i in range(objects['recruit_task'].count()):
+            if objects['tasks'].tap():
+                sleep(1)
+            objects['recruit_task'].tap_nth(i)
+            sleep(1)
+            objects['hand'].force_waitap(4)
+            objects['speed_up'].wait(3)
+            self.speed_up()
+
     def recruit(self) -> None:
         """recruits horses. from the city."""
         print("recruiting")
@@ -1005,6 +1018,8 @@ class Castle:
                 self.claim_rss()
             if i % 40 == 0:
                 self.upgrade_lord_skills()
+            if i % 15 == 0:
+                self.claim_recruits()
             if i % 5 == 1:
                 self.kill_monster()
                 self.close_ad()
