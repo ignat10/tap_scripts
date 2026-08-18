@@ -123,6 +123,7 @@ ScreenObjectNames = Literal[
 
     "mail",
     "mail_reward",
+    "delete_mail",
     "read_claim_all",
     "confirm_read_all",
 

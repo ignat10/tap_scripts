@@ -556,7 +556,8 @@ class Castle:
 
     @classmethod
     def claim_mail(cls) -> None:
-        objects['mail'].tap()
+        objects['mail'].force_tap()
+        objects['delete_mail'].waitap(3)
         while objects['mail_reward'].waitap(1):
             objects['read_claim_all'].force_waitap(5)
             objects['confirm_read_all'].force_waitap(5)
