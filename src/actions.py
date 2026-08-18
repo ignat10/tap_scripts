@@ -264,7 +264,7 @@ class Castle:
         for level, obj in castle_levels.items():
             if obj.exists():
                 self.lv = level
-                print(f"saved self level {level}")
+                print(f"saved {self.name} level {level}")
                 back()
                 sleep(0.3)
                 return
@@ -491,6 +491,8 @@ class Castle:
                 restart_app()
                 start = perf_counter()
             sleep(1.5)
+        sleep(3)
+        reset_screen()
         print("loaded.")
         cls.close_ad()
 
@@ -609,25 +611,20 @@ class Castle:
             back()
             sleep(0.8)
 
-    @staticmethod
-    def upgrade_lord_skills():
+    @classmethod
+    def upgrade_lord_skills(cls) -> None:
         objects['lord_info'].tap()
-        objects['lord_skills'].force_waitap(3)
-        objects['development_skills'].force_waitap(3)
+        objects['lord_skills'].force_waitap(5)
+        objects['development_skills'].force_waitap(5)
         sleep(0.5)
         while not objects['skill_points_0'].exists():
             if objects['upgrade_to_max'].exists():
-                back()
-                sleep(0.5)
                 break
             while not objects['lord_skill'].waitap(1):
                 swipe_center(Direction.Up, SwipeSpeed.Fast, 0.4)
                 sleep(1.5)
             objects['upgrade_to_max'].force_waitap(3)
-        back()
-        sleep(0.5)
-        back()
-        sleep(0.3)
+        cls.close_ad()
 
     @staticmethod
     def use_lord_skills() -> None:
@@ -869,16 +866,22 @@ class Castle:
                 break
             else:
                 cls.close_ad()
+        sleep(1)
+        reset_screen()
         print("outside.")
 
     def free_marches(self) -> int:
         """get number of available marches of current castle"""
+        if check_map_status() == MapStatus.NOT_AT_MAP:
+            log_raise("tried to check free marches while not at map")
         limit = self.marches
         if objects['more_marches'].tap():
-            sleep(0.45)
+            sleep(1)
         busy = objects['withdraw'].count() + objects['speed_up_march'].count()
-        print(f"free marches: {limit - busy}")
-        return limit - busy
+        free = limit - busy
+        print(f"{busy} marches is busy. free marches: {free}")
+        assert 0 <= free <= limit
+        return free
 
     def kill_monster(self) -> None:
         if not self.stamina:
@@ -890,9 +893,9 @@ class Castle:
             sleep(0.9)
         if objects['plus'].tap():
             objects['go'].force_wait(10)
-        if objects['go'].spam_tap(5, 0.1):
-            objects['arrow'].force_wait(10)
-        objects['arrow'].spam_tap(2, 0.2)
+        objects['go'].spam_tap(5, 0.1)
+        if objects['arrow'].wait(2):
+            objects['arrow'].force_spam_tap(2, 0.2)
         start = perf_counter()
         while not objects['attack'].waitap(0.5):
             if objects['quick_search'].tap():
