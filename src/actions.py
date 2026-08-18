@@ -299,126 +299,130 @@ class Castle:
             self.account = account_number
         self.close_ad()
 
-    def kingroad_task(self) -> None:
+    def kingroad_task(self) -> bool:
         self.kingroad_claim()
         print("doing kingroad task")
-        if not objects['kingroad'].tap():
-            objects['hand'].tap()
-        sleep(1.5)
+        if not (objects['kingroad'].tap() or objects['hand'].tap()):
+            return False
+        if not objects['kingroad_go'].wait(3):
+            self.close_ad()
+            return self.kingroad_task()
         upgrade = objects['start_upgrading'].exists()
         if upgrade:
             print("kingroad task start upgrading")
-        if objects['kingroad_go'].waitap(8):
+        objects['kingroad_go'].force_waitap(8)
+        sleep(0.8)
+        self.close_bella()
+        if objects['loading'].exists():
+            objects['book'].wait()
+        while objects['hand'].waitap(1.7) or objects['map_hand'].tap():
+            if objects['heroic_evoluation_blue'].waitap(0.7):
+                objects['evolve'].waitap(5)
+            objects['go_blue'].tap()
+            objects['free'].tap()
+            if objects['kingroad_go'].tap():
+                print("tapped kingroad go inside hand loop")
+            sleep(0.4)
+
+        print("no more hands")
+        reset_screen()
+        if objects['arrow'].exists():
+            self.kill_monster()
+
+        elif objects['check'].exists():
+            print("gathering")
+            objects['gather'].waitap(10)
+            sleep(1.5)
+            objects['gather'].waitap(4)
+            objects['set_out'].waitap(5)
+            back()
+
+        elif objects['alliance_bonuses'].exists():
+            print("getting into alliance")
+            back()
+            sleep(1.5)
+
+        if objects['join'].tap():
+            back()
+        else:
+            objects['apply'].tap_each()
+
+        if objects['unlock'].tap():
+            print("beast unlocked")
+            sleep(20)
+
+        elif objects['unlock_land'].tap():
+            print("unlocked land")
             sleep(0.8)
-            self.close_bella()
-            if objects['loading'].exists():
-                objects['book'].wait()
-            while objects['hand'].waitap(1) or objects['map_hand'].tap():
-                if objects['heroic_evoluation_blue'].waitap(0.7):
-                    objects['evolve'].waitap(5)
-                objects['go_blue'].tap()
-                objects['free'].tap()
-                if objects['kingroad_go'].tap():
-                    print("tapped kingroad go inside hand loop")
 
-            print("no more hands")
-            reset_screen()
-            if objects['arrow'].exists():
-                self.kill_monster()
-
-            elif objects['check'].exists():
-                print("gathering")
-                objects['gather'].waitap(10)
-                sleep(1.5)
-                objects['gather'].waitap(4)
-                objects['set_out'].waitap(5)
-                back()
-
-            elif objects['alliance_bonuses'].exists():
-                print("getting into alliance")
-                back()
-                sleep(1.5)
-
-            if objects['join'].tap():
-                back()
-            else:
-                objects['apply'].tap_each()
-
-            if objects['unlock'].tap():
-                print("beast unlocked")
-                sleep(20)
-
-            elif objects['unlock_land'].tap():
-                print("unlocked land")
-                sleep(0.8)
-
-            elif upgrade and objects['upgrade'].tap():
-                self._build_need()
-
-            elif objects['forge'].exists():
-                self.forge()
-
-            elif objects['go_research'].tap():
-                if objects['horseshoes'].waitap(2):
-                    sleep(0.8)
-                    objects['research_blue'].waitap(2)
-
-            elif objects['research'].exists():
-                if not self.speed_up():
-                    self.research()
-
-            elif objects['recruit'].tap():
-                print("recruiting")
-                objects['recruit_blue'].wait(2)
-            objects['recruit_blue'].waitap(2)
-
-            if objects['upgrade'].tap():
-                print("upgrading")
-                sleep(1.05)
+        elif upgrade and objects['upgrade'].tap():
             self._build_need()
 
-            if objects['fortify'].tap():
-                objects['one-tap_upgrade'].waitap(2)
-                objects['use_all'].waitap(3)
+        elif objects['forge'].exists():
+            self.forge()
 
-            if objects['sell'].tap():
-                print("shop")
-                sleep(1.5)
-                objects['shell'].tap_each()
-                objects['buy'].waitap(2)
-                for i in range(objects['shell'].count()):
-                    objects['shell'].wait()
-                    objects['shell'].tap_nth(i)
-                    if objects['confirm_shell'].waitap(1):
-                        break
-                back()
+        elif objects['go_research'].tap():
+            if objects['horseshoes'].waitap(2):
+                sleep(0.8)
+                objects['research_blue'].waitap(2)
 
-            if not objects['green'].tap():
-                if objects['switch_level'].tap():
-                    for _ in range(4):
-                        objects['green'].force_tap_nth(randrange(15))
+        elif objects['research'].exists():
+            if not self.speed_up():
+                self.research()
 
-            if objects['stragglers'].tap():
-                sleep(1.5)
-                print("killing stragglers")
-                self.close_bella()
-                objects['suppress'].force_waitap(10)
-                objects['set_out'].force_waitap(10)
-                self.close_ad()
+        elif objects['recruit'].tap():
+            print("recruiting")
+            objects['recruit_blue'].wait(2)
+        objects['recruit_blue'].waitap(2)
 
-            if objects['alliance_donate'].tap():
-                sleep(1.5)
-                objects['donate_blue'].spam_tap(4, 0.6)
-                objects['donate_confirm'].waitap(3)
+        if objects['upgrade'].tap():
+            print("upgrading")
+            sleep(1.05)
+        self._build_need()
 
-            elif objects['bright_challenge'].exists():
-                self._challenge()
-                objects['man'].force_wait(20)
-            if objects['man'].exists():
-                self.kill_monsters()
+        if objects['fortify'].tap():
+            objects['one-tap_upgrade'].waitap(2)
+            objects['use_all'].waitap(3)
 
-            self.speed_up()
+        if objects['sell'].tap():
+            print("shop")
+            sleep(1.5)
+            objects['shell'].tap_each()
+            objects['buy'].waitap(2)
+            for i in range(objects['shell'].count()):
+                objects['shell'].wait()
+                objects['shell'].tap_nth(i)
+                if objects['confirm_shell'].waitap(1):
+                    break
+            back()
+
+        if not objects['green'].tap():
+            if objects['switch_level'].tap():
+                for _ in range(4):
+                    objects['green'].force_tap_nth(randrange(15))
+
+        if objects['stragglers'].tap():
+            sleep(1.5)
+            print("killing stragglers")
+            self.close_bella()
+            objects['suppress'].force_waitap(10)
+            objects['set_out'].force_waitap(10)
             self.close_ad()
+
+        if objects['alliance_donate'].tap():
+            sleep(1.5)
+            objects['donate_blue'].spam_tap(4, 0.6)
+            objects['donate_confirm'].waitap(3)
+
+        elif objects['bright_challenge'].exists():
+            self._challenge()
+            objects['man'].force_wait(20)
+        if objects['man'].exists():
+            self.kill_monsters()
+
+        self.speed_up()
+        self.close_ad()
+        return True
 
     @classmethod
     def kingroad_claim(cls):
@@ -429,13 +433,13 @@ class Castle:
             sleep(3)
             back()
             sleep(0.45)
-            cls.close_ad()
         else:
             reset_screen()
             while objects['kingroad_claim'].waitap(0.7):
                 print("claimed kingroad task!")
                 sleep(1.5)
                 back()
+        cls.close_ad()
 
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
@@ -982,33 +986,10 @@ class Castle:
 
         return True
 
-    def farming(self):
-        self.log_into_account()
-        self.claim()
-        self.claim_rss()
-        self.heal()
-        self.use_lord_skills()
-        self.to_map()
-
-        for i in range(self.free_marches() - 1):  # - 1 for elite mine
-            if self.is_enough_troops:
-                self.get_std_mine()
-            else:
-                break
-        else:
-            if not self.get_elite_mine():
-                self.get_std_mine()
-
-            if self.free_marches() == 0:
-                self.is_enough_troops = True
-
-        if not self.is_enough_troops:
-            self.close_ad()
-            self.recruit()
-
     def grow(self):
         self.log_into_account()
-        for i in range(200):
+        i = 0
+        while self.kingroad_task():
             if i % 60 == 0:
                 self.claim_mail()
                 self.bind_account()
@@ -1021,7 +1002,7 @@ class Castle:
                 self.upgrade_lord_skills()
             if i % 15 == 0:
                 self.claim_recruits()
-            if i % 5 == 1:
+            if i % 10 == 1:
                 self.kill_monster()
                 self.close_ad()
             # if i % 15 == 2:
@@ -1030,16 +1011,19 @@ class Castle:
                 self.claim_quest()
             self.claim()
             self.heal()
-            if self.has_speed and not self.need_rss:
-                self.kingroad_task()
-            elif not self.build():
-                self.recruit()
-                self.to_map()
-                if self.free_marches() != 0 and self.is_enough_troops:
-                    if not self.get_elite_mine():
-                        self.get_std_mine()
-                while self.free_marches() >= 1 and self.is_enough_troops:
-                    self.get_std_mine()
-                print("don't know what to do in this self.")
-                break
             print("made some task")
+            i += 1
+
+        self.build()
+        self.to_map()
+        if self.free_marches() != 0:
+            if not self.get_elite_mine():
+                self.get_std_mine()
+        while self.free_marches() >= 1 and self.is_enough_troops:
+            self.get_std_mine()
+
+        if not self.is_enough_troops:
+            self.close_ad()
+            self.recruit()
+
+        print("don't know what to do in this castle.")

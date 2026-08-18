@@ -23,10 +23,8 @@ def main():
     start_app()
     Castle.load()
 
-    command = input("which script to run: farming or grow?: ")
-
     for castle in iter_castles():
-        castle.__getattribute__(command)()
+        castle.grow()
 
 
 if __name__ == "__main__":
