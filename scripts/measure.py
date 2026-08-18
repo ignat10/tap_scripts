@@ -8,7 +8,9 @@ from src.objects import objects
 
 device_config()
 
+screencap_timer = perf_counter()
 objects.values().__iter__().__next__().exists() # screencap
+screencap = perf_counter() - screencap_timer
 
 with open("data/objects.json") as f:
     data = load(f)
@@ -34,4 +36,4 @@ fixed_timer = not_fixed_timer = 0.0
 exists_all()
 load = fixed_load - fixed_timer + not_fixed_load - not_fixed_timer
 
-print(f"fixed took {fixed_timer}. not fixed: {not_fixed_timer}, load: {load}")
+print(f"fixed took {fixed_timer}. not fixed: {not_fixed_timer}, load: {load}, screencap: {screencap}")
