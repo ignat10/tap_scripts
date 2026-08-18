@@ -30,4 +30,4 @@ instance_name: str | None = None
 
 def shake() -> None:
     assert instance_name is not None, "Call launch_instance before shake"
-    run(['ldconsole', 'action', '--name', instance_name, '--key call.shake', '--value null'])
+    run(['ldconsole', 'action', '--name', instance_name, '--key', 'call.shake', '--value', 'null'])
