@@ -7,7 +7,7 @@ from src.worksheet import get_row, keys
 
 
 def iter_castles():
-    for row in range(10):
+    while True:
         name = get_available()
         row = get_row(name)
         castle = Castle(**dict(zip(keys, row)))

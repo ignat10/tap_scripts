@@ -991,8 +991,7 @@ class Castle:
 
     def grow(self):
         self.log_into_account()
-        i = 0
-        while self.kingroad_task():
+        for i in range(500):
             if i % 60 == 0:
                 self.claim_mail()
                 self.bind_account()
@@ -1015,7 +1014,8 @@ class Castle:
             self.claim()
             self.heal()
             print("made some task")
-            i += 1
+            if not self.kingroad_task():
+                break
 
         self.build()
         self.to_map()
