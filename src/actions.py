@@ -257,8 +257,10 @@ class Castle:
         print("name has been changed")
 
     def check_level(self) -> None:
-        objects['avatar'].tap()
-        objects['account'].force_wait(5)
+        objects['avatar'].force_tap()
+        if not objects['account'].wait(5):
+            self.close_ad()
+            self.check_level()
         reset_screen()
         sleep(3)
         for level, obj in castle_levels.items():
@@ -271,15 +273,17 @@ class Castle:
 
     def check_marches(self) -> None:
         objects['lord_info'].force_waitap(5)
-        objects['check_details'].force_waitap(5)
-        sleep(1.5)
+        if not objects['check_details'].waitap(5):
+            self.close_ad()
+            self.check_marches()
+            return
+        sleep(2)
         for limit, obj in march_limits.items():
             if obj.exists():
                 self.marches = limit
-                break
-        else:
-            log_raise("No march num found in march_limit.")
-        self.close_ad()
+                self.close_ad()
+                return
+        log_raise("No march num found in march_limit.")
 
     def bind_account(self):
         if self.account is not None:
@@ -301,8 +305,10 @@ class Castle:
     def kingroad_task(self) -> bool:
         self.kingroad_claim()
         print("doing kingroad task")
-        if not (objects['kingroad'].tap() or objects['hand'].tap()):
-            return False
+        if not (objects['kingroad'].tap() or objects['hand'].tap() or objects['kingroad_go'].exists()):
+            self.close_ad()
+            if not (objects['kingroad'].tap() or objects['hand'].tap()):
+                return False
         if not objects['kingroad_go'].wait(3):
             self.close_ad()
             return self.kingroad_task()
@@ -440,7 +446,6 @@ class Castle:
                 print("claimed kingroad task!")
                 sleep(1.5)
                 back()
-        cls.close_ad()
 
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
@@ -456,6 +461,7 @@ class Castle:
                     print("invalid token.")
                     restart_app()
                     self.load()
+                self.close_ad()
                 if objects["avatar"].tap():
                     objects['account'].wait(4)
                 if objects["account"].tap():
@@ -463,11 +469,9 @@ class Castle:
                 if objects["switch"].tap():
                     sleep(1.5)
                 if not (objects["login"].waitap(3) and objects['gmail'].wait(10)):
-                    back()
                     continue
                 objects["gmail"].tap_nth(gmail)
                 if not objects["acc_list"].wait(15):
-                    back()
                     continue
                 is_green = objects['green_castle'].exists()
                 objects["castle"].force_tap_nth(max(account - is_green, 0))
@@ -480,8 +484,10 @@ class Castle:
             print(f"already logged into {self.name}")
 
     @classmethod
-    def load(cls):
+    def load(cls) -> None:
         start = perf_counter()
+        if objects['avatar'].exists() or objects['map'].exists():
+            return
         print("loading")
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
@@ -489,7 +495,7 @@ class Castle:
             if now - start > 200:
                 print("loading timeout. restart app.")
                 restart_app()
-                start = perf_counter()
+                cls.load()
             sleep(1.5)
         sleep(3)
         reset_screen()
