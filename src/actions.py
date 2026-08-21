@@ -265,8 +265,7 @@ class Castle:
             if obj.exists():
                 self.lv = level
                 print(f"saved {self.name} level {level}")
-                back()
-                sleep(0.3)
+                self.close_ad()
                 return
         log_raise("No castle level found.")
 
@@ -315,14 +314,16 @@ class Castle:
         self.close_bella()
         if objects['loading'].exists():
             objects['book'].wait()
-        while objects['hand'].waitap(1.7) or objects['map_hand'].tap():
+
+        while objects['hand'].waitap(1.5) or objects['map_hand'].tap():
             if objects['heroic_evoluation_blue'].waitap(0.7):
                 objects['evolve'].waitap(5)
             objects['go_blue'].tap()
             objects['free'].tap()
             if objects['kingroad_go'].tap():
                 print("tapped kingroad go inside hand loop")
-            sleep(0.4)
+            sleep(1)
+            reset_screen()
 
         print("no more hands")
         reset_screen()
@@ -373,7 +374,7 @@ class Castle:
         elif objects['recruit'].tap():
             print("recruiting")
             objects['recruit_blue'].wait(2)
-        objects['recruit_blue'].waitap(2)
+        objects['recruit_blue'].tap()
 
         if objects['upgrade'].tap():
             print("upgrading")
@@ -428,7 +429,7 @@ class Castle:
     def kingroad_claim(cls):
         """claims completed kingroad tasks"""
         objects['kingroad'].tap()
-        if objects['kingroad_done'].waitap(1):
+        if objects['kingroad_done'].waitap(2):
             print("finished kingroad chapter!")
             sleep(3)
             back()
@@ -451,7 +452,6 @@ class Castle:
             print(f"logging into {self.name}")
 
             while True:
-                sleep(1)
                 if objects['exit_game'].exists():
                     print("invalid token.")
                     restart_app()
@@ -614,8 +614,8 @@ class Castle:
     @classmethod
     def upgrade_lord_skills(cls) -> None:
         objects['lord_info'].tap()
-        objects['lord_skills'].force_waitap(5)
-        objects['development_skills'].force_waitap(5)
+        objects['lord_skills'].force_waitap(10)
+        objects['development_skills'].force_waitap(10)
         sleep(0.5)
         while not objects['skill_points_0'].exists():
             if objects['upgrade_to_max'].exists():
@@ -939,7 +939,7 @@ class Castle:
                 case MapStatus.FOUND:
                     objects['gather'].force_tap()
                     objects["gather"].force_waitap(0.7)
-                    objects["set_out"].force_waitap(5)
+                    objects["set_out"].force_waitap(10)
                     sleep(1)
                     if check_map_status() == MapStatus.NOT_AT_MAP:
                         back()
@@ -976,7 +976,7 @@ class Castle:
             sleep(1)
             return False
 
-        if not objects["gather"].waitap(3):
+        if not objects["gather"].waitap(5):
             return self.get_elite_mine()
 
         objects["set_out"].force_waitap(5)
