@@ -539,10 +539,10 @@ class Castle:
                 cls.load()
             else:
                 tap_center()
-        print("ad closed.")
 
     @staticmethod
     def claim_rss():
+        print("shaking")
         shake()
         sleep(5)
 
@@ -687,15 +687,17 @@ class Castle:
         elif objects['speed_up'].tap() or objects['speed_up_blue'].tap() or objects['get_now'].tap():
             sleep(0.8)
             self.has_speed = False
+
         if objects['one-tap_speed_up'].tap() and objects["confirm_speed_up"].waitap(3):
             sleep(1.5)
             self.has_speed = True
             return True
-        else:
-            if not self.has_speed:
-                print(f"castle {self.name} has no more speed up.")
-            self.close_ad()
-            return False
+
+        if not self.has_speed:
+            print(f"castle {self.name} has no more speed up.")
+
+        self.close_ad()
+        return False
 
     def research(self) -> None:
         marches = self.marches
