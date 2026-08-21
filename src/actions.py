@@ -5,7 +5,6 @@ from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
 from typing import cast
 
-from keyboard import write
 from openpyxl.cell import Cell
 from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from screen_objects import (
@@ -15,6 +14,7 @@ from screen_objects import (
     start_app,
     close_app,
     reset_screen,
+    write,
     SwipeSpeed,
     Direction,
     ScreenObject,
