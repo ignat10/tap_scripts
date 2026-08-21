@@ -321,7 +321,7 @@ class Castle:
         if objects['loading'].exists():
             objects['book'].wait()
 
-        while objects['hand'].waitap(1.5) or objects['map_hand'].tap():
+        while objects['hand'].waitap(1.5):
             if objects['heroic_evoluation_blue'].waitap(0.7):
                 objects['evolve'].waitap(5)
             objects['go_blue'].tap()
@@ -331,8 +331,10 @@ class Castle:
             sleep(1)
             reset_screen()
 
+        while objects['map_hand'].waitap(1):
+            objects['arrow'].waitap(1)
         print("no more hands")
-        reset_screen()
+
         if objects['arrow'].exists():
             self.kill_monster()
 
@@ -899,7 +901,7 @@ class Castle:
         if objects['search'].tap():
             objects['monster'].force_wait(10)
         if objects['monster'].tap():
-            sleep(0.9)
+            objects['plus'].force_wait(10)
         if objects['plus'].tap():
             objects['go'].force_wait(10)
         objects['go'].spam_tap(5, 0.1)
