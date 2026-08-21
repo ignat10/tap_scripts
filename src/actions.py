@@ -314,7 +314,7 @@ class Castle:
             return self.kingroad_task()
         upgrade = objects['start_upgrading'].exists()
         if upgrade:
-            print("kingroad task start upgrading")
+            print("start upgrading task")
         objects['kingroad_go'].force_waitap(8)
         sleep(0.8)
         self.close_bella()
@@ -363,6 +363,7 @@ class Castle:
             sleep(0.8)
 
         elif upgrade and objects['upgrade'].tap():
+            sleep(1)
             self._build_need()
 
         elif objects['forge'].exists():
