@@ -12,5 +12,4 @@ __pycache__/
 
 .env
 
-/data/castles.db
 /data/instances.json

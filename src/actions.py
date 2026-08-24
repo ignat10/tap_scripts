@@ -5,8 +5,6 @@ from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
 from typing import cast
 
-from openpyxl.cell import Cell
-from openpyxl.worksheet.formula import DataTableFormula, ArrayFormula
 from screen_objects import (
     back,
     tap_center,
@@ -21,6 +19,7 @@ from screen_objects import (
 )
 
 from src.device import shake
+from src.castles import get_column, update_castle
 from src.objects import (
     objects,
     ScreenObjectNames,
@@ -30,10 +29,9 @@ from src.objects import (
     resources_need,
     march_limits,
 )
-from src.paths import FARMS_SHEET_PATH
+from src.paths import CASTLES_DB_PATH
 from src.status import CastleStatus, MapStatus, MineType, check_castle_status, check_map_status
 from src.utils import log_raise
-from src.worksheet import save_workbook, get_column
 
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
@@ -45,35 +43,36 @@ def restart_app():
     start_app()
 
 
-def cell_assert(cell: Cell, typ: type) -> None:
-    val = cell.value
+def value_assert(name: str, value: object, typ: type) -> None:
+    val = value
     assert isinstance(val,
-                      typ), f"cell at {FARMS_SHEET_PATH} {cell.coordinate} should be {typ.__name__}, got '{val.__repr__() if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'"  # type: ignore
+                      typ), f"{name} in {CASTLES_DB_PATH} should be {typ.__name__}, got '{val.__repr__() if not isinstance(val, (timedelta, DataTableFormula, ArrayFormula)) else "value doesn't impl repr method"}'"  # type: ignore
 
 
 class Castle:
-    def __init__(self, name: Cell, lv: Cell, google: Cell, account: Cell, alliance: Cell, marches_limit: Cell):
-        if lv.value is None:
-            lv.value = 1
-            save_workbook()
+    def __init__(self, name: str, lv: int | None, google: int | None, account: int | None,
+                 alliance: str | None, marches_limit: int | None):
+        if lv is None:
+            lv = 1
+            update_castle(name, "lv", lv)
 
-        cell_assert(name, str)
-        cell_assert(lv, SupportsInt)
-        if google.value is not None:
-            cell_assert(google, SupportsInt)
-        if account.value is not None:
-            cell_assert(account, SupportsInt)
-        if alliance.value is not None:
-            cell_assert(alliance, str)
-        if marches_limit.value is not None:
-            cell_assert(marches_limit, SupportsInt)
+        value_assert("name", name, str)
+        value_assert("lv", lv, SupportsInt)
+        if google is not None:
+            value_assert("google", google, SupportsInt)
+        if account is not None:
+            value_assert("account", account, SupportsInt)
+        if alliance is not None:
+            value_assert("alliance", alliance, str)
+        if marches_limit is not None:
+            value_assert("marches_limit", marches_limit, SupportsInt)
 
-        self.name_cell = name
-        self.google_cell = google
-        self.account_cell = account
-        self.lv_cell = lv
-        self.alliance_cell = alliance
-        self.max_marches_cell = marches_limit
+        self._name = name
+        self._google = google
+        self._account = account
+        self._lv = int(lv)
+        self._alliance = alliance
+        self._max_marches = marches_limit
 
         self.has_speed = True
         self.need_rss: MineType | None = None
@@ -86,73 +85,66 @@ class Castle:
                 mine == MineType.IRON and self.lv >= 15)
         )
         self.is_enough_troops = True
-        self.elite_mines = self.alliances_elite_mines.setdefault(cast(str, alliance.value), iter(ELITE_MINES))
+        self.elite_mines = self.alliances_elite_mines.setdefault(cast(str, alliance), iter(ELITE_MINES))
 
     alliances_elite_mines: dict[str, Iterator[int]] = {}
 
     @property
     def name(self) -> ScreenObjectNames:
-        val = self.name_cell.value
-        return cast(ScreenObjectNames, val)
-
-    @name.setter
-    def name(self, value: str):
-        self.name_cell.value = value
-        save_workbook()
+        return cast(ScreenObjectNames, self._name)
 
     @property
     def lv(self) -> int:
-        return int(cast(SupportsInt, self.lv_cell.value))
+        return self._lv
 
     @lv.setter
     def lv(self, value: int):
-        self.lv_cell.value = value
-        save_workbook()
+        update_castle(self._name, "lv", value)
+        self._lv = value
 
     @property
     def google(self) -> int | None:
-        return cast(int | None, self.google_cell.value)
+        return self._google
 
     @google.setter
     def google(self, value: int):
-        self.google_cell.value = value
-        save_workbook()
+        update_castle(self._name, "google", value)
+        self._google = value
 
     @property
     def account(self) -> int | None:
-        return int(val) if isinstance(val := self.account_cell.value, SupportsInt) else None
+        return int(self._account) if isinstance(self._account, SupportsInt) else None
 
     @account.setter
     def account(self, value: int):
-        self.account_cell.value = value
-        save_workbook()
+        update_castle(self._name, "account", value)
+        self._account = value
 
     @property
     def alliance(self) -> str:
-        return cast(str, self.alliance_cell.value)
+        return cast(str, self._alliance)
 
     @alliance.setter
     def alliance(self, value: str):
-        self.alliance_cell.value = value
-        save_workbook()
+        update_castle(self._name, "alliance", value)
+        self._alliance = value
 
     @property
     def marches(self) -> int:
         """gets available marches value. From 1 to 4"""
-        cell = self.max_marches_cell
-        val = cell.value
+        val = self._max_marches
         if val is None:
             self.check_marches()
-            val = cell.value
+            val = self._max_marches
         assert isinstance(val, int)
         assert 0 <= val <= 3, f"additional marches value must be in range 0..3, got {val}"
         return val + 1
 
     @marches.setter
     def marches(self, value: int):
-        """sets marches value and saves to .xlsx"""
-        self.max_marches_cell.value = value
-        save_workbook()
+        """Set the marches value and persist it in SQLite."""
+        update_castle(self._name, "marches_limit", value)
+        self._max_marches = value
 
     @staticmethod
     def close_bella() -> bool:
@@ -290,7 +282,7 @@ class Castle:
         if self.account is not None:
             return
         gmail = self.google
-        assert gmail is not None, f"google not set for {self.name}. Please set it manually in {FARMS_SHEET_PATH}."
+        assert gmail is not None, f"google not set for {self.name}. Please set it in {CASTLES_DB_PATH}."
         objects[self.name].force_tap()
         objects['account'].force_waitap(3)
         if not objects['undo_bind'].exists():
@@ -455,8 +447,8 @@ class Castle:
         """logs into current account. from city or map."""
         gmail = self.google
         account = self.account
-        assert gmail is not None, f"called log_into_account for {self.name}, but google not set in {FARMS_SHEET_PATH}"
-        assert account is not None, f"called log_into_account for {self.name}, but account not set in {FARMS_SHEET_PATH} {self.account_cell.coordinate}"
+        assert gmail is not None, f"called log_into_account for {self.name}, but google not set in {CASTLES_DB_PATH}"
+        assert account is not None, f"called log_into_account for {self.name}, but account not set in {CASTLES_DB_PATH}"
         if not objects[self.name].exists():
             print(f"logging into {self.name}")
 

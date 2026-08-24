@@ -3,7 +3,8 @@ from json import load
 
 from screen_objects import start_app
 
-from src.castles import iter_castles, Castle
+from src.castles import iter_castles
+from src.actions import Castle
 from src.device import launch_instance
 from src.paths import INSTANCES_PATH
 
