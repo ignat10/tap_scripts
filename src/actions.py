@@ -261,6 +261,7 @@ class Castle:
         if not objects['account'].wait(5):
             self.close_ad()
             self.check_level()
+            return
         reset_screen()
         sleep(3)
         for level, obj in castle_levels.items():
@@ -573,12 +574,13 @@ class Castle:
     def claim_mail(cls) -> None:
         objects['mail'].force_tap()
         objects['delete_mail'].waitap(3)
-        while objects['mail_reward'].waitap(1):
+        if objects['mail_reward'].waitap(1):
             objects['read_claim_all'].force_waitap(5)
             objects['confirm_read_all'].force_waitap(5)
             cls.close_ad()
-            objects['mail'].waitap(3)
-        cls.close_ad()
+            cls.claim_mail()
+        else:
+            cls.close_ad()
 
     @classmethod
     def claim(cls) -> None:
@@ -829,18 +831,16 @@ class Castle:
         else:
             return False
 
-    def claim_recruits(self) -> None:
+    def claim_recruits(self, barrack: int=0) -> None:
         print("claiming recruits")
-        objects['tasks'].tap()
-        objects['recruit_task'].wait(5)
-        for i in range(objects['recruit_task'].count()):
-            if objects['tasks'].tap():
-                sleep(1)
-            objects['recruit_task'].tap_nth(i)
+        if objects['tasks'].tap() and objects['recruit_task'].wait(2) and objects['recruit_task'].tap_nth(barrack):
             sleep(1)
             objects['hand'].force_waitap(4)
-            objects['speed_up'].wait(3)
-            self.speed_up()
+            if objects['speed_up'].wait(3):
+                self.speed_up()
+            self.claim_recruits()
+        else:
+            self.close_ad()
 
     def recruit(self) -> None:
         """recruits horses. from the city."""
@@ -960,11 +960,15 @@ class Castle:
                     else:
                         print("mine taken.")
                         self.mine_type = chain([(level, need_type)], self.mine_type)
-                    return
+                    break
+                case MapStatus.NOT_FOUND:
+                    continue
                 case MapStatus.NOT_AT_MAP:
                     log_raise(f"Not at map when searching mine.")
         else:
             log_raise(f"cannot find standard mine. check screen.png")
+        sleep(1)
+        reset_screen()
 
     def get_elite_mine(self) -> bool:
         """Gets elite mine from the map."""
