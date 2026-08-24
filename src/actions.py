@@ -50,11 +50,8 @@ def value_assert(name: str, value: object, typ: type) -> None:
 
 
 class Castle:
-    def __init__(self, name: str, lv: int | None, google: int | None, account: int | None,
+    def __init__(self, name: str, lv: int, google: int | None, account: int | None,
                  alliance: str | None, marches_limit: int | None):
-        if lv is None:
-            lv = 1
-            update_castle(name, "lv", lv)
 
         value_assert("name", name, str)
         value_assert("lv", lv, SupportsInt)
@@ -70,7 +67,7 @@ class Castle:
         self._name = name
         self._google = google
         self._account = account
-        self._lv = int(lv)
+        self._lv = lv
         self._alliance = alliance
         self._max_marches = marches_limit
 

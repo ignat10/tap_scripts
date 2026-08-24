@@ -1,4 +1,4 @@
-from sqlite3 import Connection, Row, connect
+from sqlite3 import Connection, IntegrityError, Row, connect
 from typing import Any
 
 from src.paths import CASTLES_DB_PATH
@@ -43,6 +43,31 @@ def update_castle(name: str, column: str, value: Any) -> None:
         )
     if cursor.rowcount != 1:
         raise KeyError(f"unknown castle: {name}")
+
+
+def add_castle(name: str, google: int) -> None:
+    if not name:
+        raise ValueError("castle name cannot be empty")
+
+    try:
+        with _connect() as connection:
+            connection.execute(
+                "INSERT INTO castles (name, google, lv, is_busy) VALUES (?, ?, 1, 0)",
+                (name, google),
+            )
+    except IntegrityError as error:
+        raise ValueError(f"castle already exists: {name}") from error
+
+
+def remove_castle(name: str) -> None:
+    with _connect() as connection:
+        cursor = connection.execute(
+            "DELETE FROM castles WHERE name = ?",
+            (name,),
+        )
+
+        if cursor.rowcount != 1:
+            raise KeyError(f"unknown castle: {name}")
 
 
 def iter_castles():
