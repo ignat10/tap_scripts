@@ -90,3 +90,9 @@ def release(name: str) -> None:
 
     if cursor.rowcount == 0:
         raise KeyError(f"unknown castle: {name}")
+
+
+def release_all() -> None:
+    """Release every castle before starting a new group of workers."""
+    with _connect() as connection:
+        connection.execute("UPDATE castles SET is_busy = 0")
