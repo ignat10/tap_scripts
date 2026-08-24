@@ -138,7 +138,7 @@
   "castle_level_3": [
     null,
     null,
-    5
+    1
   ],
   "no_speed": [
     [
@@ -390,7 +390,7 @@
       361
     ],
     null,
-    5
+    1
   ],
   "map": [
     [
@@ -432,7 +432,7 @@
       360
     ],
     null,
-    2
+    1
   ],
   "suppress": [
     [
@@ -456,7 +456,7 @@
       352
     ],
     null,
-    5
+    1
   ],
   "monster": [
     null,
@@ -506,7 +506,7 @@
   "castle_level_8": [
     null,
     null,
-    2
+    1
   ],
   "select": [
     [
@@ -618,7 +618,7 @@
   "hand": [
     null,
     null,
-    20
+    23
   ],
   "alliance_bonuses": [
     [
@@ -644,7 +644,7 @@
   "castle_level_19": [
     null,
     null,
-    2
+    1
   ],
   "continue_game": [
     [
@@ -962,7 +962,7 @@
       358
     ],
     null,
-    2
+    1
   ],
   "forge_green": [
     null,
@@ -1274,7 +1274,7 @@
   "castle_level_4": [
     null,
     null,
-    5
+    1
   ],
   "castle_level_10": [
     [
@@ -1282,7 +1282,7 @@
       361
     ],
     null,
-    2
+    1
   ],
   "more_marches": [
     [
@@ -1409,7 +1409,7 @@
       360
     ],
     null,
-    5
+    1
   ],
   "speed_up_march": [
     null,
