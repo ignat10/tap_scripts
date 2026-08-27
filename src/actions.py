@@ -516,6 +516,7 @@ class Castle:
             objects['x_new'].tap()
             objects['x_news'].tap()
             objects['claim_daily'].tap()
+            objects['claim_temple'].tap()
             objects['check_beast'].tap()
             if check_castle_status() == CastleStatus.CLOSED_AD:
                 break

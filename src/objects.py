@@ -6,6 +6,7 @@ from src.paths import SAMPLES_DIR, REGIONS_DIR
 
 ScreenObjectNames = Literal[
     "claim_daily",
+    "claim_temple",
     "blur",
     "x",
     "x_news",
