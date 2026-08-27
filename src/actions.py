@@ -153,23 +153,30 @@ class Castle:
 
     def new_account(self) -> None:
         """creates new account, upgrades castle to level 4. from city or map."""
+        if self.account is not None:
+            return
         if objects['avatar'].tap():
-            objects['account'].waitap()
-            objects['new_game'].waitap()
-            objects['confirm'].waitap()
-            objects['realm'].waitap()
+            objects['account'].force_waitap()
+            objects['new_game'].force_waitap()
+            objects['confirm'].force_waitap()
+            objects['realm'].force_waitap()
             print("account created")
 
-        objects['man'].wait()
-        objects['man'].swipe(Direction.Up, SwipeSpeed.Slow, 1.5)
-        objects['man'].swipe(Direction.Right, SwipeSpeed.Slow, 0.6)
-        sleep(6)
-        objects['man'].swipe(Direction.Up, SwipeSpeed.Slow, 0.8)
-        objects['man'].swipe(Direction.Right, SwipeSpeed.Slow, 0.6)
+        objects['man'].force_wait(100)
+        swipe_center(Direction.Up, SwipeSpeed.Slow, 1.7)
+        swipe_center(Direction.Right, SwipeSpeed.Slow, 0.75)
+        sleep(15)
+        swipe_center(Direction.Up, SwipeSpeed.Fast, 0.9)
+        swipe_center(Direction.Right, SwipeSpeed.Fast, 0.8)
         self.kill_monsters()
         print("finished 0 level")
-        objects['bella'].force_wait(15)
+        objects['bella'].force_wait(30)
         self.close_bella()
+        if not objects['level'].wait(10):
+            restart_app()
+            self.load()
+            self.new_account()
+            return
         self._challenge()  # first level
         self.kill_monsters()
         print("finished 1st level")
@@ -192,7 +199,7 @@ class Castle:
         self.kill_monsters()
         print("finished 3rd level")
         objects['backhand'].force_waitap()
-        sleep(1.5)
+        objects['bella'].force_wait(20)
         self.close_bella()
         objects['kingroad'].force_waitap(20)
         sleep(1.5)
@@ -484,6 +491,8 @@ class Castle:
         print("loading")
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
+            if objects['man'].exists():
+                return
             now = perf_counter()
             if now - start > 200:
                 print("loading timeout. restart app.")
@@ -995,6 +1004,7 @@ class Castle:
         return True
 
     def grow(self):
+        self.new_account()
         self.log_into_account()
         for i in range(500):
             if i % 60 == 0:
