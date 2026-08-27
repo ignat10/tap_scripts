@@ -278,6 +278,7 @@ class Castle:
         for limit, obj in march_limits.items():
             if obj.exists():
                 self.marches = limit
+                print(f"saved {self.name} 1 + {limit} marches")
                 self.close_ad()
                 return
         log_raise("No march num found in march_limit.")
@@ -698,7 +699,7 @@ class Castle:
             return True
 
         if not self.has_speed:
-            print(f"castle {self.name} has no more speed up.")
+            print(f"{self.name} has no more speed up.")
 
         self.close_ad()
         return False
@@ -831,7 +832,7 @@ class Castle:
             return False
 
     def claim_recruits(self, barrack: int=0) -> None:
-        print("claiming recruits")
+        print("claiming recruits", end=" ")
         if objects['tasks'].tap() and objects['recruit_task'].wait(2) and objects['recruit_task'].tap_nth(barrack):
             sleep(1)
             objects['hand'].force_waitap(4)
@@ -839,11 +840,12 @@ class Castle:
                 self.speed_up()
             self.claim_recruits()
         else:
+            print("")
             self.close_ad()
 
     def recruit(self) -> None:
         """recruits horses. from the city."""
-        print("recruiting")
+        print("recruiting horses")
         objects['tasks'].tap()
         sleep(1.2)
         for i in range(objects['recruit_task'].count()):
@@ -869,7 +871,7 @@ class Castle:
     @classmethod
     def to_map(cls) -> None:
         """Goes to map from inside city"""
-        print("going outside...")
+        print("going outside...", end=" ")
         while not objects['book'].exists():
             if objects["map"].tap() and objects['loading'].wait(1):
                 objects['book'].wait()
@@ -889,7 +891,7 @@ class Castle:
             sleep(1)
         busy = objects['withdraw'].count() + objects['speed_up_march'].count()
         free = limit - busy
-        print(f"{busy} marches is busy. free marches: {free}")
+        print(f"available {free}/{limit} marches")
         assert 0 <= free <= limit
         return free
 
