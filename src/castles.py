@@ -70,6 +70,13 @@ def remove_castle(name: str) -> None:
             raise KeyError(f"unknown castle: {name}")
 
 
+def remove_all_castles() -> int:
+    """Delete every castle and return the number of deleted records."""
+    with _connect() as connection:
+        cursor = connection.execute("DELETE FROM castles")
+    return cursor.rowcount
+
+
 def iter_castles():
     # Imported locally because actions persists Castle properties through this module.
     from src.actions import Castle
