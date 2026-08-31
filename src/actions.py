@@ -37,6 +37,8 @@ from src.utils import log_raise
 MAX_MINE_LV = 6
 ELITE_MINES = range(10)
 
+directions = (Direction.Up, Direction.Down, Direction.Right, Direction.Left)
+
 
 def restart_app():
     close_app()
@@ -182,21 +184,23 @@ class Castle:
         print("finished 2nd level")
         objects['bella'].force_wait()
         self.close_bella()
-        objects['backhand'].force_waitap()
+        restart_app()
+        objects['bella'].force_wait(300)
+        self.close_bella()
         objects['first_castle'].force_waitap()
         objects['upgrade'].force_waitap()
         objects['upgrade_blue'].force_waitap()
         self.lv = 2
-        objects['bella'].force_wait(15)
+        objects['bella'].force_wait()
         self.close_bella()
         objects['new_monster'].force_waitap()
         self._challenge()
         self.kill_monsters()
         print("finished 3rd level")
         objects['backhand'].force_waitap()
-        objects['bella'].force_wait(20)
+        objects['bella'].force_wait()
         self.close_bella()
-        objects['kingroad'].force_waitap(20)
+        objects['kingroad'].force_waitap()
         sleep(1.5)
         back()
         self.bind_account()
@@ -206,10 +210,8 @@ class Castle:
 
     @classmethod
     def _challenge(cls) -> None:
-        print("challenging")
         for obj in bug_levels:
-            if obj.tap():
-                break
+            obj.tap()
         if not (objects['challenge'].waitap(3) or objects['bright_challenge'].tap()):
             cls._challenge()
             return
@@ -220,8 +222,8 @@ class Castle:
 
     @staticmethod
     def kill_monsters() -> None:
-        directions = (Direction.Up, Direction.Down, Direction.Right, Direction.Left)
-        while not (objects['quest_complete'].tap() or objects['quit'].tap()):
+        print("killing monsters")
+        while not (objects['quest_complete'].tap() or objects['quit'].tap() or objects['backhand'].exists()):
             if objects['blue_bonus'].tap():
                 objects['confirm_bonus'].wait(3)
             if objects['confirm_bonus'].tap():
@@ -283,13 +285,13 @@ class Castle:
         if self.account is not None:
             return
         gmail = self.google
-        objects[self.name].force_tap()
+        objects['avatar'].force_tap()
         objects['account'].force_waitap(3)
         if not objects['undo_bind'].exists():
             objects['bind'].force_waitap(3)
-            objects['gmail'].wait(15)
-            objects['gmail'].tap_nth(gmail)
-        if objects['undo_bind'].wait(5):
+            if objects['gmail'].wait(40):
+                objects['gmail'].force_tap_nth(gmail)
+        if objects['undo_bind'].wait(50):
             account_number = get_column("google").count(gmail) - 1  # self account
             print(f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}")
             self.account = account_number
