@@ -51,13 +51,12 @@ def value_assert(name: str, value: object, typ: type) -> None:
 
 
 class Castle:
-    def __init__(self, name: str, lv: int, google: int | None, account: int | None,
+    def __init__(self, name: str, lv: int, google: int, account: int | None,
                  alliance: str | None, marches_limit: int | None):
 
         value_assert("name", name, str)
         value_assert("lv", lv, SupportsInt)
-        if google is not None:
-            value_assert("google", google, SupportsInt)
+        value_assert("google", google, SupportsInt)
         if account is not None:
             value_assert("account", account, SupportsInt)
         if alliance is not None:
@@ -101,7 +100,7 @@ class Castle:
         self._lv = value
 
     @property
-    def google(self) -> int | None:
+    def google(self) -> int:
         return self._google
 
     @google.setter
@@ -284,7 +283,6 @@ class Castle:
         if self.account is not None:
             return
         gmail = self.google
-        assert gmail is not None, f"google not set for {self.name}. Please set it in {CASTLES_DB_PATH}."
         objects[self.name].force_tap()
         objects['account'].force_waitap(3)
         if not objects['undo_bind'].exists():
