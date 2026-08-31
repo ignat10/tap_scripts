@@ -1,9 +1,11 @@
-from screen_objects import device_config, get_regions
+from screen_objects import get_regions
 
+from src.device import launch_instance
+from src.main import parse_instance
 from src.paths import REGIONS_DIR
 
 
-device_config()
+launch_instance(parse_instance())
 
 regions = get_regions(REGIONS_DIR)
 

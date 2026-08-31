@@ -1,7 +1,10 @@
+from json import load
 from subprocess import run
 from time import sleep
 
 from screen_objects import device_config
+
+from src.paths import INSTANCES_PATH
 
 
 def _run_lines(command: list[str]) -> list[str]:
@@ -12,10 +15,15 @@ def _instances():
     return set(_run_lines(['ldconsole', 'list']))
 
 
-def launch_instance(name: str, serial: str) -> None:
+def launch_instance(name: str) -> None:
     global instance_name
     assert name in _instances(), f"instance {name} not found in instances: {_instances()}"
     instance_name = name
+
+    with open(INSTANCES_PATH) as file:
+        serials: dict[str, str] = load(file)
+        serial = serials.get(name)
+        assert serial is not None, f"instance name {name} not found in serials: {serials} from {INSTANCES_PATH}"
 
     run(['ldconsole', 'launch', '--name', name])
     sleep(1)

@@ -1,9 +1,9 @@
-from screen_objects import device_config
-
 from src.castles import iter_castles
+from src.device import launch_instance
+from src.main import parse_instance
 
 
-device_config()
+launch_instance(parse_instance())
 
 
 castle = iter_castles().__next__()

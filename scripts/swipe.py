@@ -1,7 +1,9 @@
-from screen_objects import device_config, swipe_center, SwipeSpeed, Direction
+from screen_objects import swipe_center, SwipeSpeed, Direction
 
+from src.device import launch_instance
+from src.main import parse_instance
 
-device_config()
+launch_instance(parse_instance())
 
 match input("swipe speed: "):
     case "slow":

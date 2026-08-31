@@ -1,6 +1,8 @@
-from screen_objects import device_config, screenshot
+from screen_objects import screenshot
 
+from src.device import launch_instance
+from src.main import parse_instance
 
-device_config()
+launch_instance(parse_instance())
 
 screenshot()

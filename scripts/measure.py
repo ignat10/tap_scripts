@@ -1,12 +1,12 @@
 from json import load
 from time import perf_counter
 
-from screen_objects import device_config
-
+from src.device import launch_instance
+from src.main import parse_instance
 from src.objects import objects
 
 
-device_config()
+launch_instance(parse_instance())
 
 screencap_timer = perf_counter()
 objects.values().__iter__().__next__().exists() # screencap
