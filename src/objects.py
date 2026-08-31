@@ -206,7 +206,9 @@ ScreenObjectNames = Literal[
     "quit",
     "quest_complete",
     "bella",
-    "level",
+    "bug_level_0",
+    "bug_level_1",
+    "bug_level_2",
     "challenge",
     "bright_challenge",
     "backhand",
@@ -252,6 +254,8 @@ objects: dict[ScreenObjectNames, ScreenObject] = cast(
     dict[ScreenObjectNames, ScreenObject],
     get_objects(SAMPLES_DIR, REGIONS_DIR)
 )
+
+bug_levels = set(obj for name, obj in objects.items() if name.startswith(f'bug_level_'))
 
 equipment = {
     objects['weapon'],

@@ -23,6 +23,7 @@ from src.castles import get_column, update_castle
 from src.objects import (
     objects,
     ScreenObjectNames,
+    bug_levels,
     equipment,
     resources_technology,
     castle_levels,
@@ -172,11 +173,6 @@ class Castle:
         print("finished 0 level")
         objects['bella'].force_wait(30)
         self.close_bella()
-        if not objects['level'].wait(10):
-            restart_app()
-            self.load()
-            self.new_account()
-            return
         self._challenge()  # first level
         self.kill_monsters()
         print("finished 1st level")
@@ -212,11 +208,12 @@ class Castle:
     @classmethod
     def _challenge(cls) -> None:
         print("challenging")
-        if not objects['level'].waitap(2):
-            objects['hand'].tap()
-        if not objects['challenge'].waitap(3):
-            if not objects['bright_challenge'].tap():
-                cls._challenge()
+        for obj in bug_levels:
+            if obj.tap():
+                break
+        if not (objects['challenge'].waitap(3) or objects['bright_challenge'].tap()):
+            cls._challenge()
+            return
         if objects['heroic_evoluation_blue'].waitap(1):
             objects['evolve'].waitap(3)
             back()
@@ -902,8 +899,8 @@ class Castle:
         if objects['search'].tap():
             objects['monster'].force_wait(10)
         if objects['monster'].tap():
-            objects['plus'].force_wait(10)
-        if objects['plus'].tap():
+        #     objects['plus'].force_wait(10) # FIXME: replace with monster_plus object
+        # if objects['plus'].tap():
             objects['go'].force_wait(10)
         objects['go'].spam_tap(5, 0.1)
         if objects['arrow'].wait(2):
