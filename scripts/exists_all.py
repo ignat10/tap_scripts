@@ -1,5 +1,5 @@
 from src.device import launch_instance
-from src.main import parse_instance
+from src.utils import parse_instance
 from src.objects import objects
 
 

@@ -1,7 +1,7 @@
 from screen_objects import Direction, SwipeSpeed, ScreenObject, tap_center, back, reset_screen
 
 from src.device import launch_instance
-from src.main import parse_instance
+from src.utils import parse_instance
 from src.objects import objects
 
 

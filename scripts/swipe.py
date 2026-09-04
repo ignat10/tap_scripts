@@ -1,7 +1,7 @@
 from screen_objects import swipe_center, SwipeSpeed, Direction
 
 from src.device import launch_instance
-from src.main import parse_instance
+from src.utils import parse_instance
 
 launch_instance(parse_instance())
 

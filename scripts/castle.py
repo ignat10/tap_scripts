@@ -1,6 +1,6 @@
 from src.castles import iter_castles
 from src.device import launch_instance
-from src.main import parse_instance
+from src.utils import parse_instance
 
 
 launch_instance(parse_instance())
