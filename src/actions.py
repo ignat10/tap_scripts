@@ -204,6 +204,7 @@ class Castle:
         objects['kingroad'].force_waitap()
         sleep(1.5)
         back()
+        sleep(1)
         self.bind_account()
         self.claim_mail()
         self.change_name()
@@ -333,7 +334,7 @@ class Castle:
         if objects['loading'].exists():
             objects['book'].wait()
 
-        while objects['hand'].waitap(1.5):
+        while objects['hand'].waitap(1):
             if objects['heroic_evoluation_blue'].waitap(0.7):
                 objects['evolve'].waitap(5)
             objects['go_blue'].tap()
@@ -344,7 +345,8 @@ class Castle:
             reset_screen()
 
         while objects['map_hand'].waitap(1):
-            objects['arrow'].waitap(1)
+            if objects['arrow'].wait(1):
+                break
         print("no more hands")
 
         if objects['arrow'].exists():
@@ -684,28 +686,28 @@ class Castle:
         if objects['claim_healed'].tap():
             print("claimed healed")
             sleep(1.5)
-        if objects["hospital"].waitap(0.2):
+        if objects["hospital"].tap():
             print("healing...")
-            objects["heal"].waitap()
+            objects["heal"].waitap(7)
             if objects['confirm_rss'].waitap(1.5):
                 sleep(1.5)
         if objects["ask_help"].waitap(0.2):
-            sleep(2.4)
-        if objects['sanctuary'].waitap(0.2):
+            objects['sanctuary'].wait(2)
+        if objects['sanctuary'].tap():
             print("sanctuary...")
-            objects['revive'].waitap()
+            objects['revive'].waitap(10)
             objects['claim_holy_water'].waitap(1)
-            if not objects['confirm_claim_water'].waitap(0.5):
-                objects['holy_quest'].waitap(0.5)
+            if not objects['confirm_claim_water'].waitap(1):
+                objects['holy_quest'].waitap(1)
                 objects['claim_holy_quest'].waitap(1)
                 if objects['confirm_claim_water'].waitap(1):
                     sleep(0.8)
-                objects['holy_revival'].waitap(0.8)
+                objects['holy_revival'].waitap(1)
             objects['revive'].waitap(1)
             sleep(0.5)
             back()
-            sleep(1.2)
-        if objects['hospital_building'].waitap(0.2):
+            objects['hospital_building'].wait(2)
+        if objects['hospital_building'].tap():
             sleep(1.5)
         self.speed_up()
         objects['claim_healed'].tap()
@@ -795,7 +797,7 @@ class Castle:
             objects['forge_green'].tap_nth(max_num - 1)
             if objects['+'].waitap(1):
                 objects['select'].waitap(3)
-            objects['forge_blue'].waitap(1)
+            objects['forge_blue'].waitap(5)
             back()
             back()
             back()
@@ -821,8 +823,8 @@ class Castle:
                             break
             objects['upgrade_blue'].waitap(1) or objects['big_upgrade_blue'].tap()
         elif objects['go_upgrade'].tap() or objects['hand'].tap():
-            sleep(0.8)
             self._build_need()
+            sleep(1.5)
         else:
             return False
         self.close_ad()
@@ -844,9 +846,10 @@ class Castle:
         print("building")
         objects['tasks'].tap()
         objects['build_task'].waitap(2)
-        sleep(1.05)
+        sleep(1)
         objects['hand'].waitap(1.5)
-        sleep(0.9)
+        sleep(1)
+
         if objects['upgrade'].tap():
             sleep(1.5)
             return self._build_need()
@@ -995,8 +998,8 @@ class Castle:
                 case MapStatus.FOUND:
                     objects['gather'].force_tap()
                     objects["gather"].force_waitap(0.7)
-                    objects["set_out"].force_waitap(10)
-                    sleep(1)
+                    if objects["set_out"].waitap(7):
+                        sleep(1)
                     if check_map_status() == MapStatus.NOT_AT_MAP:
                         back()
                         print("not enough horses")
