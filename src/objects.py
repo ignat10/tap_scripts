@@ -232,6 +232,7 @@ ScreenObjectNames = Literal[
     "kingroad_go",
     "kingroad_done",
     "start_upgrading",
+    "battle_power",
 
     "heroic_evolution",
     "heroic_evoluation_blue",
@@ -297,6 +298,11 @@ resources_need: dict[str, ScreenObject] = {
     name.removeprefix("need_"): obj
     for name, obj in objects.items()
     if name.startswith("need_")
+}
+
+tasks = {
+    "upgrade": objects['start_upgrading'],
+    "power": objects['battle_power'],
 }
 
 march_limits: dict[int, ScreenObject] = {

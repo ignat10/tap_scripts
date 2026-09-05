@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from src.objects import objects
+from src.objects import objects, tasks
 
 
 class MineType(Enum):
@@ -44,3 +44,17 @@ def check_map_status() -> MapStatus:
         return MapStatus.FOUND
 
     return MapStatus.NOT_FOUND
+
+
+class Task(Enum):
+    UPGRADE = auto()
+    POWER = auto()
+    ELSE = auto()
+
+
+def check_task() -> Task:
+    for name, obj in tasks.items():
+        if obj.exists():
+            return Task[name.upper()]
+    else:
+        return Task.ELSE

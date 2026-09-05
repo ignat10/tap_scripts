@@ -31,7 +31,7 @@ from src.objects import (
     march_limits,
 )
 from src.paths import CASTLES_DB_PATH
-from src.status import CastleStatus, MapStatus, MineType, check_castle_status, check_map_status
+from src.status import CastleStatus, MapStatus, MineType, Task, check_castle_status, check_map_status, check_task
 from src.utils import log_raise
 
 MAX_MINE_LV = 6
@@ -307,9 +307,25 @@ class Castle:
         if not objects['kingroad_go'].wait(3):
             self.close_ad()
             return self.kingroad_task()
-        upgrade = objects['start_upgrading'].exists()
-        if upgrade:
-            print("start upgrading task")
+        task = check_task()
+        print(f"doing task {task.name}")
+        match task:
+            case Task.UPGRADE:
+                if not self.has_speed:
+                    self.close_ad()
+                    return False
+                objects['kingroad_go'].force_waitap(10)
+                sleep(1)
+                self.close_bella()
+                objects['hand'].waitap(5)
+                if objects['upgrade'].waitap(2) or objects['hand'].tap():
+                    sleep(2)
+                    self._build_need()
+                return True
+            case Task.POWER:
+                self.recruit(horses=False)
+                return True
+
         objects['kingroad_go'].force_waitap(8)
         sleep(0.8)
         self.close_bella()
