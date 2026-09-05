@@ -612,20 +612,29 @@ class Castle:
 
     @classmethod
     def events(cls):
-        def claim_7_march():
+        def claim_7_march(recourse: int=0):
+            if objects['events'].tap():
+                objects['7-day_march'].wait(3)
             if objects['7-day_march'].tap():
-                sleep(1)
-                for i in range(objects['!'].count() * 2):
-                    objects['event_claim'].tap_each()
-                    while not (objects['!'].exists() or objects['event_claim'].exists() or objects['7-day_march'].tap() or objects['map'].exists()):
-                        back()
-                        sleep(1)
-                    sleep(2)
-            cls.close_ad()
+                sleep(0.5)
+                objects['!'].wait(3)
+            if objects['event_claim'].exists():
+                objects['event_claim'].tap_each()
+                back()
+                back()
+                cls.close_ad()
+                claim_7_march(recourse + 1)
+            elif objects['!'].tap_nth(recourse):
+                objects['event_claim'].wait(2)
+                claim_7_march(recourse + 1)
+            else:
+                cls.close_ad()
         def claim_rise():
+            if objects['events'].tap():
+                objects['rising_road'].wait(3)
             if objects['rising_road'].tap():
                 sleep(1)
-                while objects['event_arrow'].waitap(1):
+                while objects['event_arrow'].waitap(4):
                     sleep(1.5)
                     back()
                 back()
@@ -635,6 +644,7 @@ class Castle:
         claim_7_march()
         sleep(1.5)
         claim_rise()
+        cls.close_ad()
 
     @classmethod
     def upgrade_lord_skills(cls) -> None:
