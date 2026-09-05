@@ -955,7 +955,9 @@ class Castle:
         # if objects['plus'].tap():
             objects['go'].force_wait(10)
         objects['go'].spam_tap(5, 0.1)
-        if objects['arrow'].wait(2):
+        if objects['withdraw'].spam_tap(2, 1):
+            objects['confirm_use_stamina'].waitap(5)
+        elif objects['arrow'].wait(2):
             objects['arrow'].force_spam_tap(2, 0.2)
         start = perf_counter()
         while not objects['attack'].waitap(0.5):
