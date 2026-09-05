@@ -159,6 +159,13 @@ ScreenObjectNames = Literal[
     "gather",
     "set_out",
 
+    "pack",
+    "use_blue",
+    "all_items",
+    "use_all_items",
+    "max_items",
+    "use_item",
+    "x_swap",
     "lord_info",
 
     "check_details",

@@ -865,6 +865,28 @@ class Castle:
         sleep(0.5)
 
     @classmethod
+    def use_pack(cls):
+        """Uses items from the pack."""
+        cls.close_ad()
+        objects['pack'].force_tap()
+        sleep(1.5)
+        for i in range(objects['use_blue'].count()):
+            if not objects['use_blue'].wait(5):
+                if not objects['pack'].exists():
+                    cls.close_ad()
+                objects['pack'].force_tap()
+            objects['use_blue'].force_wait(5)
+            if not objects['use_blue'].tap_nth(i):
+                break
+            if objects['use_all_items'].waitap(1.5):
+                objects['use_all'].force_waitap(10)
+                continue
+            elif objects['max_items'].tap():
+                sleep(0.5)
+            objects['use_item'].waitap(1)
+        cls.close_ad()
+
+    @classmethod
     def to_map(cls) -> None:
         """Goes to map from inside city"""
         print("going outside...", end=" ")
@@ -1017,6 +1039,7 @@ class Castle:
                 self.upgrade_lord_skills()
             if i % 15 == 0:
                 self.claim_recruits()
+                self.use_pack()
             if i % 10 == 1:
                 self.kill_monster()
                 self.close_ad()
