@@ -24,6 +24,7 @@ from src.objects import (
     objects,
     ScreenObjectNames,
     bug_levels,
+    troops,
     equipment,
     resources_technology,
     castle_levels,
@@ -1080,6 +1081,6 @@ class Castle:
 
         if not self.is_enough_troops:
             self.close_ad()
-            self.recruit()
+            self.recruit(horses=True)
 
         print("don't know what to do in this castle.")

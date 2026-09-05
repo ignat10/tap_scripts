@@ -300,6 +300,13 @@ resources_need: dict[str, ScreenObject] = {
     if name.startswith("need_")
 }
 
+troops = [
+    objects['infantry'],
+    objects['cavalry'],
+    objects['archers'],
+    objects['mages'],
+]
+
 tasks = {
     "upgrade": objects['start_upgrading'],
     "power": objects['battle_power'],
