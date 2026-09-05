@@ -117,7 +117,9 @@ ScreenObjectNames = Literal[
     "reward",
 
     "events",
-    "event",
+    "7-day_march",
+    "beast_emerge",
+    "rising_road",
     "event_claim",
     "!",
     "event_arrow",
