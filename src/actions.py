@@ -338,7 +338,9 @@ class Castle:
         while objects['hand'].waitap(1):
             if objects['heroic_evoluation_blue'].waitap(0.7):
                 objects['evolve'].waitap(5)
-            objects['go_blue'].tap()
+            if objects['go_blue'].tap():
+                sleep(1)
+                return False
             objects['free'].tap()
             if objects['kingroad_go'].tap():
                 print("tapped kingroad go inside hand loop")
@@ -355,21 +357,24 @@ class Castle:
 
         elif objects['check'].exists():
             print("gathering")
-            objects['gather'].waitap(10)
-            sleep(1.5)
-            objects['gather'].waitap(4)
-            objects['set_out'].waitap(5)
-            back()
+            if objects['withdraw'].spam_tap(2, 1):
+                objects['confirm_use_stamina'].waitap(5)
+            else:
+                objects['gather'].waitap(15)
+                sleep(1.5)
+                objects['gather'].waitap(4)
+                objects['set_out'].waitap(5)
 
         elif objects['alliance_bonuses'].exists():
             print("getting into alliance")
             back()
-            sleep(1.5)
-
-        if objects['join'].tap():
-            back()
-        else:
-            objects['apply'].tap_each()
+            if objects['join'].waitap(2):
+                back()
+            else:
+                objects['apply'].tap_each()
+                swipe_center(Direction.Up, SwipeSpeed.Fast, 0.5)
+                if not objects['join'].waitap(2):
+                    objects['apply'].tap_each()
 
         if objects['unlock'].tap():
             print("beast unlocked")
@@ -378,10 +383,6 @@ class Castle:
         elif objects['unlock_land'].tap():
             print("unlocked land")
             sleep(0.8)
-
-        elif upgrade and objects['upgrade'].tap():
-            sleep(1)
-            self._build_need()
 
         elif objects['forge'].exists():
             self.forge()
@@ -400,9 +401,8 @@ class Castle:
             objects['recruit_blue'].wait(2)
         objects['recruit_blue'].tap()
 
-        if objects['upgrade'].tap():
-            print("upgrading")
-            sleep(1.05)
+        if objects['upgrade'].tap() or objects['upgrade_barracks'].tap():
+            sleep(1)
         self._build_need()
 
         if objects['fortify'].tap():
@@ -454,9 +454,8 @@ class Castle:
         objects['kingroad'].tap()
         if objects['kingroad_done'].waitap(2):
             print("finished kingroad chapter!")
-            sleep(3)
-            back()
-            sleep(0.45)
+            cls.close_ad()
+            cls.kingroad_claim()
         else:
             reset_screen()
             while objects['kingroad_claim'].waitap(0.7):
