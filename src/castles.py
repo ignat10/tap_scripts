@@ -81,16 +81,17 @@ def iter_castles():
     # Imported locally because actions persists Castle properties through this module.
     from src.actions import Castle
 
-    while True:
-        name = get_available()
+    while (name := get_available()) is not None:
         castle = Castle(**get_castle(name))
         try:
             yield castle
         finally:
             release(name)
 
+    print("No available castles.")
 
-def get_available() -> str:
+
+def get_available() -> str | None:
     """Mark a free castle busy. Return False if it is already busy."""
     with _connect() as connection:
         row = connection.execute(
@@ -108,9 +109,7 @@ def get_available() -> str:
             """
         ).fetchone()
 
-        if row is None:
-            raise RuntimeError(f"No available castles in {CASTLES_DB_PATH}")
-        return row[0]
+        return row[0] if row is not None else None
 
 
 def release(name: str) -> None:
