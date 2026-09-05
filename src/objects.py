@@ -64,7 +64,10 @@ ScreenObjectNames = Literal[
 
     "recruit_task",
     "recruit",
+    "infantry",
     "cavalry",
+    "archers",
+    "mages",
     "previous",
     "second",
     "recruit_blue",

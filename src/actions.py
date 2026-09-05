@@ -827,40 +827,40 @@ class Castle:
         else:
             return False
 
-    def claim_recruits(self, barrack: int=0) -> None:
-        print("claiming recruits", end=" ")
-        if objects['tasks'].tap() and objects['recruit_task'].wait(2) and objects['recruit_task'].tap_nth(barrack):
-            sleep(1)
-            objects['hand'].force_waitap(4)
-            if objects['speed_up'].wait(3):
-                self.speed_up()
-            self.claim_recruits()
-        else:
-            print("")
+    def recruit(self, *, horses: bool) -> None:
+        """recruits horses."""
+        print(f"recruiting {"horses" if horses else "powerful troops"}.")
+        self.close_ad()
+        objects['tasks'].force_tap()
+        objects['recruit_task'].wait(1.5)
+        barracks = objects['recruit_task'].count()
+        back()
+        sleep(2)
+        for i in range(barracks * 2):
             self.close_ad()
-
-    def recruit(self) -> None:
-        """recruits horses. from the city."""
-        print("recruiting horses")
-        objects['tasks'].tap()
-        sleep(1.2)
-        for i in range(objects['recruit_task'].count()):
-            objects['recruit_task'].tap_nth(i)
+            objects['tasks'].force_waitap(5)
+            sleep(1.5)
+            objects['recruit_task'].tap_nth(i % barracks)
+            sleep(1)
             objects['hand'].waitap(4)
-            objects['recruit'].waitap(4)
+            sleep(1)
+            if not objects['recruit'].waitap(3) and objects['free'].tap():
+                sleep(1)
+                continue
             if objects['x_news'].tap():
                 sleep(1.5)
-            objects['cavalry'].waitap(3)
-            sleep(1.2)
-            objects['previous'].spam_tap(8, 0.02)
-            sleep(0.3)
-            objects['second'].tap()
-            sleep(0.3)
-            if not objects['recruit_blue'].tap():
+            if horses:
+                objects['cavalry'].waitap(3)
+                sleep(1.2)
+                objects['previous'].spam_tap(8, 0.02)
+                sleep(0.3)
+                objects['second'].tap()
+                sleep(0.3)
+            else:
+                choice(troops).waitap(3)
+                sleep(0.2)
+            if not objects['recruit_blue'].waitap(5):
                 self.speed_up()
-            back()
-            objects['tasks'].waitap(5)
-            sleep(1.5)
         back()
         sleep(0.5)
 
@@ -1038,7 +1038,6 @@ class Castle:
             if i % 40 == 0:
                 self.upgrade_lord_skills()
             if i % 15 == 0:
-                self.claim_recruits()
                 self.use_pack()
             if i % 10 == 1:
                 self.kill_monster()
