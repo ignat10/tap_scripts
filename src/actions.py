@@ -1,6 +1,6 @@
 from datetime import timedelta
 from itertools import chain
-from random import randrange, choice
+from random import randrange, choice, sample
 from time import sleep, perf_counter
 from typing import Iterator, SupportsInt
 from typing import cast
@@ -175,13 +175,11 @@ class Castle:
         print("finished 0 level")
         objects['bella'].force_wait(30)
         self.close_bella()
-        self._challenge()  # first level
-        self.kill_monsters()
+        self.challenge()  # first level
         print("finished 1st level")
         sleep(1.5)
         self.close_bella()
-        self._challenge()
-        self.kill_monsters()
+        self.challenge()
         print("finished 2nd level")
         objects['bella'].force_wait()
         self.close_bella()
@@ -195,8 +193,7 @@ class Castle:
         objects['bella'].force_wait()
         self.close_bella()
         objects['new_monster'].force_waitap()
-        self._challenge()
-        self.kill_monsters()
+        self.challenge()
         print("finished 3rd level")
         objects['backhand'].force_waitap()
         objects['bella'].force_wait()
@@ -211,16 +208,20 @@ class Castle:
         print(f"account created, bound, named, upgraded to castle level {self.lv}")
 
     @classmethod
-    def _challenge(cls) -> None:
+    def challenge(cls) -> bool:
         for obj in bug_levels:
             obj.tap()
         if not (objects['challenge'].waitap(3) or objects['bright_challenge'].tap()):
-            cls._challenge()
-            return
-        if objects['heroic_evoluation_blue'].waitap(1):
-            objects['evolve'].waitap(3)
-            back()
-            cls._challenge()
+            return False
+
+        if not objects['heroic_evoluation_blue'].waitap(1) and objects['man'].wait(5):
+            cls.kill_monsters()
+            return True
+
+        objects['evolve'].waitap(3)
+        back()
+        sleep(1)
+        return False
 
     @staticmethod
     def kill_monsters() -> None:
@@ -439,9 +440,8 @@ class Castle:
             objects['donate_confirm'].waitap(3)
 
         elif objects['bright_challenge'].exists():
-            self._challenge()
-            objects['man'].force_wait(20)
-        if objects['man'].exists():
+            self.challenge()
+        if objects['man'].exists() or objects['blue_bonus'].tap() or objects['confirm_bonus'].tap():
             self.kill_monsters()
 
         self.speed_up()
@@ -823,8 +823,8 @@ class Castle:
                             break
             objects['upgrade_blue'].waitap(1) or objects['big_upgrade_blue'].tap()
         elif objects['go_upgrade'].tap() or objects['hand'].tap():
-            self._build_need()
             sleep(1.5)
+            return self._build_need()
         else:
             return False
         self.close_ad()
@@ -844,8 +844,11 @@ class Castle:
 
     def build(self) -> bool:
         print("building")
-        objects['tasks'].tap()
-        objects['build_task'].waitap(2)
+        self.close_ad()
+        objects['tasks'].force_tap()
+        objects['build_task'].force_wait(10)
+        if not objects['build_task'].tap_nth(1):
+            objects['build_task'].force_tap()
         sleep(1)
         objects['hand'].waitap(1.5)
         sleep(1)
