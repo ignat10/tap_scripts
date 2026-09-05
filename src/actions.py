@@ -803,7 +803,12 @@ class Castle:
         if objects['free'].tap():
             print("built for free.")
             sleep(0.5)
-        elif objects['upgrade_blue'].tap() or objects['big_upgrade_blue'].tap() or objects['hammer_use'].exists():
+        elif (
+                objects['upgrade_blue'].tap()
+                or objects['big_upgrade_blue'].tap()
+                or objects['hammer_use'].exists()
+                or objects['hammer_200'].exists()
+        ):
             if objects['confirm_rss'].waitap(2):
                 return True
             if not (objects['hammer_use'].tap() or objects['hammer_200'].tap()):
@@ -822,6 +827,7 @@ class Castle:
             return self._build_need()
         else:
             return False
+        self.speed_up()
         self.close_ad()
         return True
 
@@ -850,9 +856,7 @@ class Castle:
 
         if objects['upgrade'].tap():
             sleep(1.5)
-            return self._build_need()
-        else:
-            return False
+        return self._build_need()
 
     def recruit(self, *, horses: bool) -> None:
         """recruits horses."""
