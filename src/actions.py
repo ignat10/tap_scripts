@@ -302,7 +302,6 @@ class Castle:
 
     def kingroad_task(self) -> bool:
         self.kingroad_claim()
-        print("doing kingroad task")
         if not (objects['kingroad'].tap() or objects['hand'].tap() or objects['kingroad_go'].exists()):
             self.close_ad()
             if not (objects['kingroad'].tap() or objects['hand'].tap()):
@@ -600,7 +599,7 @@ class Castle:
 
     @classmethod
     def claim(cls) -> None:
-        """claims recruited troops, gift, and RSS. from city"""
+        """claims recruited troop and gift. from city"""
         cls.close_ad()
         if objects['horse'].exists():
             print("claiming horses")
@@ -722,9 +721,6 @@ class Castle:
             sleep(1.5)
             self.has_speed = True
             return True
-
-        if not self.has_speed:
-            print(f"{self.name} has no more speed up.")
 
         self.close_ad()
         return False
@@ -920,7 +916,6 @@ class Castle:
     @classmethod
     def to_map(cls) -> None:
         """Goes to map from inside city"""
-        print("going outside...", end=" ")
         while not objects['book'].exists():
             if objects["map"].tap() and objects['loading'].wait(1):
                 objects['book'].wait()
@@ -929,7 +924,6 @@ class Castle:
                 cls.close_ad()
         sleep(1)
         reset_screen()
-        print("outside.")
 
     def free_marches(self) -> int:
         """get number of available marches of current castle"""
