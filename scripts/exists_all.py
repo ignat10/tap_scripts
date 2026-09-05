@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from src.device import launch_instance
 from src.utils import parse_instance
 from src.objects import objects
@@ -11,4 +13,4 @@ existing_objects = {
     if obj.exists()
 }
 
-print(existing_objects)
+pprint(existing_objects)
