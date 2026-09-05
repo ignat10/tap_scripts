@@ -508,7 +508,9 @@ class Castle:
         if check_castle_status() == CastleStatus.CLOSED_AD:
             return
         reset_screen()
-        while check_castle_status() != CastleStatus.CLOSED_AD:
+        for _ in range(4):
+            if check_castle_status() == CastleStatus.CLOSED_AD:
+                break
             if cls.close_bella():
                 print("closed bella. looking for hand.")
                 sleep(1.5)
@@ -518,28 +520,27 @@ class Castle:
             if objects['exit_game'].exists():
                 restart_app()
                 cls.load()
-            objects['continue_game'].tap()
-            objects['x'].tap()
-            objects['x_new'].tap()
-            objects['x_news'].tap()
-            objects['claim_daily'].tap()
-            objects['claim_temple'].tap()
-            objects['check_beast'].tap()
-            if check_castle_status() == CastleStatus.CLOSED_AD:
+            if (
+                    objects['continue_game'].tap()
+                    or objects['x'].tap()
+                    or objects['x_new'].tap()
+                    or objects['x_news'].tap()
+                    or objects['x_swap'].tap()
+                    or objects['claim_daily'].tap()
+                    or objects['claim_temple'].tap()
+                    or objects['check_beast'].tap()
+            ) and check_castle_status() == CastleStatus.CLOSED_AD:
                 break
-            else:
-                for _ in range(3):
-                    back()
-                    sleep(0.2)
+            for _ in range(3):
+                back()
+                sleep(0.2)
             if objects['no'].waitap(3):
                 sleep(1.5)
-            if check_castle_status() == CastleStatus.CLOSED_AD:
-                break
-            if objects['frozen_screen'].exists():
-                restart_app()
-                cls.load()
             else:
                 tap_center()
+        else:
+            restart_app()
+            cls.load()
 
     @staticmethod
     def claim_rss():
@@ -1037,7 +1038,8 @@ class Castle:
                 self.claim_rss()
             if i % 40 == 0:
                 self.upgrade_lord_skills()
-            if i % 15 == 0:
+                self.events()
+                self.claim_quest()
                 self.use_pack()
             if i % 10 == 1:
                 self.kill_monster()
