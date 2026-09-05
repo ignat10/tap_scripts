@@ -1057,36 +1057,34 @@ class Castle:
         return True
 
     def grow(self):
-        self.new_account()
-        self.log_into_account()
-        for i in range(500):
-            if i % 60 == 0:
+        if self.account is None:
+            self.new_account()
+        else:
+            self.log_into_account()
+        for i in range(100):
+            if i % 40 == 0:
                 self.claim_mail()
                 self.bind_account()
-            if i % 55 == 0:
                 self.check_level()
                 self.check_marches()
-            if i % 50 == 0:
                 self.claim_rss()
-            if i % 40 == 0:
                 self.upgrade_lord_skills()
                 self.events()
                 self.claim_quest()
                 self.use_pack()
+                while self.build():
+                    pass
+
             if i % 10 == 1:
                 self.kill_monster()
                 self.close_ad()
-            # if i % 15 == 2:
-            #     self.events()
-            if i % 20 == 3:
-                self.claim_quest()
             self.claim()
             self.heal()
             print("made some task")
             if not self.kingroad_task():
                 break
 
-        self.build()
+        self.upgrade_castle()
         self.to_map()
         if self.free_marches() != 0:
             if not self.get_elite_mine():
