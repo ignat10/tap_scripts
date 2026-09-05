@@ -720,29 +720,29 @@ class Castle:
 
     def research(self) -> None:
         marches = self.marches
-        if not objects['research'].tap():
-            if not objects['college'].tap() and objects['research'].waitap(1):
-                self.to_map()
-                self.close_ad()
-            objects['college'].force_tap()
-            objects['research'].force_waitap(3)
+        objects['tasks'].force_tap()
+        sleep(1)
+        objects['research_task'].force_waitap(10)
+        if not objects['military'].wait(2):
+            objects['back'].force_tap()
+        objects['military'].force_wait(10)
         match marches, self.lv:
             case 1, lv if lv >= 5:
                 print("unlocking 2nd march")
-                objects['military'].waitap()
+                objects['military'].force_tap()
                 if not objects['legion'].waitap(1.5):
                     if not objects['expansion'].tap():
                         objects['draft'].force_tap()
             case 2, lv if lv >= 12:
                 print("unlocking 3rd march")
-                objects['military'].waitap()
+                objects['military'].force_tap()
                 swipe_center(Direction.Up, SwipeSpeed.Normal, 1)
                 if not objects['legion'].waitap(1.5):
                     if not objects['leadership'].tap():
                         objects['horseshoes'].force_tap()
             case 3, lv if lv >= 19:
                 print("unlocking 4th march")
-                objects['military'].waitap()
+                objects['military'].force_tap()
                 swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.7)
                 if not objects['legion'].waitap(1.5):
                     if not objects['horseshoes'].tap():
@@ -750,20 +750,18 @@ class Castle:
                             objects['draft'].force_tap()
             case _:
                 print("researching resources technology.")
-                objects['resources'].force_waitap(3)
+                objects['resources'].force_tap()
                 sleep(3)
-                for techno in resources_technology:
+                for techno in sample(resources_technology, k=len(resources_technology)):
                     if techno.tap():
                         if objects['research_blue'].wait(1.5):
                             break
                         else:
                             back()
+                            sleep(1)
 
         objects['research_blue'].waitap(1)
-        back()
-        sleep(0.5)
-        back()
-        sleep(0.5)
+        self.close_ad()
 
     @staticmethod
     def forge() -> None:

@@ -86,7 +86,9 @@ ScreenObjectNames = Literal[
     "select",
     "forge_blue",
 
+    "research_task",
     "college",
+    "back",
     "research",
     "resources",
     "military",
@@ -95,6 +97,7 @@ ScreenObjectNames = Literal[
     "sickle",
     "axe",
     "load_boost",
+    "depot",
     "draft",
     "expansion",
     "legion",
@@ -280,13 +283,14 @@ equipment = {
     objects['boots'],
 }
 
-resources_technology = {
+resources_technology = [
     objects['saw'],
     objects['plow'],
     objects['load_boost'],
     objects['sickle'],
     objects['axe'],
-}
+    objects['depot'],
+]
 
 castle_levels = {
     int(name[13:]): obj
