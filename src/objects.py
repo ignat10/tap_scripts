@@ -168,7 +168,6 @@ ScreenObjectNames = Literal[
 
     "pack",
     "use_blue",
-    "all_items",
     "use_all_items",
     "max_items",
     "use_item",
@@ -254,6 +253,7 @@ ScreenObjectNames = Literal[
     "frozen_screen",
     "exit_game",
 
+    "castle_level_2",
     "castle_level_3",
     "castle_level_4",
     "castle_level_5",
