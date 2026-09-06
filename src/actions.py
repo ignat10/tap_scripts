@@ -657,6 +657,7 @@ class Castle:
                 objects["!"].wait(3)
             if objects["event_claim"].exists():
                 objects["event_claim"].tap_each()
+                sleep(0.5)
                 back()
                 back()
                 cls.close_ad()
@@ -1140,7 +1141,7 @@ class Castle:
                 self.close_ad()
             self.claim()
             self.heal()
-            print("made some task")
+            print(f"made {i} task")
             if not self.kingroad_task():
                 break
 
