@@ -441,12 +441,10 @@ class Castle:
             print("shop")
             sleep(1.5)
             objects["shell"].tap_each()
-            objects["buy"].waitap(2)
-            for i in range(objects["shell"].count()):
-                objects["shell"].wait()
-                objects["shell"].tap_nth(i)
-                if objects["confirm_shell"].waitap(1):
-                    break
+            objects["buy"].force_waitap(2)
+            objects["shell"].wait()
+            objects["shell"].tap_each()
+            objects["confirm_shell"].waitap(1)
             back()
 
         if not objects["green"].tap():
