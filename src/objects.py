@@ -4,7 +4,7 @@ from screen_objects import ScreenObject, get_objects
 
 from src.paths import SAMPLES_DIR, REGIONS_DIR
 
-ScreenObjectNames = Literal[
+ScreenObjectName = Literal[
     "claim_daily",
     "claim_temple",
     "blur",
@@ -30,13 +30,11 @@ ScreenObjectNames = Literal[
     "claim_holy_quest",
     "holy_revival",
     "revive",
-
     "lord",
     "recall_all",
     "harvest",
     "gather_speed_up",
     "use",
-
     "loading",
     "map_hand",
     "monster",
@@ -45,7 +43,6 @@ ScreenObjectNames = Literal[
     "quick_search",
     "use_stamina",
     "confirm_use_stamina",
-
     "castle_building",
     "tasks",
     "build_task",
@@ -61,7 +58,6 @@ ScreenObjectNames = Literal[
     "need_wood",
     "need_stone",
     "need_iron",
-
     "recruit_task",
     "recruit",
     "upgrade_barracks",
@@ -73,7 +69,6 @@ ScreenObjectNames = Literal[
     "second",
     "recruit_blue",
     "horse",
-
     "forge",
     "weapon",
     "helmet",
@@ -85,7 +80,6 @@ ScreenObjectNames = Literal[
     "+",
     "select",
     "forge_blue",
-
     "research_task",
     "college",
     "back",
@@ -105,7 +99,6 @@ ScreenObjectNames = Literal[
     "horseshoes",
     "research_blue",
     "go_research",
-
     "claim",
     "alliance_bonuses",
     "join",
@@ -114,7 +107,6 @@ ScreenObjectNames = Literal[
     "alliance_donate",
     "donate_blue",
     "donate_confirm",
-
     "quest",
     "daily_quest_claim",
     "claim_daily_quest",
@@ -122,7 +114,6 @@ ScreenObjectNames = Literal[
     "claim_growth_quest",
     "another_growth_quest",
     "reward",
-
     "events",
     "7-day_march",
     "beast_emerge",
@@ -130,29 +121,23 @@ ScreenObjectNames = Literal[
     "event_claim",
     "!",
     "event_arrow",
-
     "mail",
     "mail_reward",
     "delete_mail",
     "read_claim_all",
     "confirm_read_all",
-
     "fortify",
     "one-tap_upgrade",
     "use_all",
-
     "sell",
     "buy",
     "shell",
     "confirm_shell",
-
     "switch_level",
     "green",
-
     "unlock_land",
     "shell",
     "map",
-
     "stragglers",
     "suppress",
     "search",
@@ -165,7 +150,6 @@ ScreenObjectNames = Literal[
     "go",
     "gather",
     "set_out",
-
     "pack",
     "use_blue",
     "use_all_items",
@@ -173,19 +157,16 @@ ScreenObjectNames = Literal[
     "use_item",
     "x_swap",
     "lord_info",
-
     "check_details",
     "march_limit_3",
     "march_limit_2",
     "march_limit_1",
     "march_limit_0",
-
     "lord_skills",
     "development_skills",
     "lord_skill",
     "upgrade_to_max",
     "skill_points_0",
-
     "more_marches",
     "speed_up_march",
     "withdraw",
@@ -193,18 +174,16 @@ ScreenObjectNames = Literal[
     "elite_mines",
     "blue",
     "check",
-
     "leo",
     "haac",
     "hac",
     "VIChac",
-    'farm,hacen',
+    "farm,hacen",
     "kazuru_farm5",
     "kazuru_farm6",
     "new",
     "zuchin",
     "zahino",
-
     "avatar",
     "account",
     "bind",
@@ -235,7 +214,6 @@ ScreenObjectNames = Literal[
     "kingroad_done",
     "start_upgrading",
     "battle_power",
-
     "heroic_evolution",
     "heroic_evoluation_blue",
     "go_blue",
@@ -252,7 +230,6 @@ ScreenObjectNames = Literal[
     "no",
     "frozen_screen",
     "exit_game",
-
     "castle_level_2",
     "castle_level_3",
     "castle_level_4",
@@ -267,35 +244,34 @@ ScreenObjectNames = Literal[
     "castle_level_19",
 ]
 
-objects: dict[ScreenObjectNames, ScreenObject] = cast(
-    dict[ScreenObjectNames, ScreenObject],
-    get_objects(SAMPLES_DIR, REGIONS_DIR)
+objects: dict[ScreenObjectName, ScreenObject] = cast(
+    dict[ScreenObjectName, ScreenObject], get_objects(SAMPLES_DIR, REGIONS_DIR)
 )
 
-bug_levels = set(obj for name, obj in objects.items() if name.startswith(f'bug_level_'))
+bug_levels = set(obj for name, obj in objects.items() if name.startswith(f"bug_level_"))
 
 equipment = {
-    objects['weapon'],
-    objects['helmet'],
-    objects['belt'],
-    objects['accessory'],
-    objects['clothes'],
-    objects['boots'],
+    objects["weapon"],
+    objects["helmet"],
+    objects["belt"],
+    objects["accessory"],
+    objects["clothes"],
+    objects["boots"],
 }
 
 resources_technology = [
-    objects['saw'],
-    objects['plow'],
-    objects['load_boost'],
-    objects['sickle'],
-    objects['axe'],
-    objects['depot'],
+    objects["saw"],
+    objects["plow"],
+    objects["load_boost"],
+    objects["sickle"],
+    objects["axe"],
+    objects["depot"],
 ]
 
 castle_levels = {
     int(name[13:]): obj
     for name, obj in objects.items()
-    if name.startswith(f'castle_level_')
+    if name.startswith(f"castle_level_")
 }
 
 resources_need: dict[str, ScreenObject] = {
@@ -305,15 +281,15 @@ resources_need: dict[str, ScreenObject] = {
 }
 
 troops = [
-    objects['infantry'],
-    objects['cavalry'],
-    objects['archers'],
-    objects['mages'],
+    objects["infantry"],
+    objects["cavalry"],
+    objects["archers"],
+    objects["mages"],
 ]
 
 tasks = {
-    "upgrade": objects['start_upgrading'],
-    "power": objects['battle_power'],
+    "upgrade": objects["start_upgrading"],
+    "power": objects["battle_power"],
 }
 
 march_limits: dict[int, ScreenObject] = {

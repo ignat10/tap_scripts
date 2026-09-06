@@ -4,10 +4,10 @@ from src.objects import objects, tasks
 
 
 class MineType(Enum):
-    IRON = objects['iron_type']
-    STONE = objects['stone_type']
-    WOOD = objects['wood_type']
-    FOOD = objects['food_type']
+    IRON = objects["iron_type"]
+    STONE = objects["stone_type"]
+    WOOD = objects["wood_type"]
+    FOOD = objects["food_type"]
 
 
 class MapStatus(Enum):
@@ -23,13 +23,13 @@ class CastleStatus(Enum):
 
 
 def check_castle_status() -> CastleStatus:
-    if objects['map'].exists():
+    if objects["map"].exists():
         return CastleStatus.CLOSED_AD
 
     if (
-            objects["blur"].exists()
-            or objects['claim_daily'].exists()
-            or objects['x'].exists()
+        objects["blur"].exists()
+        or objects["claim_daily"].exists()
+        or objects["x"].exists()
     ):
         return CastleStatus.AD
 
@@ -37,10 +37,10 @@ def check_castle_status() -> CastleStatus:
 
 
 def check_map_status() -> MapStatus:
-    if not objects['book'].exists():
+    if not objects["book"].exists():
         return MapStatus.NOT_AT_MAP
 
-    if objects['gather'].exists():
+    if objects["gather"].exists():
         return MapStatus.FOUND
 
     return MapStatus.NOT_FOUND

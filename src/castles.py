@@ -3,7 +3,6 @@ from typing import Any
 
 from src.paths import CASTLES_DB_PATH
 
-
 DATA_COLUMNS = ("name", "lv", "google", "account", "alliance", "marches_limit")
 MUTABLE_COLUMNS = frozenset(DATA_COLUMNS[1:])
 
@@ -23,7 +22,7 @@ def get_castle(name: str) -> dict[str, Any]:
         ).fetchone()
     if row is None:
         raise KeyError(f"unknown castle: {name}")
-    return dict(row) # type: ignore
+    return dict(row)  # type: ignore
 
 
 def get_column(column: str) -> list[Any]:
@@ -92,10 +91,9 @@ def iter_castles():
 
 
 def get_available() -> str | None:
-    """Mark a free castle busy. Return False if it is already busy."""
+    """Get a free castle busy. Return None if there is no free castle."""
     with _connect() as connection:
-        row = connection.execute(
-            """
+        row = connection.execute("""
             UPDATE castles
             SET is_busy = 1, last_login = CURRENT_TIMESTAMP
             WHERE name = (
@@ -106,8 +104,7 @@ def get_available() -> str | None:
                 LIMIT 1
             )
             RETURNING name
-            """
-        ).fetchone()
+            """).fetchone()
 
         return row[0] if row is not None else None
 

@@ -12,32 +12,33 @@ def _run_lines(command: list[str]) -> list[str]:
 
 
 def _instances() -> set[str]:
-    return set(_run_lines(['ldconsole', 'list']))
+    return set(_run_lines(["ldconsole", "list"]))
 
 
 def _running_instances() -> set[str]:
-    return set(_run_lines(['ldconsole', 'runninglist']))
+    return set(_run_lines(["ldconsole", "runninglist"]))
 
 
 def _devices() -> set[str]:
-    return {
-        line.split()[0].strip()
-        for line in _run_lines(['adb', 'devices'])[1:]
-    }
+    return {line.split()[0].strip() for line in _run_lines(["adb", "devices"])[1:]}
 
 
 def launch_instance(name: str) -> None:
     global instance_name
-    assert name in _instances(), f"instance {name} not found in instances: {_instances()}"
+    assert (
+        name in _instances()
+    ), f"instance {name} not found in instances: {_instances()}"
     instance_name = name
 
     with open(INSTANCES_PATH) as file:
         serials: dict[str, str] = load(file)
         serial = serials.get(name)
-        assert serial is not None, f"instance name {name} not found in serials: {serials} from {INSTANCES_PATH}"
+        assert (
+            serial is not None
+        ), f"instance name {name} not found in serials: {serials} from {INSTANCES_PATH}"
 
     if name not in _running_instances():
-        run(['ldconsole', 'launch', '--name', name])
+        run(["ldconsole", "launch", "--name", name])
         sleep(1)
     while not serial in _devices():
         sleep(1)
@@ -50,4 +51,15 @@ instance_name: str | None = None
 
 def shake() -> None:
     assert instance_name is not None, "Call launch_instance before shake"
-    run(['ldconsole', 'action', '--name', instance_name, '--key', 'call.shake', '--value', 'null'])
+    run(
+        [
+            "ldconsole",
+            "action",
+            "--name",
+            instance_name,
+            "--key",
+            "call.shake",
+            "--value",
+            "null",
+        ]
+    )
