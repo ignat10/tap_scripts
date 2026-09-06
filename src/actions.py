@@ -386,10 +386,7 @@ class Castle:
                 break
         print("no more hands")
 
-        if objects["arrow"].exists():
-            self.kill_monster()
-
-        elif objects["check"].exists():
+        if objects["check"].exists():
             print("gathering")
             if objects["withdraw"].spam_tap(2, 1):
                 objects["confirm_use_stamina"].waitap(5)
@@ -399,16 +396,13 @@ class Castle:
                 objects["gather"].waitap(4)
                 objects["set_out"].waitap(5)
 
-        elif objects["alliance_bonuses"].exists():
-            print("getting into alliance")
-            back()
-            if objects["join"].waitap(2):
-                back()
-            else:
-                objects["apply"].tap_each()
-                swipe_center(Direction.Up, SwipeSpeed.Fast, 0.5)
-                if not objects["join"].waitap(2):
-                    objects["apply"].tap_each()
+        elif objects['go'].exists():
+            self.kill_monster()
+
+        elif objects["alliance_bonuses"].tap():
+            self.close_ad()
+            self.join_alliance()
+            return True
 
         if objects["unlock"].tap():
             print("beast unlocked")
@@ -966,6 +960,21 @@ class Castle:
         cls.close_ad()
 
     @classmethod
+    def join_alliance(cls) -> None:
+        objects['alliance'].force_tap()
+        if objects['alliance_bonuses'].waitap(2):
+            objects['apply'].wait(2)
+        if not (objects['apply'].exists() or objects['join'].exists()):
+            return
+        for _ in range(3):
+            if objects['join'].tap():
+                break
+            objects["apply"].tap_each()
+            swipe_center(Direction.Up, SwipeSpeed.Fast, 0.5)
+            sleep(2)
+        cls.close_ad()
+
+    @classmethod
     def to_map(cls) -> None:
         """Goes to map from inside city"""
         while not objects["book"].exists():
@@ -1122,6 +1131,7 @@ class Castle:
                 self.events()
                 self.claim_quest()
                 self.use_pack()
+                self.join_alliance()
                 while self.build():
                     pass
 

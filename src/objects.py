@@ -156,6 +156,7 @@ ScreenObjectName = Literal[
     "max_items",
     "use_item",
     "x_swap",
+    "alliance",
     "lord_info",
     "check_details",
     "march_limit_3",
