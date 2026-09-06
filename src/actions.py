@@ -459,6 +459,8 @@ class Castle:
             objects["suppress"].force_waitap(10)
             objects["set_out"].force_waitap(10)
             self.close_ad()
+        else:
+            objects['set_out'].tap()
 
         if objects["alliance_donate"].tap():
             sleep(1.5)
