@@ -545,6 +545,10 @@ class Castle:
             reset_screen()
             if objects["man"].exists():
                 return
+            if objects['age'].tap():
+                sleep(1)
+                if objects['confirm_age'].waitap(3):
+                    print("confirmed age")
             now = perf_counter()
             if now - start > 200:
                 print("loading timeout. restart app.")

@@ -432,7 +432,14 @@
   ],
   "daily_quest_claim": [
     null,
-    21
+    5
+  ],
+  "confirm_age": [
+    [
+      281,
+      837
+    ],
+    5
   ],
   "harvest": [
     [

@@ -195,6 +195,8 @@ ScreenObjectName = Literal[
     "switch",
     "new_game",
     "realm",
+    "age",
+    "confirm_age",
     "man",
     "blue_bonus",
     "confirm_bonus",
