@@ -1058,9 +1058,6 @@ class Castle:
     def get_std_mine(self) -> None:
         """Gets standard mine from the map."""
 
-        if self.free_marches() == 0:
-            return
-
         objects["search"].force_tap()
         need_level = reversed(range(MAX_MINE_LEVEL))
         for _ in range(24):
@@ -1167,8 +1164,7 @@ class Castle:
         self.upgrade_castle()
         self.to_map()
         if self.free_marches() != 0:
-            if not self.get_elite_mine():
-                self.get_std_mine()
+            self.get_elite_mine()
         while self.free_marches() >= 1 and self.is_enough_troops:
             self.get_std_mine()
 
