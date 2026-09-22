@@ -85,6 +85,7 @@ def iter_castles():
         try:
             yield castle
         finally:
+            Castle.close_ad()
             release(name)
 
     print("No available castles.")

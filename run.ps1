@@ -41,6 +41,15 @@ function Write-RunLog([string]$Message) {
 $oldPythonPath = $env:PYTHONPATH
 $oldPythonIoEncoding = $env:PYTHONIOENCODING
 $oldConsoleEncoding = [Console]::OutputEncoding
+$ctrlCHandler = [ConsoleCancelEventHandler] {
+    param($sender, $eventArgs)
+    # Keep PowerShell's pipeline alive long enough to receive Python's traceback.
+    # The same Ctrl+C event is still delivered to Python as SIGINT.
+    if ($eventArgs.SpecialKey -eq [ConsoleSpecialKey]::ControlC) {
+        $eventArgs.Cancel = $true
+    }
+}
+[Console]::add_CancelKeyPress($ctrlCHandler)
 Push-Location -LiteralPath $PSScriptRoot
 try {
     Write-Host "Log: $LogPath"
@@ -51,6 +60,34 @@ try {
     [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
     # PowerShell 7: handle failures using the process exit code below.
     $PSNativeCommandUseErrorActionPreference = $false
+    # Windows PowerShell removes quote characters in arguments sent to native apps.
+    # Backslashes preserve the Python string quotes passed to `python -c`.
+    $pythonBootstrap = @'
+import runpy
+import signal
+import sys
+import traceback
+import os
+
+# Keep Python tracebacks on PowerShell's output stream instead of ErrorRecord objects.
+sys.stderr = sys.stdout
+
+def show_traceback_and_interrupt(signum, frame):
+    print(\"\nCtrl+C received. Python traceback:\", file=sys.stderr, flush=True)
+    stack = traceback.extract_stack(frame)
+    script_name = os.path.normcase(os.path.abspath(script_path))
+    for index, stack_frame in enumerate(stack):
+        if os.path.normcase(os.path.abspath(stack_frame.filename)) == script_name:
+            stack = stack[index:]
+            break
+    traceback.print_list(stack, file=sys.stderr)
+    raise SystemExit(130)
+
+signal.signal(signal.SIGINT, show_traceback_and_interrupt)
+script_path = sys.argv[1]
+sys.argv = [script_path, *sys.argv[2:]]
+runpy.run_path(script_path, run_name=\"__main__\")
+'@
 
     while ($true) {
         Write-RunLog "Starting main.py; instance=$Instance"
@@ -58,7 +95,7 @@ try {
         # Continue lets Python finish and preserves its real exit code.
         $ErrorActionPreference = 'Continue'
         try {
-            & $pythonExe -u $mainScript $Instance 2>&1 | ForEach-Object {
+            & $pythonExe -u -c $pythonBootstrap $mainScript $Instance 2>&1 | ForEach-Object {
                 $line = $_.ToString()
                 Add-Content -LiteralPath $LogPath -Value $line -Encoding UTF8 -ErrorAction Stop
                 Write-Host $line
@@ -83,6 +120,7 @@ try {
     }
 }
 finally {
+    [Console]::remove_CancelKeyPress($ctrlCHandler)
     $env:PYTHONPATH = $oldPythonPath
     $env:PYTHONIOENCODING = $oldPythonIoEncoding
     [Console]::OutputEncoding = $oldConsoleEncoding
