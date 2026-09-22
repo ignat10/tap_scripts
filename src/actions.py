@@ -1024,21 +1024,26 @@ class Castle:
             objects['monster_plus'].force_waitap(10)
             objects["go"].force_wait(10)
         objects["go"].spam_tap(5, 0.1)
+        sleep(1)
         if objects["withdraw"].spam_tap(2, 1):
             objects["confirm_use_stamina"].waitap(5)
         elif objects["arrow"].wait(2):
             objects["arrow"].force_spam_tap(2, 0.2)
-        start = perf_counter()
-        while not objects["attack"].waitap(0.5):
+        for _ in range(30):
             if objects["quick_search"].tap():
                 objects["map_hand"].force_waitap(3)
                 objects["arrow"].wait(2)
                 objects["arrow"].spam_tap(2, 0.5)
+
+            elif objects['attack'].tap():
+                break
+
             else:
                 tap_center()
-            if perf_counter() - start > 30:
-                self.close_ad()
-                return
+        else:
+            self.close_ad()
+            return
+
         objects["set_out"].waitap(2)
         if objects["use_stamina"].waitap(1):
             objects["confirm_use_stamina"].force_waitap(3)
