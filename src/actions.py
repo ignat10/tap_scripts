@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from functools import cached_property
 from itertools import chain
 from random import randrange, choice, sample
@@ -82,8 +82,8 @@ class Castle:
         self._google = google
         self._account = account
         self._alliance = alliance
-
         self.has_speed = True
+        self.last_gather_at: datetime | None = None
         self.need_rss: MineType | None = None
         self.stamina = True
         self.mine_type = (
@@ -134,6 +134,17 @@ class Castle:
         self._alliance = value
 
     @property
+    def last_gather_ago(self) -> int | None:
+        """Return elapsed gather time: seconds below a minute, otherwise minutes."""
+        if self.last_gather_at is None:
+            return None
+
+        return int((datetime.now() - self.last_gather_at).total_seconds())
+
+    def set_last_gather_now(self) -> None:
+        """Mark gathering as having happened just now."""
+        self.last_gather_at = datetime.now()
+
     @cached_property
     def marches(self) -> int:
         """gets available marches value. From 1 to 4"""
