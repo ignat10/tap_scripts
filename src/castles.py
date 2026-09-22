@@ -3,7 +3,7 @@ from typing import Any
 
 from src.paths import CASTLES_DB_PATH
 
-DATA_COLUMNS = ("name", "lv", "google", "account", "alliance", "marches_limit")
+DATA_COLUMNS = ("name", "google", "account", "alliance")
 MUTABLE_COLUMNS = frozenset(DATA_COLUMNS[1:])
 
 
@@ -51,7 +51,7 @@ def add_castle(name: str, google: int) -> None:
     try:
         with _connect() as connection:
             connection.execute(
-                "INSERT INTO castles (name, google, lv, is_busy) VALUES (?, ?, 1, 0)",
+                "INSERT INTO castles (name, google, is_busy) VALUES (?, ?, 0)",
                 (name, google),
             )
     except IntegrityError as error:

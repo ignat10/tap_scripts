@@ -1,4 +1,5 @@
 from datetime import timedelta
+from functools import cached_property
 from itertools import chain
 from random import randrange, choice, sample
 from time import sleep, perf_counter
@@ -66,29 +67,21 @@ class Castle:
     def __init__(
         self,
         name: str,
-        lv: int,
         google: int,
         account: int | None,
         alliance: str | None,
-        marches_limit: int | None,
     ):
 
         value_assert("name", name, str)
-        value_assert("lv", lv, SupportsInt)
-        value_assert("google", google, SupportsInt)
+        value_assert("google", google, int)
         if account is not None:
-            value_assert("account", account, SupportsInt)
+            value_assert("account", account, int)
         if alliance is not None:
             value_assert("alliance", alliance, str)
-        if marches_limit is not None:
-            value_assert("marches_limit", marches_limit, SupportsInt)
-
         self._name = name
         self._google = google
         self._account = account
-        self._lv = lv
         self._alliance = alliance
-        self._max_marches = marches_limit
 
         self.has_speed = True
         self.need_rss: MineType | None = None
@@ -99,8 +92,8 @@ class Castle:
             for mine in MineType
             if mine == MineType.FOOD
             or mine == MineType.WOOD
-            or (mine == MineType.STONE and self.lv >= 10)
-            or (mine == MineType.IRON and self.lv >= 15)
+            or (mine == MineType.STONE and self.level >= 10)
+            or (mine == MineType.IRON and self.level >= 15)
         )
         self.is_enough_troops = True
         self.elite_mines = self.alliances_elite_mines.setdefault(
@@ -112,15 +105,6 @@ class Castle:
     @property
     def name(self) -> ScreenObjectName:
         return cast(ScreenObjectName, self._name)
-
-    @property
-    def lv(self) -> int:
-        return self._lv
-
-    @lv.setter
-    def lv(self, value: int):
-        update_castle(self._name, "lv", value)
-        self._lv = value
 
     @property
     def google(self) -> int:
@@ -150,23 +134,23 @@ class Castle:
         self._alliance = value
 
     @property
+    @cached_property
     def marches(self) -> int:
         """gets available marches value. From 1 to 4"""
-        val = self._max_marches
-        if val is None:
-            self.check_marches()
-            val = self._max_marches
-        assert isinstance(val, int)
-        assert (
-            0 <= val <= 3
-        ), f"additional marches value must be in range 0..3, got {val}"
-        return val + 1
-
-    @marches.setter
-    def marches(self, value: int):
-        """Set the marches value and persist it in SQLite."""
-        update_castle(self._name, "marches_limit", value)
-        self._max_marches = value
+        objects["lord_info"].force_waitap(5)
+        if not objects["check_details"].waitap(5):
+            self.close_ad()
+            return self.marches
+        sleep(2)
+        for limit, obj in march_limits.items():
+            if obj.exists():
+                print(f"saved {self.name} 1 + {limit} marches")
+                self.close_ad()
+                assert (
+                    0 <= limit <= 3
+                ), f"additional marches value must be in range 0..3, got {limit}"
+                return limit + 1
+        log_raise("No march num found in march_limit.")
 
     @staticmethod
     def close_bella() -> bool:
@@ -211,7 +195,6 @@ class Castle:
         objects["first_castle"].force_waitap()
         objects["upgrade"].force_waitap()
         objects["upgrade_blue"].force_waitap()
-        self.lv = 2
         objects["bella"].force_wait()
         self.close_bella()
         objects["new_monster"].force_waitap()
@@ -227,7 +210,7 @@ class Castle:
         self.bind_account()
         self.claim_mail()
         self.change_name()
-        print(f"account created, bound, named, upgraded to castle level {self.lv}")
+        print(f"account created, named and bound")
 
     @classmethod
     def challenge(cls) -> bool:
@@ -282,36 +265,20 @@ class Castle:
         sleep(0.8)
         print("name has been changed")
 
-    def check_level(self) -> None:
+    @cached_property
+    def level(self) -> int:
         objects["avatar"].force_tap()
         if not objects["account"].wait(5):
             self.close_ad()
-            self.check_level()
-            return
+            return self.level
         reset_screen()
         sleep(3)
         for level, obj in castle_levels.items():
             if obj.exists():
-                self.lv = level
                 print(f"saved {self.name} level {level}")
                 self.close_ad()
-                return
+                return level
         log_raise("No castle level found.")
-
-    def check_marches(self) -> None:
-        objects["lord_info"].force_waitap(5)
-        if not objects["check_details"].waitap(5):
-            self.close_ad()
-            self.check_marches()
-            return
-        sleep(2)
-        for limit, obj in march_limits.items():
-            if obj.exists():
-                self.marches = limit
-                print(f"saved {self.name} 1 + {limit} marches")
-                self.close_ad()
-                return
-        log_raise("No march num found in march_limit.")
 
     def bind_account(self):
         if self.account is not None:
@@ -802,7 +769,7 @@ class Castle:
         if not objects["military"].wait(2):
             objects["back"].force_tap()
         objects["military"].force_wait(10)
-        match marches, self.lv:
+        match marches, self.level:
             case 1, lv if lv >= 5:
                 print("unlocking 2nd march")
                 objects["military"].force_tap()
@@ -902,15 +869,13 @@ class Castle:
 
     def upgrade_castle(self) -> None:
         """upgrades castle or required buildings. from city."""
-        objects["castle_building"].waitap()
-        objects["upgrade"].waitap()
-        sleep(1.5)
-        if self.lv == 2:
-            sleep(4.5)
-        if objects["free"].tap() or objects["upgrade_blue"].tap():
-            self.lv += 1
-        else:
-            self._build_need()
+        if not objects["castle_building"].tap():
+            self.to_map()
+            self.close_ad()
+            objects["castle_building"].force_waitap(20)
+        objects["upgrade"].force_waitap(20)
+        sleep(2)
+        self._build_need()
 
     def build(self) -> bool:
         print("building")
@@ -1164,12 +1129,12 @@ class Castle:
             self.new_account()
         else:
             self.log_into_account()
+        _ = self.level
+        _ = self.marches
         for i in range(100):
             if i % 40 == 0:
                 self.claim_mail()
                 self.bind_account()
-                self.check_level()
-                self.check_marches()
                 self.claim_rss()
                 self.upgrade_lord_skills()
                 self.events()
