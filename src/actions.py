@@ -452,7 +452,10 @@ class Castle:
                 for _ in range(4):
                     objects["green"].force_tap_nth(randrange(15))
 
-        if objects["stragglers"].tap():
+        if objects['suppress'].tap():
+            objects['set_out'].force_waitap(10)
+        elif rebels := objects["rebels"].count():
+            objects['rebels'].force_tap_nth(rebels - 1)
             sleep(1.5)
             print("killing stragglers")
             self.close_bella()

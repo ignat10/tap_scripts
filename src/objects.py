@@ -139,7 +139,7 @@ ScreenObjectName = Literal[
     "unlock_land",
     "shell",
     "map",
-    "stragglers",
+    "rebels",
     "suppress",
     "search",
     "plus",
