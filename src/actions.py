@@ -369,10 +369,11 @@ class Castle:
                 return False
 
         objects["kingroad_go"].force_waitap(8)
-        sleep(0.8)
+        sleep(1.5)
         self.close_bella()
         if objects["loading"].exists():
-            objects["book"].wait()
+            objects["book"].force_wait()
+            sleep(2)
 
         while objects["hand"].waitap(1):
             if objects["heroic_evoluation_blue"].waitap(0.7):
@@ -390,6 +391,7 @@ class Castle:
             if objects["arrow"].wait(1):
                 break
         print("no more hands")
+        reset_screen()
 
         if objects['go'].exists():
             self.kill_monster()
@@ -425,7 +427,7 @@ class Castle:
         objects["recruit_blue"].tap()
 
         if objects["upgrade"].tap() or objects["upgrade_barracks"].tap():
-            sleep(1)
+            sleep(2)
         self._build_need()
 
         if objects["fortify"].tap():
@@ -442,10 +444,9 @@ class Castle:
             objects["confirm_shell"].waitap(1)
             back()
 
-        if not objects["green"].tap():
-            if objects["switch_level"].tap():
-                for _ in range(4):
-                    objects["green"].force_tap_nth(randrange(15))
+        if not objects["green"].tap() and objects["switch_level"].tap():
+            for _ in range(4):
+                objects["green"].force_tap_nth(randrange(15))
 
         if objects['suppress'].tap():
             objects['set_out'].force_waitap(10)
@@ -538,7 +539,7 @@ class Castle:
         start = perf_counter()
         if objects["avatar"].exists() or objects["map"].exists():
             return
-        print("loading")
+        print("loading game")
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
             if objects["man"].exists():
@@ -569,7 +570,7 @@ class Castle:
                 break
             if cls.close_bella():
                 print("closed bella. looking for hand.")
-                sleep(1.5)
+                sleep(1)
                 while objects["hand"].waitap(1):
                     objects["unlock"].waitap(0.6)
                 print("end hand.")
@@ -682,6 +683,7 @@ class Castle:
                     back()
                 back()
 
+        print("claiming events rewards")
         objects["events"].force_waitap(10)
         sleep(1.5)
         claim_7_march()
@@ -691,6 +693,7 @@ class Castle:
 
     @classmethod
     def upgrade_lord_skills(cls) -> None:
+        print("upgrading lord skills")
         objects["lord_info"].tap()
         objects["lord_skills"].force_waitap(10)
         objects["development_skills"].force_waitap(10)
@@ -993,8 +996,9 @@ class Castle:
     def to_map(cls) -> None:
         """Goes to map from inside city"""
         while not objects["book"].exists():
-            if objects["map"].tap() and objects["loading"].wait(1):
-                objects["book"].wait()
+            objects["map"].tap()
+            if objects["loading"].wait(2):
+                objects["book"].force_wait()
                 break
             else:
                 cls.close_ad()
