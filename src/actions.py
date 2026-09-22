@@ -965,18 +965,17 @@ class Castle:
         objects["pack"].force_tap()
         sleep(1.5)
         for i in range(objects["use_blue"].count()):
-            if not objects["use_blue"].wait(5):
-                if not objects["pack"].exists():
-                    cls.close_ad()
+            if not objects["use_blue"].wait(1):
+                cls.close_ad()
                 objects["pack"].force_tap()
-            objects["use_blue"].force_wait(5)
+                objects["use_blue"].force_wait(5)
             if not objects["use_blue"].tap_nth(i):
                 break
-            if objects["use_all_items"].waitap(1.5):
+            if objects["use_all_items"].waitap(1):
                 objects["use_all"].force_waitap(10)
                 continue
-            elif objects["max_items"].tap():
-                sleep(0.5)
+            else:
+                objects["max_items"].tap()
             objects["use_item"].waitap(1)
         cls.close_ad()
 
@@ -1150,7 +1149,8 @@ class Castle:
                 self.upgrade_lord_skills()
                 self.events()
                 self.claim_quest()
-                self.use_pack()
+                if randrange(10) == 1:
+                    self.use_pack()
                 self.join_alliance()
                 while self.build():
                     pass
