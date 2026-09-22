@@ -218,6 +218,10 @@ ScreenObjectName = Literal[
     "kingroad_done",
     "start_upgrading",
     "battle_power",
+    "recruit_",
+    "scout",
+    "conquer",
+    "gather_task",
     "heroic_evolution",
     "heroic_evoluation_blue",
     "go_blue",
@@ -295,6 +299,10 @@ troops = [
 tasks = {
     "upgrade": objects["start_upgrading"],
     "power": objects["battle_power"],
+    "recruit": objects["recruit_"],
+    "scout": objects["scout"],
+    "conquer": objects["conquer"],
+    "gather": objects["gather_task"],
 }
 
 march_limits: dict[int, ScreenObject] = {

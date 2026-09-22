@@ -362,6 +362,33 @@ class Castle:
             case Task.POWER:
                 self.recruit(horses=False)
                 return True
+            case Task.RECRUIT:
+                self.claim_recruits()
+                objects['kingroad'].force_waitap(20)
+            case Task.GATHER:
+                objects['kingroad_go'].force_waitap(20)
+                sleep(2)
+                self.close_bella()
+                objects['book'].force_wait(20)
+                sleep(2)
+                if objects['hand'].waitap(2):
+                    objects['map_hand'].force_waitap(5)
+                    objects['map_hand'].force_waitap(3)
+                    objects["check"].force_wait(10)
+                    if self.last_gather_ago > 1000 and objects["withdraw"].spam_tap(2, 1):
+                        objects["confirm_use_stamina"].waitap(5)
+                    else:
+                        objects["gather"].waitap(15)
+                        sleep(1.5)
+                        objects["gather"].waitap(4)
+                        objects["set_out"].waitap(5)
+                else:
+                    self.get_std_mine()
+                return True
+
+            case Task.SCOUT | Task.CONQUER:
+                print(f"castle {self.name}. {task.name} task have to be done manually.")
+                return False
 
         objects["kingroad_go"].force_waitap(8)
         sleep(0.8)
@@ -386,17 +413,7 @@ class Castle:
                 break
         print("no more hands")
 
-        if objects["check"].exists():
-            print("gathering")
-            if objects["withdraw"].spam_tap(2, 1):
-                objects["confirm_use_stamina"].waitap(5)
-            else:
-                objects["gather"].waitap(15)
-                sleep(1.5)
-                objects["gather"].waitap(4)
-                objects["set_out"].waitap(5)
-
-        elif objects['go'].exists():
+        if objects['go'].exists():
             self.kill_monster()
 
         elif objects["alliance_bonuses"].tap():
@@ -907,6 +924,24 @@ class Castle:
         if objects["upgrade"].tap():
             sleep(1.5)
         return self._build_need()
+
+    def claim_recruits(self) -> None:
+        self.close_ad()
+        objects['tasks'].force_tap()
+        objects['recruit_task'].force_wait(10)
+        barracks = objects['recruit_task'].count()
+        back()
+        sleep(2)
+        for i in range(barracks):
+            objects['tasks'].force_waitap(10)
+            objects['recruit_task'].force_wait(10)
+            objects['recruit_task'].force_tap_nth(i)
+            sleep(2)
+            if not objects['hand'].tap():
+                tap_center()
+            if objects['speed_up'].wait(2):
+                self.speed_up()
+            self.close_ad()
 
     def recruit(self, *, horses: bool) -> None:
         """recruits horses."""

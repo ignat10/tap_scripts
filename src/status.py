@@ -49,6 +49,10 @@ def check_map_status() -> MapStatus:
 class Task(Enum):
     UPGRADE = auto()
     POWER = auto()
+    RECRUIT = auto()
+    GATHER = auto()
+    SCOUT = auto()
+    CONQUER = auto()
     ELSE = auto()
 
 
