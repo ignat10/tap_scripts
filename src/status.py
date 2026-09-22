@@ -30,6 +30,8 @@ def check_castle_status() -> CastleStatus:
         objects["blur"].exists()
         or objects["claim_daily"].exists()
         or objects["x"].exists()
+        or objects['bella'].exists()
+        or objects['x_swap'].exists()
     ):
         return CastleStatus.AD
 

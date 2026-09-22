@@ -598,6 +598,8 @@ class Castle:
             if objects["exit_game"].exists():
                 restart_app()
                 cls.load()
+            if objects["help"].tap():
+                sleep(0.5)
             if (
                 objects["continue_game"].tap()
                 or objects["x"].tap()
