@@ -886,17 +886,15 @@ class Castle:
         self._build_need()
 
     def build(self) -> bool:
-        print("building")
         self.close_ad()
+        print("building")
         objects["tasks"].force_tap()
         objects["build_task"].force_wait(10)
-        if not objects["build_task"].tap_nth(1):
-            objects["build_task"].force_tap()
+        objects["build_task"].force_tap()
         sleep(1)
-        objects["hand"].waitap(1.5)
-        sleep(1)
+        objects["hand"].waitap(2)
 
-        if objects["upgrade"].tap():
+        if objects["upgrade"].waitap(1.5):
             sleep(1.5)
         return self._build_need()
 
