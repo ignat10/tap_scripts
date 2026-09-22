@@ -606,8 +606,8 @@ class Castle:
         shake()
         sleep(5)
 
-    @staticmethod
-    def claim_quest():
+    @classmethod
+    def claim_quest(cls):
         if objects["quest"].tap():
             sleep(1.5)
             while objects["daily_quest_claim"].waitap(0.4):
@@ -624,7 +624,7 @@ class Castle:
                         back()
                 if not objects["another_growth_quest"].waitap(2):
                     break
-            back()
+            cls.close_ad()
 
     @classmethod
     def claim_mail(cls) -> None:
@@ -817,8 +817,8 @@ class Castle:
         objects["research_blue"].waitap(1)
         self.close_ad()
 
-    @staticmethod
-    def forge() -> None:
+    @classmethod
+    def forge(cls) -> None:
         print("forging")
         if objects["forge"].tap():
             sleep(0.8)
@@ -840,9 +840,7 @@ class Castle:
             if objects["+"].waitap(1):
                 objects["select"].waitap(3)
             objects["forge_blue"].waitap(5)
-            back()
-            back()
-            back()
+        cls.close_ad()
 
     def _build_need(self) -> bool:
         """builds required for upgrade buildings. from upgrade menu."""
@@ -875,7 +873,6 @@ class Castle:
         else:
             return False
         self.speed_up()
-        self.close_ad()
         return True
 
     def upgrade_castle(self) -> None:
