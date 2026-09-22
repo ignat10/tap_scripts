@@ -38,6 +38,7 @@ ScreenObjectName = Literal[
     "loading",
     "map_hand",
     "monster",
+    "monster_plus",
     "arrow",
     "attack",
     "quick_search",

@@ -1011,8 +1011,7 @@ class Castle:
         if objects["search"].tap():
             objects["monster"].force_wait(10)
         if objects["monster"].tap():
-            #     objects['plus'].force_wait(10) # FIXME: replace with monster_plus object
-            # if objects['plus'].tap():
+            objects['monster_plus'].force_waitap(10)
             objects["go"].force_wait(10)
         objects["go"].spam_tap(5, 0.1)
         if objects["withdraw"].spam_tap(2, 1):
@@ -1023,7 +1022,7 @@ class Castle:
         while not objects["attack"].waitap(0.5):
             if objects["quick_search"].tap():
                 objects["map_hand"].force_waitap(3)
-                objects["arrow"].force_wait(3)
+                objects["arrow"].wait(2)
                 objects["arrow"].spam_tap(2, 0.5)
             else:
                 tap_center()
