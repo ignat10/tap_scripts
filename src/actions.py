@@ -879,21 +879,20 @@ class Castle:
         return True
 
     def upgrade_castle(self) -> None:
-        """upgrades castle or required buildings. from city."""
+        """upgrades castle or required buildings."""
         if not objects["castle_building"].tap():
             self.to_map()
             self.close_ad()
             objects["castle_building"].force_waitap(20)
-        objects["upgrade"].force_waitap(20)
-        sleep(2)
+        if objects["upgrade"].waitap(2):
+            sleep(2)
         self._build_need()
 
     def build(self) -> bool:
         self.close_ad()
         print("building")
         objects["tasks"].force_tap()
-        objects["build_task"].force_wait(10)
-        objects["build_task"].force_tap()
+        objects["build_task"].force_waitap(10)
         sleep(1)
         objects["hand"].waitap(2)
 
@@ -913,9 +912,11 @@ class Castle:
             objects['recruit_task'].force_wait(10)
             objects['recruit_task'].force_tap_nth(i)
             sleep(2)
-            if not objects['hand'].tap():
+            if not objects['hand'].waitap(1):
                 tap_center()
             if objects['speed_up'].wait(2):
+                sleep(1)
+                reset_screen()
                 self.speed_up()
             self.close_ad()
 
