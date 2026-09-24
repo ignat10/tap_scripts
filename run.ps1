@@ -72,6 +72,24 @@ import os
 # Keep Python tracebacks on PowerShell's output stream instead of ErrorRecord objects.
 sys.stderr = sys.stdout
 
+def trim_traceback(tb):
+    script_name = os.path.normcase(os.path.abspath(script_path))
+    while tb is not None:
+        filename = os.path.normcase(os.path.abspath(tb.tb_frame.f_code.co_filename))
+        if filename == script_name:
+            return tb
+        tb = tb.tb_next
+    return None
+
+def show_exception(exc_type, exc_value, exc_traceback):
+    trimmed_traceback = trim_traceback(exc_traceback)
+    traceback.print_exception(
+        exc_type,
+        exc_value,
+        trimmed_traceback,
+        file=sys.stderr,
+    )
+
 def show_traceback_and_interrupt(signum, frame):
     print(\"\nCtrl+C received. Python traceback:\", file=sys.stderr, flush=True)
     stack = traceback.extract_stack(frame)
@@ -86,6 +104,7 @@ def show_traceback_and_interrupt(signum, frame):
 signal.signal(signal.SIGINT, show_traceback_and_interrupt)
 script_path = sys.argv[1]
 sys.argv = [script_path, *sys.argv[2:]]
+sys.excepthook = show_exception
 runpy.run_path(script_path, run_name=\"__main__\")
 '@
 
