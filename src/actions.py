@@ -353,8 +353,8 @@ class Castle:
                     objects['map_hand'].force_waitap(5)
                     objects['map_hand'].force_waitap(3)
                     objects["check"].force_wait(10)
-                    if self.last_gather_ago > 1000 and objects["withdraw"].spam_tap(2, 1):
-                        objects["confirm_use_stamina"].waitap(5)
+                    if self.last_gather_ago > 1000:
+                        self.withdraw()
                     else:
                         objects["gather"].waitap(15)
                         sleep(1.5)
@@ -451,16 +451,23 @@ class Castle:
             for _ in range(4):
                 objects["green"].force_tap_nth(randrange(15))
 
-        if objects['suppress'].tap():
-            objects['set_out'].force_waitap(10)
-        elif rebels := objects["rebels"].count():
+        if objects['no_suppress'].exists():
+            back()
+            sleep(1)
+            objects['rebels'].force_wait(10)
+
+        if rebels := objects["rebels"].count():
             objects['rebels'].force_tap_nth(rebels - 1)
             sleep(1.5)
-            print("killing stragglers")
             self.close_bella()
-            objects["suppress"].force_waitap(10)
-            objects["set_out"].force_waitap(10)
+            objects["suppress"].force_wait(10)
+
+        if objects["suppress"].tap() and not objects["set_out"].waitap(2):
             self.close_ad()
+            self.to_map()
+            self.withdraw()
+            self.close_ad()
+            return True
         else:
             objects['set_out'].tap()
 
@@ -1040,6 +1047,13 @@ class Castle:
         assert 0 <= free <= limit
         return free
 
+    @staticmethod
+    def withdraw() -> bool:
+        if objects["withdraw"].spam_tap(2, 1):
+            objects["confirm_use_stamina"].force_waitap(5)
+            return True
+        return False
+
     def kill_monster(self) -> None:
         if not self.stamina:
             return
@@ -1051,9 +1065,7 @@ class Castle:
             objects["go"].force_wait(10)
         objects["go"].spam_tap(5, 0.1)
         sleep(1)
-        if objects["withdraw"].spam_tap(2, 1):
-            objects["confirm_use_stamina"].waitap(5)
-        elif objects["arrow"].wait(2):
+        if not self.withdraw() and objects["arrow"].wait(2):
             objects["arrow"].force_spam_tap(2, 0.2)
         for _ in range(30):
             if objects["quick_search"].tap():

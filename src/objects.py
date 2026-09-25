@@ -145,6 +145,7 @@ ScreenObjectName = Literal[
     "map",
     "rebels",
     "suppress",
+    "no_suppress",
     "search",
     "plus",
     "minus",
