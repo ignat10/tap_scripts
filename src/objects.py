@@ -125,6 +125,7 @@ ScreenObjectName = Literal[
     "mail",
     "mail_reward",
     "delete_mail",
+    "claim_torch",
     "read_claim_all",
     "confirm_read_all",
     "altar",
