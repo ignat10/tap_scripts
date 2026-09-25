@@ -431,8 +431,11 @@ class Castle:
         self._build_need()
 
         if objects["fortify"].tap():
-            objects["one-tap_upgrade"].waitap(2)
-            objects["use_all"].waitap(3)
+            objects["one-tap_upgrade"].force_waitap(2)
+            if not objects["use_all"].waitap(2):
+                self.close_ad()
+                self.conjure()
+                return True
 
         if objects["sell"].tap():
             print("shop")
@@ -956,6 +959,24 @@ class Castle:
                 self.speed_up()
         back()
         sleep(0.5)
+
+    @classmethod
+    def conjure(cls):
+        if not objects['altar'].tap():
+            cls.to_map()
+            cls.close_ad()
+            objects['altar'].force_waitap(10)
+        sleep(2)
+        objects['conjure'].force_waitap(10)
+        objects['conjure_10_times'].force_wait(10)
+        for i in [1, 0]:
+            objects['conjure_10_times'].force_tap_nth(i)
+            if objects['confirm_use_stamina'].waitap(2):
+                break
+            back()
+            reset_screen()
+            sleep(1)
+        cls.close_ad()
 
     @classmethod
     def use_pack(cls):
