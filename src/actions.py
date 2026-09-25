@@ -1164,12 +1164,10 @@ class Castle:
             sleep(1)
             return False
 
-        if not objects["gather"].waitap(5):
+        if not (objects["gather"].waitap(5) and objects["set_out"].waitap(2)):
             return self.get_elite_mine()
 
-        objects["set_out"].force_waitap(5)
-        sleep(1.5)
-
+        sleep(1)
         if check_map_status() == MapStatus.NOT_AT_MAP:
             self.is_enough_troops = False
             back()
