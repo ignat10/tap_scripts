@@ -950,6 +950,8 @@ class Castle:
             if not objects["recruit"].waitap(3) and objects["free"].tap():
                 sleep(1)
                 continue
+            if not objects["recruit_blue"].waitap(5):
+                self.speed_up()
             if objects["x_news"].tap():
                 sleep(1.5)
             if horses:
@@ -957,13 +959,15 @@ class Castle:
                 sleep(1.2)
                 objects["previous"].spam_tap(8, 0.02)
                 sleep(0.3)
-                objects["second"].tap()
-                sleep(0.3)
+                objects["second"].force_waitap(10)
+                if objects['upgrade_barracks'].wait(2):
+                    sleep(1)
+                    self._build_need()
+                    continue
             else:
                 choice(troops).waitap(3)
                 sleep(0.2)
-            if not objects["recruit_blue"].waitap(5):
-                self.speed_up()
+            objects['recruit_blue'].force_waitap(5)
         back()
         sleep(0.5)
 
