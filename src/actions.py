@@ -1062,10 +1062,14 @@ class Castle:
         if not self.stamina:
             return
         self.to_map()
+        if self.free_marches() != 0:
+            self.close_ad()
+            return
         if objects["search"].tap():
             objects["monster"].force_wait(10)
         if objects["monster"].tap():
-            objects['monster_plus'].force_waitap(10)
+            if randrange(5) == 2:
+                objects['monster_plus'].force_waitap(10)
             objects["go"].force_wait(10)
         objects["go"].spam_tap(5, 0.1)
         sleep(1)
