@@ -340,8 +340,9 @@ class Castle:
                 self.recruit(horses=False)
                 return True
             case Task.RECRUIT:
-                self.claim_recruits()
-                objects['kingroad'].force_waitap(20)
+                if randrange(5) == 4:
+                    self.claim_recruits()
+                    objects['kingroad'].force_waitap(20)
             case Task.GATHER:
                 objects['kingroad_go'].force_waitap(20)
                 sleep(2)
@@ -918,7 +919,8 @@ class Castle:
         sleep(2)
         for i in range(barracks):
             objects['tasks'].force_waitap(10)
-            objects['recruit_task'].force_wait(10)
+            if not objects['recruit_task'].wait(3):
+                self.claim_recruits()
             objects['recruit_task'].force_tap_nth(i)
             sleep(2)
             if not objects['hand'].waitap(1):
@@ -946,10 +948,11 @@ class Castle:
             sleep(1)
             objects["hand"].waitap(4)
             sleep(1)
-            if not objects["recruit"].waitap(3) and objects["free"].tap():
+            if not objects["recruit"].waitap(3):
+                objects["free"].tap()
                 sleep(1)
                 continue
-            if not objects["recruit_blue"].waitap(5):
+            if not objects["recruit_blue"].wait(2):
                 self.speed_up()
             if objects["x_news"].tap():
                 sleep(1.5)
@@ -959,7 +962,7 @@ class Castle:
                 objects["previous"].spam_tap(8, 0.02)
                 sleep(0.3)
                 objects["second"].force_waitap(10)
-                if objects['upgrade_barracks'].wait(2):
+                if objects['upgrade_barracks'].waitap(2):
                     sleep(1)
                     self._build_need()
                     continue
