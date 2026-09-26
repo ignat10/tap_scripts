@@ -640,14 +640,14 @@ class Castle:
     @classmethod
     def claim_mail(cls) -> None:
         objects["mail"].force_tap()
-        objects["delete_mail"].waitap(3)
-        if objects["mail_reward"].waitap(1) and not objects["claim_torch"].waitap(2):
+        if objects["delete_mail"].waitap(3):
+            objects['confirm_use_stamina'].force_waitap(10)
+        while objects["mail_reward"].waitap(1) and not objects["claim_torch"].waitap(2):
             objects["read_claim_all"].force_waitap(5)
             objects["confirm_read_all"].force_waitap(5)
             cls.close_ad()
-            cls.claim_mail()
-        else:
-            cls.close_ad()
+            objects['mail'].force_tap()
+        cls.close_ad()
 
     @classmethod
     def claim(cls) -> None:
