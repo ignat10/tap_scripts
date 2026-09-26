@@ -40,7 +40,6 @@ from src.status import (
     Task,
     check_castle_status,
     check_map_status,
-    check_task,
 )
 from src.utils import log_raise
 
@@ -322,7 +321,7 @@ class Castle:
         if not objects["kingroad_go"].wait(3):
             self.close_ad()
             return self.kingroad_task()
-        task = check_task()
+        task = Task.check()
         print(f"doing task {task.name}")
         match task:
             case Task.UPGRADE:

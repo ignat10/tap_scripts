@@ -57,10 +57,9 @@ class Task(Enum):
     CONQUER = auto()
     ELSE = auto()
 
-
-def check_task() -> Task:
-    for name, obj in tasks.items():
-        if obj.exists():
-            return Task[name.upper()]
-    else:
-        return Task.ELSE
+    @classmethod
+    def check(cls) -> "Task":
+        for name, obj in tasks.items():
+            if obj.exists():
+                return cls[name.upper()]
+        return cls.ELSE
