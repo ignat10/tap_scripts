@@ -247,14 +247,14 @@ class Castle:
                 or objects["quit"].tap()
                 or objects["backhand"].exists()
             ):
-                cls.close_ad()
-                return
-            if objects["blue_bonus"].tap():
+                break
+            elif objects["blue_bonus"].tap():
                 objects["confirm_bonus"].wait(3)
             if objects["confirm_bonus"].tap():
                 sleep(1.2)
             else:
                 swipe_center(choice(SWIPE_DIRECTIONS), SwipeSpeed.Slow, 4)
+            sleep(1)
         sleep(1.5)
 
     def change_name(self) -> None:
