@@ -81,7 +81,7 @@ class Castle:
         self._google = google
         self._account = account
         self._alliance = alliance
-        self.has_speed = True
+        self.no_speed = 0
         self.last_gather_at: datetime | None = None
         self.need_rss: MineType | None = None
         self.stamina = True
@@ -325,9 +325,6 @@ class Castle:
         print(f"doing task {task.name}")
         match task:
             case Task.UPGRADE:
-                if not self.has_speed:
-                    self.close_ad()
-                    return False
                 objects["kingroad_go"].force_waitap(10)
                 sleep(1)
                 self.close_bella()
@@ -763,23 +760,23 @@ class Castle:
             objects["hospital_building"].wait(2)
         if objects["hospital_building"].tap():
             sleep(1.5)
-        self.speed_up()
+        if self.speed_up():
+            sleep(2)
         objects["claim_healed"].tap()
 
     def speed_up(self) -> bool:
-        if objects["no_speed"].exists():
-            self.has_speed = False
-        elif (
-            objects["speed_up"].tap()
+        if (
+            objects["no_speed"].exists()
+            or objects["speed_up"].tap()
             or objects["speed_up_blue"].tap()
             or objects["get_now"].tap()
         ):
             sleep(0.8)
-            self.has_speed = False
+            self.no_speed += 1
 
         if objects["one-tap_speed_up"].tap() and objects["confirm_speed_up"].waitap(3):
             sleep(1.5)
-            self.has_speed = True
+            self.no_speed -= 1
             return True
 
         self.close_ad()
@@ -1203,7 +1200,7 @@ class Castle:
             self.claim()
             self.heal()
             print(f"made {i} task")
-            if not self.kingroad_task():
+            if not self.kingroad_task() or self.no_speed > 6:
                 break
 
         self.upgrade_castle()
