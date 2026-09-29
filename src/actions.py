@@ -639,11 +639,14 @@ class Castle:
         objects["mail"].force_tap()
         if objects["delete_mail"].waitap(3):
             objects['confirm_use_stamina'].force_waitap(10)
-        while objects["mail_reward"].waitap(1) and not objects["claim_torch"].waitap(2):
-            objects["read_claim_all"].force_waitap(5)
-            objects["confirm_read_all"].force_waitap(5)
+            sleep(2)
+        for _ in range(objects["mail_reward"].count()):
             cls.close_ad()
             objects['mail'].force_tap()
+            objects['mail_reward'].force_waitap(10)
+            if not objects["claim_torch"].waitap(2):
+                objects["read_claim_all"].force_waitap(10)
+                objects["confirm_read_all"].force_waitap(10)
         cls.close_ad()
 
     @classmethod
