@@ -1030,12 +1030,11 @@ class Castle:
     @classmethod
     def to_map(cls) -> None:
         """Goes to map from inside city"""
-        while not objects["book"].exists():
-            objects["map"].tap()
-            if objects["loading"].wait(2) and not objects["book"].wait(10):
-                cls.to_map()
-                return
-            cls.close_ad()
+        cls.close_ad()
+        objects["map"].force_tap()
+        if not objects["book"].wait(10):
+            cls.to_map()
+            return
         sleep(1)
         reset_screen()
 
