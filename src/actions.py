@@ -29,7 +29,6 @@ from src.objects import (
     equipment,
     resources_technology,
     castle_levels,
-    resources_need,
     march_limits,
 )
 from src.paths import CASTLES_DB_PATH
@@ -426,6 +425,9 @@ class Castle:
         if objects["upgrade"].tap() or objects["upgrade_barracks"].tap():
             sleep(2)
         self._build_need()
+        self.set_need_rss()
+
+        objects['confirm_rss'].tap()
 
         if objects["fortify"].tap():
             objects["one-tap_upgrade"].force_waitap(2)
@@ -735,6 +737,9 @@ class Castle:
         reset_screen()
         sleep(1.2)
 
+    def set_need_rss(self) -> None:
+        self.need_rss = MineType.check_need()
+
     def heal(self) -> None:
         """heal troops in hospital and sanctuary, then claim healed. from castle."""
         if objects["claim_healed"].tap():
@@ -874,11 +879,8 @@ class Castle:
                     sleep(0.8)
                     self.speed_up()
                 else:
-                    for need_type, obj in resources_need.items():
-                        if obj.exists():
-                            self.need_rss = MineType[need_type]
-                            print(f"Not enough {need_type} to upgrade.")
-                            break
+                    self.set_need_rss()
+
             objects["upgrade_blue"].waitap(1) or objects["big_upgrade_blue"].tap()
         elif objects["go_upgrade"].tap() or objects["hand"].tap():
             sleep(1.5)

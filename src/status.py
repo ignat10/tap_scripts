@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from enum import Enum, auto
 
-from src.objects import objects, tasks
+from src.objects import objects, tasks, resources_need
 
 
 class MineType(Enum):
@@ -8,6 +10,14 @@ class MineType(Enum):
     STONE = objects["stone_type"]
     WOOD = objects["wood_type"]
     FOOD = objects["food_type"]
+
+    @classmethod
+    def check_need(cls) -> MineType | None:
+        for need_type, obj in resources_need.items():
+            if obj.exists():
+                print(f"Not enough {need_type} to upgrade.")
+                return cls[need_type.upper()]
+        return None
 
 
 class MapStatus(Enum):
@@ -58,7 +68,7 @@ class Task(Enum):
     ELSE = auto()
 
     @classmethod
-    def check(cls) -> "Task":
+    def check(cls) -> Task:
         for name, obj in tasks.items():
             if obj.exists():
                 return cls[name.upper()]
