@@ -21,6 +21,7 @@ ScreenObjectName = Literal[
     "speed_up",
     "speed_up_blue",
     "no_speed",
+    "use_speed",
     "one-tap_speed_up",
     "confirm_speed_up",
     "sanctuary",

@@ -80,7 +80,7 @@ class Castle:
         self._google = google
         self._account = account
         self._alliance = alliance
-        self.no_speed = 0
+        self.no_speed: int = 0
         self.last_gather_at: datetime | None = None
         self.need_rss: MineType | None = None
         self.stamina = True
@@ -773,13 +773,16 @@ class Castle:
         objects["claim_healed"].tap()
 
     def speed_up(self) -> bool:
+        if objects["no_speed"].exists() or objects['use_speed'].exists():
+            self.no_speed += 1
+            return False
+
         if (
-            objects["no_speed"].exists()
-            or objects["speed_up"].tap()
+            objects["speed_up"].tap()
             or objects["speed_up_blue"].tap()
             or objects["get_now"].tap()
         ):
-            sleep(0.8)
+            sleep(1)
             self.no_speed += 1
 
         if objects["one-tap_speed_up"].tap() and objects["confirm_speed_up"].waitap(3):
@@ -787,7 +790,6 @@ class Castle:
             self.no_speed -= 1
             return True
 
-        self.close_ad()
         return False
 
     def research(self) -> None:
@@ -955,7 +957,6 @@ class Castle:
                 sleep(1)
                 continue
             if not objects["recruit_blue"].wait(2):
-                objects['speed_up_blue'].force_wait(5)
                 self.speed_up()
                 continue
             if objects["x_news"].tap():
