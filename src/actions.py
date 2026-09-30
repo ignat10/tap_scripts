@@ -955,7 +955,9 @@ class Castle:
                 sleep(1)
                 continue
             if not objects["recruit_blue"].wait(2):
+                objects['speed_up_blue'].force_wait(5)
                 self.speed_up()
+                continue
             if objects["x_news"].tap():
                 sleep(1.5)
             if horses:
