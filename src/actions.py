@@ -1136,7 +1136,7 @@ class Castle:
         if not self.stamina:
             return
         self.to_map()
-        if self.free_marches() != 0:
+        if self.free_marches() == 0:
             self.close_ad()
             return
         if objects["search"].tap():
