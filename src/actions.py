@@ -909,10 +909,12 @@ class Castle:
             objects["forge_blue"].waitap(5)
         cls.close_ad()
 
-    def _build_need(self) -> bool:
+    def _build_need(self, *, recursive: int=0) -> bool:
         """builds required for upgrade buildings. from upgrade menu."""
         reset_screen()
-        if objects["free"].tap():
+        if recursive == 10:
+            return self.speed_up()
+        elif objects["free"].tap():
             print("built for free.")
             sleep(0.5)
             self._build_need()
@@ -932,7 +934,7 @@ class Castle:
             or objects["go_upgrade"].tap()
         ):
             sleep(1)
-            return self._build_need()
+            return self._build_need(recursive=recursive+ 1)
 
         return self.speed_up()
 
