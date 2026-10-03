@@ -727,12 +727,12 @@ class Castle:
     def pinata(cls) -> None:
         objects['tasks'].force_tap()
         sleep(2)
-        swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.4)
-        sleep(1)
-        swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.4)
-        objects['pinata_task'].force_waitap(10)
-        if not objects['pinata'].wait(3):
-            cls.close_ad()
+        for _ in range(3):
+            swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.5)
+            sleep(1)
+        if not (objects['pinata_task'].waitap(2) and objects['pinata'].wait(3)):
+            back()
+            sleep(1)
             return
         for _ in range(2):
             objects['pinata'].tap_each()
