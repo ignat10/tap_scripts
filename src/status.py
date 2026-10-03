@@ -12,12 +12,12 @@ class MineType(Enum):
     FOOD = objects["food_type"]
 
     @classmethod
-    def check_need(cls) -> MineType | None:
-        for need_type, obj in resources_need.items():
-            if obj.exists():
-                print(f"Not enough {need_type} to upgrade.")
-                return cls[need_type.upper()]
-        return None
+    def check_need(cls) -> set[MineType]:
+        return {
+            cls[need_type.upper()]
+            for need_type, obj in resources_need.items()
+            if obj.exists()
+        }
 
 
 class MapStatus(Enum):

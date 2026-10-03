@@ -43,6 +43,7 @@ from src.status import (
 from src.utils import log_raise
 
 MAX_MINE_LEVEL = 6
+MINE_LEVELS_SEQUENCE = [5, 6, 4, 3, 2, 1]
 ELITE_MINES = range(10)
 
 SWIPE_DIRECTIONS = (Direction.Up, Direction.Down, Direction.Right, Direction.Left)
@@ -82,11 +83,10 @@ class Castle:
         self._alliance = alliance
         self.no_speed: int = 0
         self.last_gather_at: datetime | None = None
-        self.need_rss: MineType | None = None
         self.stamina = True
         self.mine_type = (
             (level, mine)
-            for level in [5, 6, 4, 3, 2, 1]
+            for level in MINE_LEVELS_SEQUENCE
             for mine in MineType
             if mine == MineType.FOOD
             or mine == MineType.WOOD
@@ -780,7 +780,10 @@ class Castle:
         sleep(1.2)
 
     def confirm_rss(self) -> bool:
-        self.need_rss = MineType.check_need()
+        self.mine_type = chain(
+            ((level, mine_type) for level, mine_type in zip(MINE_LEVELS_SEQUENCE, MineType.check_need())),
+            self.mine_type,
+        )
         return objects['confirm_rss'].tap()
 
     def heal(self) -> None:
@@ -916,6 +919,10 @@ class Castle:
             return True
         if self.confirm_rss():
             return True
+        elif MineType.check_need():
+            print("Not enough rss even with pack.")
+            self.no_speed = 1000 - 7
+            return False
         if (
             objects["hand"].waitap(1)
             or objects["upgrade_blue"].tap()
@@ -1180,13 +1187,8 @@ class Castle:
         """Gets standard mine from the map."""
 
         objects["search"].force_tap()
-        need_level = reversed(range(MAX_MINE_LEVEL))
         for _ in range(24):
-            level, need_type = (
-                (next(need_level), self.need_rss)
-                if self.need_rss is not None
-                else next(self.mine_type)
-            )
+            level, need_type = next(self.mine_type)
             print(f"searching mine. lv {level} {need_type.name.lower()}")
             need_type.value.force_waitap(15)
             objects["plus"].spam_tap(5, 0)
