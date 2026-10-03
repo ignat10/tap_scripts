@@ -1259,6 +1259,7 @@ class Castle:
         _ = self.level
         _ = self.marches
         for i in range(100):
+            print(f"made {i} task. no_speed: {self.no_speed}")
             if i % 40 == 0:
                 self.claim_mail()
                 self.bind_account()
@@ -1279,7 +1280,6 @@ class Castle:
                 self.close_ad()
             self.claim()
             self.heal()
-            print(f"made {i} task")
             if not self.kingroad_task() or self.no_speed > 6:
                 break
 
