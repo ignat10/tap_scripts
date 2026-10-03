@@ -327,7 +327,12 @@ class Castle:
                 objects["kingroad_go"].force_waitap(10)
                 sleep(1)
                 self.close_bella()
-                objects["hand"].waitap(5)
+                if objects["hand"].waitap(3):
+                    if objects['kingroad_go'].wait(1):
+                        self.kingroad_task()
+                else:
+                    tap_center()
+                sleep(1)
                 if objects["upgrade"].waitap(2) or objects["hand"].tap():
                     sleep(2)
                     self._build_need()
@@ -1013,6 +1018,7 @@ class Castle:
                 sleep(0.2)
             objects['recruit_blue'].force_waitap(5)
             sleep(1)
+            self.confirm_rss()
         back()
         sleep(0.5)
 
