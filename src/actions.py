@@ -281,7 +281,7 @@ class Castle:
             self.close_ad()
             return self.level
         reset_screen()
-        sleep(3)
+        sleep(1)
         for level, obj in castle_levels.items():
             if obj.exists():
                 print(f"saved {self.name} level {level}")
@@ -563,7 +563,6 @@ class Castle:
                 restart_app()
                 cls.load()
             sleep(1.5)
-        sleep(3)
         reset_screen()
         print("loaded.")
         cls.close_ad()
@@ -792,7 +791,7 @@ class Castle:
             objects["sanctuary"].wait(2)
         if objects["sanctuary"].tap():
             print("sanctuary...")
-            objects["revive"].waitap(10)
+            objects["revive"].waitap(3)
             objects["claim_holy_water"].waitap(1)
             if not objects["confirm_green"].waitap(1):
                 objects["holy_quest"].waitap(1)
@@ -1013,6 +1012,7 @@ class Castle:
                 choice(troops).waitap(3)
                 sleep(0.2)
             objects['recruit_blue'].force_waitap(5)
+            sleep(1)
         back()
         sleep(0.5)
 
@@ -1144,7 +1144,7 @@ class Castle:
             if randrange(5) == 2:
                 objects['monster_plus'].force_waitap(10)
             objects["go"].force_wait(10)
-        objects["go"].spam_tap(5, 0.1)
+        objects["go"].spam_tap(5, 0.2)
         sleep(1)
         if not self.withdraw() and objects["arrow"].wait(2):
             objects["arrow"].force_spam_tap(2, 0.2)
