@@ -1062,6 +1062,7 @@ class Castle:
         if objects['alliance_bonuses'].waitap(2):
             objects['apply'].wait(2)
         if not (objects['apply'].exists() or objects['join'].exists()):
+            cls.close_ad()
             return
         for _ in range(3):
             if objects['join'].tap():
@@ -1086,11 +1087,11 @@ class Castle:
     @classmethod
     def alliance_rewards(cls) -> None:
         objects['alliance'].force_tap()
-        objects['alliance_quest'].force_waitap(10)
-        objects['claim_all'].waitap(2)
-        cls.close_ad()
-        objects['alliance'].force_tap()
-        sleep(1)
+        if objects['alliance_quest'].waitap(3):
+            objects['claim_all'].waitap(2)
+            cls.close_ad()
+            objects['alliance'].force_tap()
+            sleep(1)
         swipe_center(Direction.Up, SwipeSpeed.Slow, 1)
         objects['fiend_trial'].force_waitap(10)
         while objects['battle'].waitap(2):
