@@ -648,7 +648,7 @@ class Castle:
             objects['mail_reward'].force_waitap(10)
             if not objects["claim_torch"].waitap(2):
                 objects["read_claim_all"].force_waitap(10)
-                objects["confirm_read_all"].force_waitap(10)
+                objects["confirm_green"].force_waitap(10)
         cls.close_ad()
 
     @classmethod
@@ -665,13 +665,19 @@ class Castle:
         objects["help"].tap()
 
     @classmethod
-    def events(cls):
+    def events(cls) -> None:
+        def event():
+            if not objects["event"].exists():
+                objects["events"].force_tap()
+                objects["event"].force_wait(10)
+
         def claim_7_march(event_index: int = 0):
-            if objects["events"].tap():
-                objects["7-day_march"].wait(3)
-            if objects["7-day_march"].tap():
-                sleep(0.5)
-                objects["!"].wait(3)
+            event()
+            if not objects["7-day_march"].tap():
+                return
+
+            sleep(0.5)
+            objects["!"].wait(3)
             if objects["event_claim"].exists():
                 objects["event_claim"].tap_each()
                 sleep(0.5)
@@ -682,25 +688,57 @@ class Castle:
             elif objects["!"].tap_nth(event_index):
                 objects["event_claim"].wait(2)
                 claim_7_march(event_index + 1)
-            else:
-                cls.close_ad()
+            cls.close_ad()
 
         def claim_rise():
-            if objects["events"].tap():
-                objects["rising_road"].wait(3)
-            if objects["rising_road"].tap():
-                sleep(1)
+            event()
+            if objects["rising_road"].tap() or objects['dragons_domain'].tap():
+                sleep(2)
                 while objects["event_arrow"].waitap(4):
-                    sleep(1.5)
+                    sleep(2)
                     back()
-                back()
+                cls.close_ad()
+
+        def camel():
+            event()
+            if objects["camel"].tap():
+                sleep(1)
+                if objects["!"].waitap(2):
+                    sleep(2)
+                    objects["!"].force_tap_nth(1)
+                    objects['event_claim'].force_wait(10)
+                    while objects['event_claim'].tap_nth(1):
+                        sleep(1)
+                        back()
+                        sleep(2)
+                cls.close_ad()
 
         print("claiming events rewards")
-        objects["events"].force_waitap(10)
-        sleep(1.5)
         claim_7_march()
-        sleep(1.5)
         claim_rise()
+        camel()
+        cls.close_ad()
+
+    @classmethod
+    def pinata(cls) -> None:
+        objects['tasks'].force_tap()
+        sleep(2)
+        swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.4)
+        sleep(1)
+        swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.4)
+        objects['pinata_task'].force_waitap(10)
+        if not objects['pinata'].wait(3):
+            cls.close_ad()
+            return
+        for _ in range(2):
+            objects['pinata'].tap_each()
+            if objects['try_luck'].waitap(7):
+                sleep(2)
+                objects['card'].force_waitap(10)
+                objects['free_crystal'].force_waitap(10)
+                objects['fold'].force_waitap(10)
+                objects['confirm_use_stamina'].force_waitap(10)
+                objects['pinata'].wait(3)
         cls.close_ad()
 
     @classmethod
@@ -756,10 +794,10 @@ class Castle:
             print("sanctuary...")
             objects["revive"].waitap(10)
             objects["claim_holy_water"].waitap(1)
-            if not objects["confirm_claim_water"].waitap(1):
+            if not objects["confirm_green"].waitap(1):
                 objects["holy_quest"].waitap(1)
                 objects["claim_holy_quest"].waitap(1)
-                if objects["confirm_claim_water"].waitap(1):
+                if objects["confirm_green"].waitap(1):
                     sleep(0.8)
                 objects["holy_revival"].waitap(1)
             objects["revive"].waitap(1)
@@ -1032,6 +1070,36 @@ class Castle:
             sleep(2)
         cls.close_ad()
 
+    # TODO: add the remaining reward-claim flows:
+    #
+    # Alliance:
+    #   - gifts
+    #
+    # Events:
+    #   - add the remaining events
+    #
+    # City buildings:
+    #   - safe resources
+    #   - Castle Growth Map
+
+    @classmethod
+    def alliance_rewards(cls) -> None:
+        objects['alliance'].force_tap()
+        objects['alliance_quest'].force_waitap(10)
+        objects['claim_all'].waitap(2)
+        cls.close_ad()
+        objects['alliance'].force_tap()
+        sleep(1)
+        swipe_center(Direction.Up, SwipeSpeed.Slow, 1)
+        objects['fiend_trial'].force_waitap(10)
+        while objects['battle'].waitap(2):
+            objects['set_out'].force_waitap(10)
+            objects['skip'].force_waitap(10)
+            objects['confirm_green'].force_waitap(10)
+            objects['ok'].force_waitap(10)
+            sleep(1)
+        cls.close_ad()
+
     @classmethod
     def to_map(cls) -> None:
         """Goes to map from inside city"""
@@ -1193,11 +1261,13 @@ class Castle:
                 self.bind_account()
                 self.claim_rss()
                 self.upgrade_lord_skills()
+                self.pinata()
                 self.events()
                 self.claim_quest()
                 if randrange(10) == 1:
                     self.use_pack()
                 self.join_alliance()
+                self.alliance_rewards()
                 while self.build():
                     pass
 
