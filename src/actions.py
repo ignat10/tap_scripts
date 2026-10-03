@@ -433,9 +433,6 @@ class Castle:
         if objects["upgrade"].tap() or objects["upgrade_barracks"].tap():
             sleep(2)
         self._build_need()
-        self.set_need_rss()
-
-        objects['confirm_rss'].tap()
 
         if objects["fortify"].tap():
             objects["one-tap_upgrade"].force_waitap(2)
@@ -782,8 +779,9 @@ class Castle:
         reset_screen()
         sleep(1.2)
 
-    def set_need_rss(self) -> None:
+    def confirm_rss(self) -> bool:
         self.need_rss = MineType.check_need()
+        return objects['confirm_rss'].tap()
 
     def heal(self) -> None:
         """heal troops in hospital and sanctuary, then claim healed. from castle."""
@@ -793,7 +791,7 @@ class Castle:
         if objects["hospital"].tap():
             print("healing...")
             objects["heal"].waitap(7)
-            if objects["confirm_rss"].waitap(1.5):
+            if self.confirm_rss():
                 sleep(1.5)
         if objects["ask_help"].waitap(0.2):
             objects["sanctuary"].wait(2)
