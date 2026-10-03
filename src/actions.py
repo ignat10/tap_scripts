@@ -662,9 +662,6 @@ class Castle:
     def claim(cls) -> None:
         """claims recruited troop and gift. from city"""
         cls.close_ad()
-        if objects["horse"].exists():
-            print("claiming horses")
-            objects["horse"].tap_each()
         if objects["claim"].tap():
             sleep(1.5)
             back()
