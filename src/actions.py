@@ -592,21 +592,24 @@ class Castle:
                 cls.load()
             if objects["help"].tap():
                 sleep(0.5)
-            if (
+            else:
                 objects["continue_game"].tap()
-                or objects["x"].tap()
-                or objects["x_new"].tap()
-                or objects["x_news"].tap()
-                or objects["x_swap"].tap()
-                or objects["claim_daily"].tap()
-                or objects["claim_temple"].tap()
-                or objects["check_beast"].tap()
-            ) and check_castle_status() == CastleStatus.CLOSED_AD:
+                objects["x"].tap()
+                objects["x_new"].tap()
+                objects["x_news"].tap()
+                objects["x_swap"].tap()
+                objects["claim_daily"].tap()
+                objects["claim_temple"].tap()
+                objects["check_beast"].tap()
+            if check_castle_status() == CastleStatus.CLOSED_AD:
                 break
             for _ in range(3):
                 back()
                 sleep(0.2)
-            if objects["no"].waitap(3):
+            sleep(0.5)
+            if check_castle_status() == CastleStatus.CLOSED_AD:
+                break
+            elif objects["no"].waitap(3):
                 sleep(1.5)
             else:
                 tap_center()
@@ -790,7 +793,8 @@ class Castle:
             sleep(1.5)
         if objects["hospital"].tap():
             print("healing...")
-            objects["heal"].waitap(7)
+            objects["heal"].waitap(3)
+            sleep(1)
             if self.confirm_rss():
                 sleep(1.5)
         if objects["ask_help"].waitap(0.2):
