@@ -912,29 +912,22 @@ class Castle:
         if objects["free"].tap():
             print("built for free.")
             sleep(0.5)
-        elif (
-            objects["upgrade_blue"].tap()
+            self._build_need()
+            return True
+        if self.confirm_rss():
+            return True
+        if (
+            objects["hand"].waitap(1)
+            or objects["upgrade_blue"].tap()
             or objects["big_upgrade_blue"].tap()
-            or objects["hammer_use"].exists()
-            or objects["hammer_200"].exists()
+            or objects["hammer_use"].tap()
+            or objects["hammer_200"].tap()
+            or objects["go_upgrade"].tap()
         ):
-            if objects["confirm_rss"].waitap(2):
-                return True
-            if not (objects["hammer_use"].tap() or objects["hammer_200"].tap()):
-                if objects["get_now"].exists():
-                    sleep(0.8)
-                    self.speed_up()
-                else:
-                    self.set_need_rss()
-
-            objects["upgrade_blue"].waitap(1) or objects["big_upgrade_blue"].tap()
-        elif objects["go_upgrade"].tap() or objects["hand"].tap():
-            sleep(1.5)
+            sleep(1)
             return self._build_need()
-        else:
-            return False
-        self.speed_up()
-        return True
+
+        return self.speed_up()
 
     def upgrade_castle(self) -> None:
         """upgrades castle or required buildings."""
