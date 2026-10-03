@@ -338,6 +338,9 @@ class Castle:
                     self._build_need()
                 return True
             case Task.POWER:
+                self.to_map()
+                self.close_bella()
+                self.heal()
                 self.recruit(horses=False)
                 return True
             case Task.RECRUIT:
