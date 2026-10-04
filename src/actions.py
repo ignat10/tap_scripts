@@ -761,7 +761,10 @@ class Castle:
     def upgrade_lord_skills(cls) -> None:
         print("upgrading lord skills")
         objects["lord_info"].tap()
-        objects["lord_skills"].force_waitap(10)
+        if not objects["lord_skills"].waitap(10):
+            cls.close_ad()
+            cls.upgrade_lord_skills()
+            return
         objects["development_skills"].force_waitap(10)
         sleep(0.5)
         while not objects["skill_points_0"].exists():
