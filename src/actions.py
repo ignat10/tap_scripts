@@ -936,6 +936,7 @@ class Castle:
             self._build_need()
             return True
         if self.confirm_rss():
+            self.close_ad()
             return True
         elif MineType.check_need():
             print("Not enough rss even with pack.")
