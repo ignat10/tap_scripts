@@ -246,6 +246,7 @@ ScreenObjectName = Literal[
     "go_blue",
     "evolve",
     "free",
+    "free_upgrade",
     "unlock",
     "check_beast",
     "login",

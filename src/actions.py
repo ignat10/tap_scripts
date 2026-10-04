@@ -385,7 +385,7 @@ class Castle:
             if objects["go_blue"].tap():
                 sleep(1)
                 return False
-            objects["free"].tap()
+            objects["free"].tap() or objects['free_upgrade'].tap()
             if objects["kingroad_go"].tap():
                 print("tapped kingroad go inside hand loop")
             sleep(1)
@@ -914,7 +914,7 @@ class Castle:
         reset_screen()
         if recursive == 10:
             return self.speed_up()
-        elif objects["free"].tap():
+        elif objects["free"].tap() or objects['free_upgrade'].tap():
             print("built for free.")
             sleep(0.5)
             self._build_need()
