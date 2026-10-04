@@ -1115,12 +1115,13 @@ class Castle:
             sleep(1)
         swipe_center(Direction.Up, SwipeSpeed.Slow, 1)
         objects['fiend_trial'].force_waitap(10)
-        while objects['battle'].waitap(2):
+        sleep(2)
+        while objects['battle'].waitap(1):
             objects['set_out'].force_waitap(10)
             objects['skip'].force_waitap(10)
             objects['confirm_green'].force_waitap(10)
             objects['ok'].force_waitap(10)
-            sleep(1)
+            sleep(2)
         cls.close_ad()
 
     @classmethod
