@@ -1188,9 +1188,7 @@ class Castle:
 
             else:
                 tap_center()
-        else:
-            self.close_ad()
-            return
+        self.close_ad()
 
         objects["set_out"].waitap(2)
         if objects["use_stamina"].waitap(1):
