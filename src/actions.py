@@ -709,12 +709,16 @@ class Castle:
                 sleep(1)
                 if objects["!"].waitap(2):
                     sleep(2)
-                    objects["!"].force_tap_nth(1)
-                    objects['event_claim'].force_wait(10)
-                    while objects['event_claim'].tap_nth(1):
-                        sleep(1)
-                        back()
+                    while objects['event_claim'].waitap(2):
                         sleep(2)
+                        back()
+                    sleep(2)
+                    if objects["!"].tap_nth(1):
+                        objects['event_claim'].force_wait(10)
+                        while objects['event_claim'].tap_nth(1):
+                            sleep(1)
+                            back()
+                            sleep(2)
                 cls.close_ad()
 
         def autumn_login():
