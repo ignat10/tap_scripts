@@ -134,6 +134,7 @@ ScreenObjectName = Literal[
     "rising_road",
     "dragons_domain",
     "camel",
+    "autumn_login",
     "event_claim",
     "!",
     "event_arrow",

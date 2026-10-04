@@ -717,10 +717,18 @@ class Castle:
                         sleep(2)
                 cls.close_ad()
 
+        def autumn_login():
+            event()
+            if objects['autumn_login'].tap():
+                sleep(2)
+                objects['event_claim'].tap_each()
+                cls.close_ad()
+
         print("claiming events rewards")
         claim_7_march()
         claim_rise()
         camel()
+        autumn_login()
         cls.close_ad()
 
     @classmethod
