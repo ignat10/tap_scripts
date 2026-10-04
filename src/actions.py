@@ -1295,10 +1295,8 @@ class Castle:
                 self.alliance_rewards()
                 while self.build():
                     pass
-
-            if i % 10 == 1:
                 self.kill_monster()
-                self.close_ad()
+
             self.claim()
             self.heal()
             if not self.kingroad_task() or self.no_speed > 6:
