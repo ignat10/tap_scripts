@@ -1024,7 +1024,7 @@ class Castle:
             if objects["x_news"].tap():
                 sleep(1.5)
             if horses:
-                objects["cavalry"].waitap(3)
+                objects["cavalry"].waitap(1)
                 sleep(1.2)
                 objects["previous"].spam_tap(8, 0.02)
                 sleep(0.3)
@@ -1034,7 +1034,7 @@ class Castle:
                     self._build_need()
                     continue
             else:
-                choice(troops).waitap(3)
+                choice(troops).waitap(1)
                 sleep(0.2)
             objects['recruit_blue'].force_waitap(5)
             sleep(1)
