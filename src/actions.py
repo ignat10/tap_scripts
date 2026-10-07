@@ -856,14 +856,13 @@ class Castle:
         return False
 
     def research(self) -> None:
-        marches = self.marches
         objects["tasks"].force_tap()
         sleep(1)
         objects["research_task"].force_waitap(10)
         if not objects["military"].wait(2):
             objects["back"].force_tap()
         objects["military"].force_wait(10)
-        match marches, self.level:
+        match self.marches, self.level:
             case 1, lv if lv >= 5:
                 print("unlocking 2nd march")
                 objects["military"].force_tap()
@@ -1295,6 +1294,7 @@ class Castle:
                 self.alliance_rewards()
                 while self.build():
                     pass
+                self.research()
                 self.kill_monster()
 
             self.claim()
