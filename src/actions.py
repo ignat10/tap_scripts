@@ -673,7 +673,7 @@ class Castle:
     def events(cls) -> None:
         def event():
             if not objects["event"].exists():
-                objects["events"].force_tap()
+                objects["events"].force_waitap(10)
                 objects["event"].force_wait(10)
 
         def claim_7_march(event_index: int = 0):
