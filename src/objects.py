@@ -271,6 +271,7 @@ ScreenObjectName = Literal[
     "castle_level_11",
     "castle_level_12",
     "castle_level_13",
+    "castle_level_14",
     "castle_level_15",
     "castle_level_19",
 ]
