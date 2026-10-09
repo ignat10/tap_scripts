@@ -968,7 +968,9 @@ class Castle:
         self.close_ad()
         print("building")
         objects["tasks"].force_tap()
-        objects["build_task"].force_waitap(10)
+        if not objects["build_task"].waitap(10):
+            self.close_ad()
+            return self.build()
         sleep(1)
         objects["hand"].waitap(2)
 
