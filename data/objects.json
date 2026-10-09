@@ -3,10 +3,6 @@
     null,
     5
   ],
-  "try_again": [
-    null,
-    5
-  ],
   "second": [
     [
       655,
@@ -85,10 +81,6 @@
       212
     ],
     1
-  ],
-  "column": [
-    null,
-    5
   ],
   "x": [
     null,
@@ -192,10 +184,6 @@
     null,
     5
   ],
-  "horse": [
-    null,
-    30
-  ],
   "claim_holy_water": [
     null,
     5
@@ -232,13 +220,6 @@
   "build_task": [
     "construction",
     10
-  ],
-  "frozen_screen": [
-    [
-      0,
-      0
-    ],
-    41
   ],
   "use": [
     [
@@ -441,13 +422,6 @@
     ],
     5
   ],
-  "red_gift": [
-    [
-      497,
-      234
-    ],
-    21
-  ],
   "skill_points_0": [
     [
       394,
@@ -460,10 +434,6 @@
       22,
       27
     ],
-    5
-  ],
-  "claim_camel": [
-    null,
     5
   ],
   "use_all_items": [
@@ -614,13 +584,6 @@
       103
     ],
     1
-  ],
-  "alliance_gift": [
-    [
-      654,
-      1092
-    ],
-    5
   ],
   "map": [
     [
@@ -802,10 +765,6 @@
     5
   ],
   "beast_emerge": [
-    null,
-    5
-  ],
-  "max": [
     null,
     5
   ],
@@ -1074,10 +1033,6 @@
     ],
     5
   ],
-  "neogeo2": [
-    null,
-    5
-  ],
   "green_castle": [
     [
       106,
@@ -1145,10 +1100,6 @@
   "upgrade": [
     null,
     27
-  ],
-  "food": [
-    null,
-    8
   ],
   "upgrade_blue": [
     [
@@ -1294,10 +1245,6 @@
     null,
     5
   ],
-  "wood": [
-    null,
-    5
-  ],
   "infantry": [
     [
       17,
@@ -1416,17 +1363,6 @@
     ],
     5
   ],
-  "skills_back": [
-    null,
-    5
-  ],
-  "college": [
-    [
-      73,
-      548
-    ],
-    6
-  ],
   "development_skills": [
     [
       422,
@@ -1450,20 +1386,6 @@
     [
       643,
       982
-    ],
-    1
-  ],
-  "stragglers": [
-    [
-      141,
-      316
-    ],
-    7
-  ],
-  "college_place": [
-    [
-      464,
-      572
     ],
     1
   ],
@@ -1568,10 +1490,6 @@
       274,
       969
     ],
-    5
-  ],
-  "neogeo1": [
-    null,
     5
   ],
   "zuchin": [
