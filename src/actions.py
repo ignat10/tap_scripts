@@ -975,8 +975,11 @@ class Castle:
         sleep(1)
         objects["hand"].waitap(2)
 
-        if objects["upgrade"].waitap(1.5):
+        if objects["upgrade"].waitap(1.5) or objects['hand'].tap():
             sleep(1.5)
+        elif objects['kingroad_go'].exists() or objects['kingroad_claim'].exists():
+            self.close_ad()
+            return self.build()
         return self._build_need()
 
     def claim_recruits(self) -> None:
