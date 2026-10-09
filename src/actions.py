@@ -940,6 +940,7 @@ class Castle:
         elif MineType.check_need():
             print("Not enough rss even with pack.")
             self.no_speed = 1000 - 7
+            self.close_ad()
             return False
         if (
             objects["hand"].waitap(1)
