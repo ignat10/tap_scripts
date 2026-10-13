@@ -43,7 +43,6 @@ from src.utils import log_raise
 
 MAX_MINE_LEVEL = 6
 MINE_LEVELS_SEQUENCE = [5, 6, 4, 3, 2, 1]
-ELITE_MINES = range(10)
 
 SWIPE_DIRECTIONS = (Direction.Up, Direction.Down, Direction.Right, Direction.Left)
 
@@ -94,7 +93,7 @@ class Castle:
             or (mine == MineType.IRON and self.level >= 15)
         )
         self.is_enough_troops = True
-        self.elite_mines = iter(ELITE_MINES)
+        self.elite_mines_got: set[int] = set()
 
     @property
     def name(self) -> ScreenObjectName:
@@ -1282,18 +1281,27 @@ class Castle:
 
         objects["elite_mines"].force_waitap(4)
         sleep(1)
-        objects["blue"].wait(3)
 
-        if not objects["blue"].tap_nth(blue):
+        if not objects["blue"].wait(3):
             back()
             sleep(1)
             return False
 
+        mines = objects['blue'].count()
+        if mines == len(self.elite_mines_got):
+            return False
+
+        free = set(range(mines)) - self.elite_mines_got
+        blue = choice(list(free))
+        self.elite_mines_got.add(blue)
+
+        objects["blue"].force_tap_nth(blue)
+
         if not objects["gather"].waitap(5):
             return self.get_elite_mine()
 
-        objects["set_out"].waitap(2)
-        sleep(1)
+        if objects["set_out"].waitap(2):
+            sleep(1)
 
         if check_map_status() == MapStatus.NOT_AT_MAP:
             self.is_enough_troops = False
