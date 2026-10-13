@@ -804,10 +804,11 @@ class Castle:
         sleep(1.2)
 
     def confirm_rss(self) -> bool:
-        self.mine_type = chain(
-            ((level, mine_type) for level, mine_type in zip(MINE_LEVELS_SEQUENCE, MineType.check_need())),
-            self.mine_type,
-        )
+        if (mine := MineType.check_need()) is not None:
+            self.mine_type = chain(
+                ((level, mine) for level in MINE_LEVELS_SEQUENCE),
+                self.mine_type,
+            )
         return objects['confirm_rss'].tap()
 
     def heal(self) -> None:

@@ -12,12 +12,13 @@ class MineType(Enum):
     FOOD = objects["food_type"]
 
     @classmethod
-    def check_need(cls) -> set[MineType]:
-        return {
-            cls[need_type.upper()]
-            for need_type, obj in resources_need.items()
-            if obj.exists()
-        }
+    def check_need(cls) -> MineType | None:
+        for mine in MineType:
+            if mine == MineType.IRON: # WARNING: remove when need_iron template captured
+                continue
+            if resources_need[mine.name.lower()].exists():
+                return mine
+        return None
 
 
 class MapStatus(Enum):
