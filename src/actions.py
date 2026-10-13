@@ -267,8 +267,7 @@ class Castle:
         sleep(1.5)
         if objects["change_name_green"].exists():
             log_raise(f"Name {self.name} already taken.")
-        back()
-        sleep(0.8)
+        self.close_ad()
         print("name has been changed")
 
     def change_avatar(self) -> None:
@@ -849,6 +848,7 @@ class Castle:
     def speed_up(self) -> bool:
         if objects["no_speed"].exists() or objects['use_speed'].exists():
             self.no_speed += 1
+            self.close_ad()
             return False
 
         if (
@@ -961,12 +961,10 @@ class Castle:
             self._build_need()
             return True
         if self.confirm_rss():
-            self.close_ad()
             return True
         elif MineType.check_need():
             print("Not enough rss even with pack.")
-            self.no_speed = 1000 - 7
-            self.close_ad()
+            self.no_speed += 3
             return False
         if (
             objects["hand"].waitap(1)
@@ -1006,7 +1004,9 @@ class Castle:
         elif objects['kingroad_go'].exists() or objects['kingroad_claim'].exists():
             self.close_ad()
             return self.build()
-        return self._build_need()
+        result = self._build_need()
+        self.close_ad()
+        return result
 
     def claim_recruits(self) -> None:
         self.close_ad()
