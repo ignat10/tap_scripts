@@ -748,25 +748,26 @@ class Castle:
 
     @classmethod
     def pinata(cls) -> None:
+        print("claiming pinata")
         objects['tasks'].force_tap()
         sleep(2)
         for _ in range(3):
             swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.5)
             sleep(1)
-        if not (objects['pinata_task'].waitap(2) and objects['pinata'].wait(3)):
+        if objects['pinata_task'].waitap(2) and objects['pinata'].wait(3):
+            for _ in range(3):
+                objects['pinata'].tap_each()
+                if objects['try_luck'].waitap(7):
+                    sleep(2)
+                    objects['card'].force_waitap(10)
+                    objects['free_crystal'].force_waitap(10)
+                    objects['fold'].force_waitap(10)
+                    objects['confirm_use_stamina'].force_waitap(10)
+                    objects['pinata'].wait(3)
+            cls.close_ad()
+        else:
             back()
             sleep(1)
-            return
-        for _ in range(2):
-            objects['pinata'].tap_each()
-            if objects['try_luck'].waitap(7):
-                sleep(2)
-                objects['card'].force_waitap(10)
-                objects['free_crystal'].force_waitap(10)
-                objects['fold'].force_waitap(10)
-                objects['confirm_use_stamina'].force_waitap(10)
-                objects['pinata'].wait(3)
-        cls.close_ad()
 
     @classmethod
     def upgrade_lord_skills(cls) -> None:
