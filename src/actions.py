@@ -111,7 +111,7 @@ class Castle:
 
     @property
     def account(self) -> int | None:
-        return int(self._account) if isinstance(self._account, SupportsInt) else None
+        return self._account
 
     @account.setter
     def account(self, value: int):
@@ -129,10 +129,9 @@ class Castle:
 
     @property
     def last_gather_ago(self) -> int | None:
-        """Return elapsed gather time: seconds below a minute, otherwise minutes."""
+        """Return elapsed gather time in seconds."""
         if self.last_gather_at is None:
             return None
-
         return int((datetime.now() - self.last_gather_at).total_seconds())
 
     def set_last_gather_now(self) -> None:
