@@ -252,7 +252,6 @@ ScreenObjectName = Literal[
     "castle",
     "confirm",
     "no",
-    "frozen_screen",
     "exit_game",
     "castle_level_2",
     "castle_level_3",
