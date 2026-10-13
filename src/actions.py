@@ -866,47 +866,62 @@ class Castle:
         return False
 
     def research(self) -> None:
+        marches = self.marches
+        level = self.level
         objects["tasks"].force_tap()
         sleep(1)
         objects["research_task"].force_waitap(10)
         if not objects["military"].wait(2):
             objects["back"].force_tap()
         objects["military"].force_wait(10)
-        match self.marches, self.level:
-            case 1, lv if lv >= 5:
-                print("unlocking 2nd march")
-                objects["military"].force_tap()
-                if not objects["legion"].waitap(1.5):
-                    if not objects["expansion"].tap():
-                        objects["draft"].force_tap()
-            case 2, lv if lv >= 12:
-                print("unlocking 3rd march")
-                objects["military"].force_tap()
-                swipe_center(Direction.Up, SwipeSpeed.Normal, 1)
-                if not objects["legion"].waitap(1.5):
-                    if not objects["leadership"].tap():
-                        objects["horseshoes"].force_tap()
-            case 3, lv if lv >= 19:
-                print("unlocking 4th march")
-                objects["military"].force_tap()
-                swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.7)
-                if not objects["legion"].waitap(1.5):
+        if (
+            marches == 1 and level >= 5
+            or marches == 2 and level >=12
+            or marches == 3 and level >=19
+        ):
+            print(f"unlocking march number {marches + 1}")
+            objects["military"].force_tap()
+            match marches:
+                case 2:
+                    swipe_center(Direction.Up, SwipeSpeed.Normal, 1)
+                case 3:
+                    swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.7)
+            sleep(1)
+
+            if not objects["legion"].waitap(2):
+                if not objects["leadership"].tap():
                     if not objects["horseshoes"].tap():
                         if not objects["expansion"].tap():
                             objects["draft"].force_tap()
-            case _:
-                print("researching resources technology.")
-                objects["resources"].force_tap()
-                sleep(3)
-                for techno in sample(resources_technology, k=len(resources_technology)):
-                    if techno.tap():
-                        if objects["research_blue"].wait(1.5):
-                            break
-                        else:
-                            back()
-                            sleep(1)
 
-        objects["research_blue"].waitap(1)
+        else:
+            print("researching resources technology.")
+            objects["resources"].force_tap()
+            sleep(3)
+            for techno in sample(resources_technology, k=len(resources_technology)):
+                if techno.tap():
+                    if objects["research_blue"].wait(1.5):
+                        break
+                    else:
+                        back()
+                        sleep(1)
+
+        if not objects["research_blue"].waitap(1):
+            if objects['go_research'].tap():
+                sleep(1)
+                objects['hand'].force_waitap(2)
+                sleep(1)
+                objects['hand'].force_waitap(2)
+                sleep(2)
+                self._build_need()
+            elif objects['get_now_research'].exists():
+                self.close_ad()
+                if not objects['college_icon'].waitap(2):
+                    self.to_map()
+                    self.close_ad()
+                    objects['college_icon'].force_waitap(10)
+                sleep(2)
+                self.speed_up()
         self.close_ad()
 
     @classmethod
