@@ -3,7 +3,7 @@ from typing import Any
 
 from src.paths import CASTLES_DB_PATH
 
-DATA_COLUMNS = ("name", "google", "account", "alliance")
+DATA_COLUMNS = ("name", "google", "account", "avatar")
 MUTABLE_COLUMNS = frozenset(DATA_COLUMNS[1:])
 
 

@@ -3,7 +3,6 @@ from functools import cached_property
 from itertools import chain
 from random import randrange, choice, sample
 from time import sleep, perf_counter
-from typing import Iterator, SupportsInt
 from typing import cast
 
 from screen_objects import (
@@ -68,19 +67,20 @@ class Castle:
         name: str,
         google: int,
         account: int | None,
-        alliance: str | None,
+        avatar: int | None,
     ):
 
         value_assert("name", name, str)
         value_assert("google", google, int)
         if account is not None:
             value_assert("account", account, int)
-        if alliance is not None:
-            value_assert("alliance", alliance, str)
+        if avatar is not None:
+            value_assert("avatar", avatar, int)
+            assert 0 <= avatar <= 14, f"avatar in {CASTLES_DB_PATH} must be between 0 and 14"
         self._name = name
         self._google = google
         self._account = account
-        self._alliance = alliance
+        self._avatar = avatar
         self.no_speed: int = 0
         self.last_gather_at: datetime | None = None
         self.stamina = True
@@ -94,11 +94,7 @@ class Castle:
             or (mine == MineType.IRON and self.level >= 15)
         )
         self.is_enough_troops = True
-        self.elite_mines = self.alliances_elite_mines.setdefault(
-            cast(str, alliance), iter(ELITE_MINES)
-        )
-
-    alliances_elite_mines: dict[str, Iterator[int]] = {}
+        self.elite_mines = iter(ELITE_MINES)
 
     @property
     def name(self) -> ScreenObjectName:
@@ -123,13 +119,13 @@ class Castle:
         self._account = value
 
     @property
-    def alliance(self) -> str:
-        return cast(str, self._alliance)
+    def avatar(self) -> int | None:
+        return self._avatar
 
-    @alliance.setter
-    def alliance(self, value: str):
-        update_castle(self._name, "alliance", value)
-        self._alliance = value
+    @avatar.setter
+    def avatar(self, value: int | None):
+        update_castle(self._name, "avatar", value)
+        self._avatar = value
 
     @property
     def last_gather_ago(self) -> int | None:
@@ -219,6 +215,7 @@ class Castle:
         self.bind_account()
         self.claim_mail()
         self.change_name()
+        self.change_avatar()
         print(f"account created, named and bound")
 
     @classmethod
@@ -273,6 +270,22 @@ class Castle:
         back()
         sleep(0.8)
         print("name has been changed")
+
+    def change_avatar(self) -> None:
+        objects["avatar"].force_waitap(3)
+        if objects["x_news"].waitap(1):
+            sleep(1)
+        objects["avatar_switch"].force_waitap(10)
+        sleep(1)
+        objects['pick_avatar'].force_wait(10)
+        assert objects['pick_avatar'].count() == 15
+        avatar = randrange(4, 15)
+        objects['pick_avatar'].force_tap_nth(avatar)
+        objects['switch_avatar'].force_waitap(10)
+        objects['confirm_use_stamina'].force_waitap(10)
+        self.avatar = avatar
+        print(f"successfully switched {self.name}'s avatar to {avatar}")
+        self.close_ad()
 
     @cached_property
     def level(self) -> int:
@@ -519,35 +532,32 @@ class Castle:
         assert (
             account is not None
         ), f"called log_into_account for {self.name}, but account not set in {CASTLES_DB_PATH}"
-        if not objects[self.name].exists():
-            print(f"logging into {self.name}")
 
-            while True:
-                if objects["exit_game"].exists():
-                    print("invalid token.")
-                    restart_app()
-                    self.load()
-                self.close_ad()
-                if objects["avatar"].tap():
-                    objects["account"].wait(4)
-                if objects["account"].tap():
-                    objects["switch"].force_wait(15)
-                if objects["switch"].tap():
-                    sleep(1.5)
-                if not (objects["login"].waitap(3) and objects["gmail"].wait(10)):
-                    continue
-                objects["gmail"].tap_nth(gmail)
-                if not objects["acc_list"].wait(15):
-                    continue
-                is_green = objects["green_castle"].exists()
-                objects["castle"].force_tap_nth(max(account - is_green, 0))
-                objects["confirm"].waitap()
-                break
-            print("logged in.")
-            sleep(7.5)
-            self.load()
-        else:
-            print(f"already logged into {self.name}")
+        while not objects[f"avatar_{self.avatar}"].exists(): #type: ignore
+            print(f"logging into {self.name}")
+            if objects["exit_game"].exists():
+                print("invalid token.")
+                restart_app()
+                self.load()
+            self.close_ad()
+            if objects["avatar"].tap():
+                objects["account"].wait(4)
+            if objects["account"].tap():
+                objects["switch"].force_wait(15)
+            if objects["switch"].tap():
+                sleep(1.5)
+            if not (objects["login"].waitap(3) and objects["gmail"].wait(10)):
+                continue
+            objects["gmail"].force_tap_nth(gmail)
+            if not objects["acc_list"].wait(15):
+                continue
+            is_green = objects["green_castle"].exists()
+            objects["castle"].force_tap_nth(max(account - is_green, 0))
+            objects["confirm"].waitap()
+            break
+        print("logged in.")
+        sleep(7.5)
+        self.load()
 
     @classmethod
     def load(cls) -> None:
