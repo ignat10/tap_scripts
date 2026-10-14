@@ -247,6 +247,8 @@ ScreenObjectName = Literal[
     "check_beast",
     "login",
     "gmail",
+    "google_down",
+    "continue",
     "acc_list",
     "green_castle",
     "castle",

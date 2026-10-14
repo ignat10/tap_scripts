@@ -546,7 +546,13 @@ class Castle:
             if not (objects["login"].waitap(3) and objects["gmail"].wait(10)):
                 continue
             objects["gmail"].force_tap_nth(gmail)
-            if not objects["acc_list"].wait(15):
+            for _ in range(15):
+                if objects["acc_list"].wait(1):
+                    break
+                elif objects['google_down'].exists():
+                    objects['continue'].force_waitap(10)
+                    objects['acc_list'].wait(10)
+            else:
                 continue
             is_green = objects["green_castle"].exists()
             objects["castle"].force_tap_nth(max(account - is_green, 0))
