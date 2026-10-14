@@ -1316,33 +1316,33 @@ class Castle:
             self.new_account()
         else:
             self.log_into_account()
-        _ = self.level
-        _ = self.marches
+        self.bind_account()
+        self.claim_mail()
+        self.claim_rss()
+        self.upgrade_lord_skills()
+        self.pinata()
+        self.events()
+        self.claim_quest()
+        if randrange(10) == 1:
+            self.use_pack()
+        self.join_alliance()
+        self.alliance_rewards()
+        while self.build():
+            pass
+
         for i in range(100):
             print(f"made {i} task. no_speed: {self.no_speed}")
-            if i % 40 == 0:
-                self.claim_mail()
-                self.bind_account()
-                self.claim_rss()
-                self.upgrade_lord_skills()
-                self.pinata()
-                self.events()
-                self.claim_quest()
-                if randrange(10) == 1:
-                    self.use_pack()
-                self.join_alliance()
-                self.alliance_rewards()
-                while self.build():
-                    pass
+            if i % 40 == 4:
                 self.research()
                 self.kill_monster()
 
             self.claim()
             self.heal()
-            if not self.kingroad_task() or self.no_speed > 6:
+            if not self.kingroad_task() or self.no_speed >= 6:
                 break
 
         self.upgrade_castle()
+        _ = self.marches
         self.to_map()
         if self.free_marches() != 0:
             self.get_elite_mine()
