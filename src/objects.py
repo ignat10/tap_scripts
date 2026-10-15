@@ -56,6 +56,7 @@ ScreenObjectName = Literal[
     "get_now",
     "hammer_use",
     "hammer_200",
+    "purchase",
     "need_food",
     "need_wood",
     "need_stone",

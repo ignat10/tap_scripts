@@ -346,6 +346,7 @@ class Castle:
                 if objects["upgrade"].waitap(2) or objects["hand"].tap():
                     sleep(2)
                     self._build_need()
+                self.close_ad()
                 return True
             case Task.POWER:
                 if randrange(7) == 4:
@@ -955,32 +956,39 @@ class Castle:
             objects["forge_blue"].waitap(5)
         cls.close_ad()
 
-    def _build_need(self, *, recursive: int=0) -> bool:
+    def _build_need(self) -> bool:
         """builds required for upgrade buildings. from upgrade menu."""
-        reset_screen()
-        if recursive == 10:
-            return self.speed_up()
-        elif objects["free"].tap() or objects['free_upgrade'].tap():
-            print("built for free.")
-            sleep(0.5)
-            self._build_need()
-            return True
-        if self.confirm_rss():
-            return True
-        elif MineType.check_need():
-            print("Not enough rss even with pack.")
-            self.no_speed += 3
-            return False
-        if (
-            objects["hand"].waitap(1)
-            or objects["upgrade_blue"].tap()
-            or objects["big_upgrade_blue"].tap()
-            or objects["hammer_use"].tap()
-            or objects["hammer_200"].tap()
-            or objects["go_upgrade"].tap()
-        ):
-            sleep(1)
-            return self._build_need(recursive=recursive+ 1)
+        for _ in range(10):
+            reset_screen()
+
+            if objects["free"].exists() or objects['free_upgrade'].exists():
+                while objects['free'].waitap(1) or objects['free_upgrade'].waitap(1):
+                    sleep(1)
+                print("built for free.")
+                return True
+
+            if self.confirm_rss():
+                return True
+
+            if MineType.check_need():
+                print("Not enough rss even with pack.")
+                self.no_speed += 3
+                return False
+
+            if objects['purchase'].exists():
+                print("Not enough gems for hammer.")
+                self.no_speed += 3
+                return False
+
+            if (
+                objects["hand"].waitap(1)
+                or objects["upgrade_blue"].tap()
+                or objects["big_upgrade_blue"].tap()
+                or objects["hammer_use"].tap()
+                or objects["hammer_200"].tap()
+                or objects["go_upgrade"].tap()
+            ):
+                continue
 
         return self.speed_up()
 
@@ -993,6 +1001,7 @@ class Castle:
         if objects["upgrade"].waitap(2):
             sleep(2)
         self._build_need()
+        self.close_ad()
 
     def build(self) -> bool:
         self.close_ad()
@@ -1069,6 +1078,7 @@ class Castle:
                 if objects['upgrade_barracks'].waitap(2):
                     sleep(1)
                     self._build_need()
+                    self.close_ad()
                     continue
             else:
                 choice(troops).waitap(1)
