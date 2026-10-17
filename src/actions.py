@@ -971,7 +971,7 @@ class Castle:
             if self.confirm_rss():
                 return True
 
-            if MineType.check_need():
+            if MineType.check_need() is not None:
                 print("Not enough rss even with pack.")
                 self.no_speed += 3
                 return False
