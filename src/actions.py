@@ -1357,7 +1357,9 @@ class Castle:
             if not self.kingroad_task() or self.no_speed >= 6:
                 break
 
-        self.upgrade_castle()
+        if self.level < 15:
+            self.upgrade_castle()
+
         _ = self.marches
         self.to_map()
         if self.free_marches() != 0:
