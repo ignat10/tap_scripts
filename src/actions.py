@@ -590,9 +590,6 @@ class Castle:
     @classmethod
     def close_ad(cls) -> None:
         """closes ad. from city or map"""
-        if check_castle_status() == CastleStatus.CLOSED_AD:
-            return
-        reset_screen()
         for _ in range(4):
             if check_castle_status() == CastleStatus.CLOSED_AD:
                 break
@@ -621,7 +618,7 @@ class Castle:
             for _ in range(3):
                 back()
                 sleep(0.2)
-            sleep(0.5)
+            sleep(1)
             if check_castle_status() == CastleStatus.CLOSED_AD:
                 break
             elif objects["no"].waitap(3):
