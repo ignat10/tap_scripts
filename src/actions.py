@@ -397,8 +397,9 @@ class Castle:
             if objects["heroic_evoluation_blue"].waitap(0.7):
                 objects["evolve"].waitap(5)
             if objects["go_blue"].tap():
-                sleep(1)
-                return False
+                log_raise("UNKNOWN BEHAVIOUR, NEED TO BE CHECKED")
+                # sleep(1)
+                # return False
             objects["free"].tap() or objects['free_upgrade'].tap()
             if objects["kingroad_go"].tap():
                 print("tapped kingroad go inside hand loop")
