@@ -1164,7 +1164,7 @@ class Castle:
             objects['claim_all'].waitap(2)
             cls.close_ad()
             objects['alliance'].force_tap()
-            sleep(1)
+            sleep(1.5)
         swipe_center(Direction.Up, SwipeSpeed.Slow, 1)
         objects['fiend_trial'].force_waitap(10)
         sleep(2)
