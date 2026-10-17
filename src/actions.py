@@ -996,7 +996,7 @@ class Castle:
         if not objects["castle_building"].tap():
             self.to_map()
             self.close_ad()
-            objects["castle_building"].force_waitap(20)
+            self.upgrade_castle()
         if objects["upgrade"].waitap(2):
             sleep(2)
         self._build_need()
