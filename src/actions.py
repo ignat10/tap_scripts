@@ -676,11 +676,11 @@ class Castle:
     def claim(cls) -> None:
         """claims recruited troop and gift. from city"""
         cls.close_ad()
+        objects["help"].tap()
         if objects["claim"].tap():
             sleep(1.5)
             back()
             sleep(1.5)
-        objects["help"].tap()
 
     @classmethod
     def events(cls) -> None:
