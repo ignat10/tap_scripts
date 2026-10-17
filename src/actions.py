@@ -926,6 +926,8 @@ class Castle:
                     objects['college_icon'].force_waitap(10)
                 sleep(2)
                 self.speed_up()
+        sleep(1)
+        self.confirm_rss()
         self.close_ad()
 
     @classmethod
