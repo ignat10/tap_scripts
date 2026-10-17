@@ -1349,7 +1349,7 @@ class Castle:
 
             self.claim()
             self.heal()
-            if not self.kingroad_task() or self.no_speed >= 6:
+            if not self.kingroad_task() or self.no_speed >= 4:
                 break
 
         if self.level < 15:
