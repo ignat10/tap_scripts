@@ -312,7 +312,7 @@ class Castle:
         if objects["undo_bind"].wait(50):
             account_number = get_column("google").count(gmail) - 1  # self account
             print(
-                f"bind account {self.name} to {gmail} gmail. save it as account number {account_number}"
+                f"bound account {self.name} to {gmail} gmail. saved it as account number {account_number}"
             )
             self.account = account_number
         self.close_ad()
@@ -326,6 +326,7 @@ class Castle:
         ):
             self.close_ad()
             if not (objects["kingroad"].tap() or objects["hand"].tap()):
+                print("No kingroad!")
                 return False
         if not objects["kingroad_go"].wait(3):
             self.close_ad()
