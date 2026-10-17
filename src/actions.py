@@ -382,6 +382,7 @@ class Castle:
 
             case Task.SCOUT | Task.CONQUER:
                 print(f"castle {self.name}. {task.name} task have to be done manually.")
+                self.close_ad()
                 return False
 
         objects["kingroad_go"].force_waitap(8)
@@ -765,10 +766,10 @@ class Castle:
                     objects['fold'].force_waitap(10)
                     objects['confirm_use_stamina'].force_waitap(10)
                     objects['pinata'].wait(3)
-            cls.close_ad()
         else:
             back()
             sleep(1)
+        cls.close_ad()
 
     @classmethod
     def upgrade_lord_skills(cls) -> None:
