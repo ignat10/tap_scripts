@@ -89,10 +89,11 @@ def iter_castles():
         finally:
             Castle.close_ad()
             release(name)
-            seconds = int(perf_counter() - started_at)
-            minutes, seconds = divmod(seconds, 60)
-            elapsed = f"{minutes}m {seconds}s"
-            print(f"Castle {name} took {elapsed}")
+
+        seconds = int(perf_counter() - started_at)
+        minutes, seconds = divmod(seconds, 60)
+        elapsed = f"{minutes}m {seconds}s"
+        print(f"Castle {name} took {elapsed}")
 
     print("No available castles.")
 
