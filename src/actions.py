@@ -1285,10 +1285,6 @@ class Castle:
 
     def get_elite_mine(self) -> bool:
         """Gets elite mine from the map."""
-        blue = next(self.elite_mines, None)
-        if blue is None:
-            return False
-
         print("Elite")
         objects["book"].force_tap()
 
