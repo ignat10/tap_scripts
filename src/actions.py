@@ -332,7 +332,7 @@ class Castle:
             self.close_ad()
             return self.kingroad_task()
         task = Task.check()
-        print(f"doing task {task.name}")
+        print(f"doing {task.name if task is not None else "unknown"} task")
         match task:
             case Task.UPGRADE:
                 objects["kingroad_go"].force_waitap(10)
@@ -379,9 +379,10 @@ class Castle:
                         objects["set_out"].waitap(5)
                 else:
                     self.get_std_mine()
+                self.close_ad()
                 return True
 
-            case Task.SCOUT | Task.CONQUER:
+            case Task.SCOUT | Task.CONQUER | Task.RUINS:
                 print(f"castle {self.name}. {task.name} task have to be done manually.")
                 self.close_ad()
                 return False

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import Enum, auto
 
-from src.objects import objects, tasks, resources_need
+from src.objects import objects, resources_need
 
 
 class MineType(Enum):
@@ -60,17 +60,17 @@ def check_map_status() -> MapStatus:
 
 
 class Task(Enum):
-    UPGRADE = auto()
-    POWER = auto()
-    RECRUIT = auto()
-    GATHER = auto()
-    SCOUT = auto()
-    CONQUER = auto()
-    ELSE = auto()
+    UPGRADE = objects["start_upgrading"]
+    POWER = objects["battle_power"]
+    RECRUIT = objects["recruit_"]
+    SCOUT = objects["scout"]
+    CONQUER = objects["conquer"]
+    GATHER = objects["gather_task"]
+    RUINS = objects["ruins_wave_3"]
 
     @classmethod
-    def check(cls) -> Task:
-        for name, obj in tasks.items():
-            if obj.exists():
-                return cls[name.upper()]
-        return cls.ELSE
+    def check(cls) -> Task | None:
+        for task in cls:
+            if task.value.exists():
+                return task
+        return None

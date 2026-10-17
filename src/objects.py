@@ -238,6 +238,7 @@ ScreenObjectName = Literal[
     "scout",
     "conquer",
     "gather_task",
+    "ruins_wave_3",
     "heroic_evolution",
     "heroic_evoluation_blue",
     "go_blue",
@@ -315,15 +316,6 @@ troops = [
     objects["archers"],
     objects["mages"],
 ]
-
-tasks = {
-    "upgrade": objects["start_upgrading"],
-    "power": objects["battle_power"],
-    "recruit": objects["recruit_"],
-    "scout": objects["scout"],
-    "conquer": objects["conquer"],
-    "gather": objects["gather_task"],
-}
 
 march_limits: dict[int, ScreenObject] = {
     int(name[12]): obj
