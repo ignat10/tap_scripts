@@ -1068,7 +1068,8 @@ class Castle:
                 continue
             if not objects["recruit_blue"].wait(2):
                 self.speed_up()
-                continue
+                if not objects['recruit_blue'].wait(1):
+                    continue
             if objects["x_news"].tap():
                 sleep(1.5)
             if horses:
