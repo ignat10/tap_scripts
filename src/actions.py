@@ -581,13 +581,12 @@ class Castle:
                 sleep(1)
                 if objects['confirm_age'].waitap(3):
                     print("confirmed age")
-            now = perf_counter()
-            if now - start > 200:
+            if perf_counter() - start > 200:
                 print("loading timeout. restart app.")
                 restart_app()
                 cls.load()
+                return
             sleep(1.5)
-        reset_screen()
         print("loaded.")
         cls.close_ad()
 
@@ -596,7 +595,7 @@ class Castle:
         """closes ad. from city or map"""
         for _ in range(4):
             if check_castle_status() == CastleStatus.CLOSED_AD:
-                break
+                return
             if cls.close_bella():
                 print("closed bella. looking for hand.")
                 sleep(1)
@@ -604,8 +603,8 @@ class Castle:
                     objects["unlock"].waitap(0.6)
                 print("end hand.")
             if objects["exit_game"].exists():
-                restart_app()
-                cls.load()
+                print("invalid token.")
+                break
             if objects["help"].tap():
                 sleep(0.5)
             else:
@@ -618,20 +617,20 @@ class Castle:
                 objects["claim_temple"].tap()
                 objects["check_beast"].tap()
             if check_castle_status() == CastleStatus.CLOSED_AD:
-                break
+                return
             for _ in range(3):
                 back()
                 sleep(0.2)
             sleep(1)
             if check_castle_status() == CastleStatus.CLOSED_AD:
-                break
+                return
             elif objects["no"].waitap(3):
                 sleep(1.5)
             else:
                 tap_center()
-        else:
-            restart_app()
-            cls.load()
+        print("unable to close. restart app.")
+        restart_app()
+        cls.load()
 
     @staticmethod
     def claim_rss():
