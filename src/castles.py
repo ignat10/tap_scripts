@@ -4,8 +4,8 @@ from typing import Any
 
 from src.paths import CASTLES_DB_PATH
 
-DATA_COLUMNS = ("name", "google", "account", "avatar")
-MUTABLE_COLUMNS = frozenset(DATA_COLUMNS[1:])
+DATA_COLUMNS = ("name", "last_login", "google", "account", "avatar")
+MUTABLE_COLUMNS = frozenset(DATA_COLUMNS[2:])
 
 
 def _connect() -> Connection:

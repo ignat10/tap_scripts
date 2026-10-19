@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import cached_property
 from itertools import chain
 from random import randrange, choice, sample
@@ -67,6 +67,7 @@ class Castle:
         google: int,
         account: int | None,
         avatar: int | None,
+        last_login: str,
     ):
 
         value_assert("name", name, str)
@@ -80,6 +81,8 @@ class Castle:
         self._google = google
         self._account = account
         self._avatar = avatar
+        self._last_login = last_login
+
         self.no_speed: int = 0
         self.last_gather_at: datetime | None = None
         self.stamina = True
@@ -125,6 +128,12 @@ class Castle:
     def avatar(self, value: int | None):
         update_castle(self._name, "avatar", value)
         self._avatar = value
+
+    @property
+    def last_login_minutes(self) -> int:
+        last_login = datetime.fromisoformat(self._last_login).replace(tzinfo=timezone.utc)
+        minutes = int((datetime.now(timezone.utc) - last_login).total_seconds()) // 60
+        return minutes
 
     @property
     def last_gather_ago(self) -> int | None:
@@ -528,14 +537,16 @@ class Castle:
         """logs into current account. from city or map."""
         gmail = self.google
         account = self.account
+        avatar = self.avatar
         assert (
             gmail is not None
-        ), f"called log_into_account for {self.name}, but google not set in {CASTLES_DB_PATH}"
+        ), f"called log_into_account for {self.name}, but google was not set in {CASTLES_DB_PATH}"
         assert (
             account is not None
-        ), f"called log_into_account for {self.name}, but account not set in {CASTLES_DB_PATH}"
+        ), f"called log_into_account for {self.name}, but account was not set in {CASTLES_DB_PATH}"
+        assert avatar is not None, f"called log_into_account for {self.name}, but avatar was not set in {CASTLES_DB_PATH}"
 
-        while not objects[f"avatar_{self.avatar}"].exists(): #type: ignore
+        while not objects[f"avatar_{avatar}"].exists(): #type: ignore
             print(f"logging into {self.name}")
             if objects["exit_game"].exists():
                 print("invalid token.")
@@ -1332,18 +1343,19 @@ class Castle:
         else:
             self.log_into_account()
         self.bind_account()
-        self.claim_mail()
         self.claim_rss()
-        self.upgrade_lord_skills()
-        self.pinata()
-        self.events()
-        self.claim_quest()
-        if randrange(10) == 1:
-            self.use_pack()
-        self.join_alliance()
-        self.alliance_rewards()
-        while self.build():
-            pass
+        if self.last_login_minutes // 60 > 12:
+            self.claim_mail()
+            self.upgrade_lord_skills()
+            self.pinata()
+            self.events()
+            self.claim_quest()
+            if randrange(10) == 1:
+                self.use_pack()
+            self.join_alliance()
+            self.alliance_rewards()
+            while self.build():
+                pass
 
         for i in range(100):
             print(f"made {i} task. no_speed: {self.no_speed}")
