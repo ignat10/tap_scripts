@@ -20,13 +20,6 @@ class MineType(Enum):
                 return mine
         return None
 
-
-class MapStatus(Enum):
-    FOUND = auto()
-    NOT_FOUND = auto()
-    NOT_AT_MAP = auto()
-
-
 class CastleStatus(Enum):
     CLOSED_AD = auto()
     AD = auto()
@@ -47,17 +40,6 @@ def check_castle_status() -> CastleStatus:
         return CastleStatus.AD
 
     return CastleStatus.NOT_IN_CASTLE
-
-
-def check_map_status() -> MapStatus:
-    if not objects["book"].exists():
-        return MapStatus.NOT_AT_MAP
-
-    if objects["gather"].exists():
-        return MapStatus.FOUND
-
-    return MapStatus.NOT_FOUND
-
 
 class Task(Enum):
     UPGRADE = objects["start_upgrading"]

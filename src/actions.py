@@ -33,11 +33,9 @@ from src.objects import (
 from src.paths import CASTLES_DB_PATH
 from src.status import (
     CastleStatus,
-    MapStatus,
     MineType,
     Task,
     check_castle_status,
-    check_map_status,
 )
 from src.utils import log_raise
 
@@ -1202,7 +1200,7 @@ class Castle:
 
     def free_marches(self) -> int:
         """get number of available marches of current castle"""
-        if check_map_status() == MapStatus.NOT_AT_MAP:
+        if not objects['book'].exists():
             log_raise("tried to check free marches while not at map")
         limit = self.marches
         if objects["more_marches"].tap():
@@ -1244,22 +1242,37 @@ class Castle:
                 objects["arrow"].spam_tap(2, 0.5)
 
             elif objects['attack'].tap():
+                objects["set_out"].waitap(2)
+                if objects["use_stamina"].waitap(1):
+                    objects["confirm_use_stamina"].force_waitap(3)
+                    back()
+                    objects["set_out"].force_waitap(3)
+                    sleep(1.5)
+                if not objects['book'].wait(1):
+                    self.stamina = False
                 break
-
-            else:
-                tap_center()
+            tap_center()
         self.close_ad()
 
-        objects["set_out"].waitap(2)
-        if objects["use_stamina"].waitap(1):
-            objects["confirm_use_stamina"].force_waitap(3)
+    def _set_out(self) -> bool:
+        if not objects['gather'].waitap(4):
+            return False
+
+        if not objects['set_out'].wait(2):
+            return False
+
+        if objects['troops_slider'].count() == 6:
+            self.is_enough_troops = False
+
+        objects["set_out"].force_tap()
+
+        if not objects['book'].wait(1):
+            self.is_enough_troops = False
             back()
-            objects["set_out"].force_waitap(3)
-            sleep(1.5)
-        if check_map_status() == MapStatus.NOT_AT_MAP:
-            self.stamina = False
-            back()
-            back()
+            sleep(1)
+            return False
+
+        return True
 
     def get_std_mine(self) -> None:
         """Gets standard mine from the map."""
@@ -1272,31 +1285,13 @@ class Castle:
             objects["plus"].spam_tap(5, 0)
             objects["minus"].spam_tap(MAX_MINE_LEVEL - level, 0)
             objects["go"].spam_tap(4, 0.1)
-            objects["gather"].wait(4)
 
-            match check_map_status():
-                case MapStatus.FOUND:
-                    objects["gather"].force_tap()
-                    objects["gather"].force_waitap(0.7)
-                    if objects["set_out"].waitap(7):
-                        sleep(1)
-                    if check_map_status() == MapStatus.NOT_AT_MAP:
-                        back()
-                        print("not enough horses")
-                        self.is_enough_troops = False
-                        sleep(1.5)
-                    else:
-                        print("mine taken.")
-                        self.mine_type = chain([(level, need_type)], self.mine_type)
-                    break
-                case MapStatus.NOT_FOUND:
-                    continue
-                case MapStatus.NOT_AT_MAP:
-                    log_raise(f"Not at map when searching mine.")
-        else:
-            log_raise(f"cannot find standard mine. check screen.png")
-        sleep(1)
-        reset_screen()
+            if objects["gather"].waitap(4):
+                self._set_out()
+                print("mine taken.")
+                self.mine_type = chain([(level, need_type)], self.mine_type)
+                return
+        log_raise(f"cannot find standard mine. check screen.png")
 
     def get_elite_mine(self) -> bool:
         """Gets elite mine from the map."""
@@ -1324,16 +1319,8 @@ class Castle:
 
         objects["blue"].force_tap_nth(blue)
 
-        if not objects["gather"].waitap(5):
+        if not self._set_out():
             return self.get_elite_mine()
-
-        if objects["set_out"].waitap(2):
-            sleep(1)
-
-        if check_map_status() == MapStatus.NOT_AT_MAP:
-            self.is_enough_troops = False
-            back()
-            sleep(1.5)
 
         return True
 

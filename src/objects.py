@@ -173,6 +173,7 @@ ScreenObjectName = Literal[
     "go",
     "gather",
     "set_out",
+    "troops_slider",
     "pack",
     "use_blue",
     "use_all_items",
