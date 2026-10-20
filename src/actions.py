@@ -546,6 +546,7 @@ class Castle:
 
         while not objects[f"avatar_{avatar}"].exists(): #type: ignore
             print(f"logging into {self.name}")
+            reset_screen()
             if objects["exit_game"].exists():
                 print("invalid token.")
                 restart_app()
@@ -569,12 +570,12 @@ class Castle:
             else:
                 continue
             is_green = objects["green_castle"].exists()
-            objects["castle"].force_tap_nth(max(account - is_green, 0))
+            objects["castle"].force_tap_nth(account - is_green)
             objects["confirm"].waitap()
-            break
-        print("logged in.")
-        sleep(7.5)
-        self.load()
+            print("logged in.")
+            sleep(7.5)
+            self.load()
+            return
 
     @classmethod
     def load(cls) -> None:
