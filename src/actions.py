@@ -1259,6 +1259,8 @@ class Castle:
             return False
 
         if not objects['set_out'].wait(2):
+            back()
+            sleep(1)
             return False
 
         if objects['troops_slider'].count() == 6:
@@ -1304,13 +1306,12 @@ class Castle:
         objects["elite_mines"].force_waitap(4)
         sleep(1)
 
-        if not objects["blue"].wait(3):
+        if (
+            not objects["blue"].wait(3)
+            or (mines := objects["blue"].count()) == len(self.elite_mines_got)
+        ):
             back()
             sleep(1)
-            return False
-
-        mines = objects['blue'].count()
-        if mines == len(self.elite_mines_got):
             return False
 
         free = set(range(mines)) - self.elite_mines_got
