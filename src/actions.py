@@ -760,10 +760,20 @@ class Castle:
         autumn_login()
         cls.close_ad()
 
-    @classmethod
-    def pinata(cls) -> None:
+    def tasks(self) -> bool:
+        if not objects['tasks'].waitap(3):
+            self.close_ad()
+            if not objects['tasks'].tap():
+                if self.level < 5:
+                    return False
+                else:
+                    log_raise("cannot find tasks object")
+        return True
+
+    def pinata(self) -> None:
+        if not self.tasks():
+            return
         print("claiming pinata")
-        objects['tasks'].force_tap()
         sleep(2)
         for _ in range(3):
             swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.5)
@@ -781,7 +791,7 @@ class Castle:
         else:
             back()
             sleep(1)
-        cls.close_ad()
+        self.close_ad()
 
     @classmethod
     def upgrade_lord_skills(cls) -> None:
@@ -883,10 +893,10 @@ class Castle:
         return False
 
     def research(self) -> None:
+        if not self.tasks():
+            return
         marches = self.marches
         level = self.level
-        objects["tasks"].force_tap()
-        sleep(1)
         objects["research_task"].force_waitap(10)
         if not objects["military"].wait(2):
             objects["back"].force_tap()
@@ -1016,9 +1026,9 @@ class Castle:
         self.close_ad()
 
     def build(self) -> bool:
-        self.close_ad()
+        if not self.tasks():
+            return False
         print("building")
-        objects["tasks"].force_tap()
         if not objects["build_task"].waitap(10):
             self.close_ad()
             return self.build()
@@ -1035,8 +1045,8 @@ class Castle:
         return result
 
     def claim_recruits(self) -> None:
-        self.close_ad()
-        objects['tasks'].force_tap()
+        if not self.tasks():
+            return
         objects['recruit_task'].force_wait(10)
         barracks = objects['recruit_task'].count()
         back()
@@ -1057,9 +1067,9 @@ class Castle:
 
     def recruit(self, *, horses: bool) -> None:
         """recruits horses."""
+        if not self.tasks():
+            return
         print(f"recruiting {"horses" if horses else "powerful troops"}.")
-        self.close_ad()
-        objects["tasks"].force_tap()
         objects["recruit_task"].wait(1.5)
         barracks = objects["recruit_task"].count()
         back()
