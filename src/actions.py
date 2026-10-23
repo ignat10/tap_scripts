@@ -224,20 +224,15 @@ class Castle:
         print(f"account created, named and bound")
 
     @classmethod
-    def challenge(cls) -> bool:
-        for obj in bug_levels:
-            obj.tap()
-        if not (objects["challenge"].waitap(3) or objects["bright_challenge"].tap()):
-            return False
-
-        if not objects["heroic_evoluation_blue"].waitap(1) and objects["man"].wait(5):
-            cls.kill_monsters()
-            return True
-
-        objects["evolve"].waitap(3)
-        back()
-        sleep(1)
-        return False
+    def challenge(cls) -> None:
+        print("challenging")
+        while not (objects["man"].exists() or objects['blue_bonus'].exists()):
+            for obj in bug_levels:
+                obj.tap()
+            objects["challenge"].tap() or objects["bright_challenge"].tap()
+            reset_screen()
+            sleep(1)
+        cls.kill_monsters()
 
     @classmethod
     def kill_monsters(cls) -> None:
