@@ -571,8 +571,7 @@ class Castle:
     @classmethod
     def load(cls) -> None:
         start = perf_counter()
-        if objects["avatar"].exists() or objects["map"].exists():
-            return
+        reset_screen()
         print("loading game")
         while check_castle_status() == CastleStatus.NOT_IN_CASTLE:
             reset_screen()
