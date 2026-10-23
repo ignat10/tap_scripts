@@ -147,8 +147,8 @@ class Castle:
     @cached_property
     def marches(self) -> int:
         """gets available marches value. From 1 to 4"""
-        objects["lord_info"].force_waitap(5)
-        if not objects["check_details"].waitap(5):
+        objects["lord_info"].force_tap(5)
+        if not objects["check_details"].tap(5):
             self.close_ad()
             return self.marches
         sleep(2)
@@ -175,13 +175,13 @@ class Castle:
         if self.account is not None:
             return
         if objects["avatar"].tap():
-            objects["account"].force_waitap()
-            objects["new_game"].force_waitap()
-            objects["confirm"].force_waitap()
-            objects["realm"].force_waitap()
+            objects["account"].force_tap()
+            objects["new_game"].force_tap()
+            objects["confirm"].force_tap()
+            objects["realm"].force_tap()
             print("account created")
 
-        objects["man"].force_wait(100)
+        objects["man"].force_exists(100)
         swipe_center(Direction.Up, SwipeSpeed.Slow, 1.7)
         swipe_center(Direction.Right, SwipeSpeed.Slow, 0.75)
         sleep(15)
@@ -189,7 +189,7 @@ class Castle:
         swipe_center(Direction.Right, SwipeSpeed.Fast, 0.8)
         self.kill_monsters()
         print("finished 0 level")
-        objects["bella"].force_wait(30)
+        objects["bella"].force_exists(30)
         self.close_bella()
         self.challenge()  # first level
         print("finished 1st level")
@@ -197,23 +197,24 @@ class Castle:
         self.close_bella()
         self.challenge()
         print("finished 2nd level")
-        objects["bella"].force_wait()
+        objects["bella"].force_exists()
         self.close_bella()
         restart_app()
-        objects["bella"].force_wait(300)
+        objects["bella"].force_exists(300)
         self.close_bella()
-        objects["first_castle"].force_waitap()
-        objects["upgrade"].force_waitap()
-        objects["upgrade_blue"].force_waitap()
-        objects["bella"].force_wait()
+        objects["first_castle"].force_tap()
+        sleep(1)
+        objects["upgrade"].force_tap()
+        objects["upgrade_blue"].force_tap()
+        objects["bella"].force_exists()
         self.close_bella()
-        objects["new_monster"].force_waitap()
+        objects["new_monster"].force_tap()
         self.challenge()
         print("finished 3rd level")
-        objects["backhand"].force_waitap()
-        objects["bella"].force_wait()
+        objects["backhand"].force_tap()
+        objects["bella"].force_exists()
         self.close_bella()
-        objects["kingroad"].force_waitap()
+        objects["kingroad"].force_tap()
         sleep(1.5)
         back()
         sleep(1)
@@ -245,7 +246,7 @@ class Castle:
             ):
                 break
             elif objects["blue_bonus"].tap():
-                objects["confirm_bonus"].wait(3)
+                objects["confirm_bonus"].exists(3)
             if objects["confirm_bonus"].tap():
                 sleep(1.2)
             else:
@@ -254,16 +255,16 @@ class Castle:
         sleep(1.5)
 
     def change_name(self) -> None:
-        objects["avatar"].force_waitap(3)
-        if objects["x_news"].waitap(1.3):
+        objects["avatar"].force_tap(3)
+        if objects["x_news"].tap(1.3):
             sleep(1.5)
-        objects["change_name"].force_waitap(4)
+        objects["change_name"].force_tap(4)
         sleep(0.9)
-        objects["2-16_characters"].force_waitap(5)
+        objects["2-16_characters"].force_tap(5)
         sleep(1.2)
         write(self.name)
         sleep(3)
-        objects["change_name_green"].force_waitap(5)
+        objects["change_name_green"].force_tap(5)
         sleep(1.5)
         if objects["change_name_green"].exists():
             log_raise(f"Name {self.name} already taken.")
@@ -271,17 +272,17 @@ class Castle:
         print("name has been changed")
 
     def change_avatar(self) -> None:
-        objects["avatar"].force_waitap(3)
-        if objects["x_news"].waitap(1):
+        objects["avatar"].force_tap(3)
+        if objects["x_news"].tap(1):
             sleep(1)
-        objects["avatar_switch"].force_waitap(10)
+        objects["avatar_switch"].force_tap(10)
         sleep(1)
-        objects['pick_avatar'].force_wait(10)
+        objects['pick_avatar'].force_exists(10)
         assert objects['pick_avatar'].count() == 15
         avatar = randrange(4, 15)
-        objects['pick_avatar'].force_tap_nth(avatar)
-        objects['switch_avatar'].force_waitap(10)
-        objects['confirm_use_stamina'].force_waitap(10)
+        objects['pick_avatar'].force_tap(index=avatar)
+        objects['switch_avatar'].force_tap(10)
+        objects['confirm_use_stamina'].force_tap(10)
         self.avatar = avatar
         print(f"successfully switched {self.name}'s avatar to {avatar}")
         self.close_ad()
@@ -289,7 +290,7 @@ class Castle:
     @cached_property
     def level(self) -> int:
         objects["avatar"].force_tap()
-        if not objects["account"].wait(5):
+        if not objects["account"].exists(5):
             self.close_ad()
             return self.level
         reset_screen()
@@ -306,12 +307,12 @@ class Castle:
             return
         gmail = self.google
         objects["avatar"].force_tap()
-        objects["account"].force_waitap(3)
+        objects["account"].force_tap(3)
         if not objects["undo_bind"].exists():
-            objects["bind"].force_waitap(3)
-            if objects["gmail"].wait(40):
-                objects["gmail"].force_tap_nth(gmail)
-        if objects["undo_bind"].wait(50):
+            objects["bind"].force_tap(3)
+            if objects["gmail"].exists(40):
+                objects["gmail"].force_tap(index=gmail)
+        if objects["undo_bind"].exists(50):
             account_number = get_column("google").count(gmail) - 1  # self account
             print(
                 f"bound account {self.name} to {gmail} gmail. saved it as account number {account_number}"
@@ -330,23 +331,23 @@ class Castle:
             if not (objects["kingroad"].tap() or objects["hand"].tap()):
                 print("No kingroad!")
                 return False
-        if not objects["kingroad_go"].wait(3):
+        if not objects["kingroad_go"].exists(3):
             self.close_ad()
             return self.kingroad_task()
         task = Task.check()
         print(f"doing {task.name if task is not None else "unknown"} task")
         match task:
             case Task.UPGRADE:
-                objects["kingroad_go"].force_waitap(10)
+                objects["kingroad_go"].force_tap(10)
                 sleep(1)
                 self.close_bella()
-                if objects["hand"].waitap(3):
-                    if objects['kingroad_go'].wait(1):
+                if objects["hand"].tap(3):
+                    if objects['kingroad_go'].exists(1):
                         self.kingroad_task()
                 else:
                     tap_center()
                 sleep(1)
-                if objects["upgrade"].waitap(2) or objects["hand"].tap():
+                if objects["upgrade"].tap(2) or objects["hand"].tap():
                     sleep(2)
                     self._build_need()
                 self.close_ad()
@@ -361,24 +362,24 @@ class Castle:
             case Task.RECRUIT:
                 if randrange(5) == 4:
                     self.claim_recruits()
-                    objects['kingroad'].force_waitap(20)
+                    objects['kingroad'].force_tap(20)
             case Task.GATHER:
-                objects['kingroad_go'].force_waitap(20)
+                objects['kingroad_go'].force_tap(20)
                 sleep(2)
                 self.close_bella()
-                objects['book'].force_wait(20)
+                objects['book'].force_exists(20)
                 sleep(2)
-                if objects['hand'].waitap(2):
-                    objects['map_hand'].force_waitap(5)
-                    objects['map_hand'].force_waitap(3)
-                    objects["check"].force_wait(10)
+                if objects['hand'].tap(2):
+                    objects['map_hand'].force_tap(5)
+                    objects['map_hand'].force_tap(3)
+                    objects["check"].force_exists(10)
                     if self.last_gather_ago > 1000:
                         self.withdraw()
                     else:
-                        objects["gather"].waitap(15)
+                        objects["gather"].tap(15)
                         sleep(1.5)
-                        objects["gather"].waitap(4)
-                        objects["set_out"].waitap(5)
+                        objects["gather"].tap(4)
+                        objects["set_out"].tap(5)
                 else:
                     self.get_std_mine()
                 self.close_ad()
@@ -389,16 +390,16 @@ class Castle:
                 self.close_ad()
                 return False
 
-        objects["kingroad_go"].force_waitap(8)
+        objects["kingroad_go"].force_tap(8)
         sleep(1.5)
         self.close_bella()
         if objects["loading"].exists():
-            objects["book"].force_wait()
+            objects["book"].force_exists(30)
             sleep(2)
 
-        while objects["hand"].waitap(1):
-            if objects["heroic_evoluation_blue"].waitap(0.7):
-                objects["evolve"].waitap(5)
+        while objects["hand"].tap(1):
+            if objects["heroic_evoluation_blue"].tap(0.7):
+                objects["evolve"].tap(5)
             if objects["go_blue"].tap():
                 log_raise("UNKNOWN BEHAVIOUR, NEED TO BE CHECKED")
                 # sleep(1)
@@ -409,8 +410,8 @@ class Castle:
             sleep(1)
             reset_screen()
 
-        while objects["map_hand"].waitap(1):
-            if objects["arrow"].wait(1):
+        while objects["map_hand"].tap(1):
+            if objects["arrow"].exists(1):
                 break
         print("no more hands")
         reset_screen()
@@ -435,9 +436,9 @@ class Castle:
             self.forge()
 
         elif objects["go_research"].tap():
-            if objects["horseshoes"].waitap(2):
+            if objects["horseshoes"].tap(2):
                 sleep(0.8)
-                objects["research_blue"].waitap(2)
+                objects["research_blue"].tap(2)
 
         elif objects["research"].exists():
             if not self.speed_up():
@@ -445,7 +446,7 @@ class Castle:
 
         elif objects["recruit"].tap():
             print("recruiting")
-            objects["recruit_blue"].wait(2)
+            objects["recruit_blue"].exists(2)
         objects["recruit_blue"].tap()
 
         if objects["upgrade"].tap() or objects["upgrade_barracks"].tap():
@@ -453,8 +454,8 @@ class Castle:
         self._build_need()
 
         if objects["fortify"].tap():
-            objects["one-tap_upgrade"].force_waitap(2)
-            if not objects["use_all"].waitap(2):
+            objects["one-tap_upgrade"].force_tap(2)
+            if not objects["use_all"].tap(2):
                 self.close_ad()
                 self.conjure()
                 return True
@@ -463,28 +464,28 @@ class Castle:
             print("shop")
             sleep(1.5)
             objects["shell"].tap_each()
-            objects["buy"].force_waitap(2)
-            objects["shell"].wait()
+            objects["buy"].force_tap(2)
+            objects["shell"].exists()
             objects["shell"].tap_each()
-            objects["confirm_shell"].waitap(1)
+            objects["confirm_shell"].tap(1)
             back()
 
         if not objects["green"].tap() and objects["switch_level"].tap():
             for _ in range(4):
-                objects["green"].force_tap_nth(randrange(15))
+                objects["green"].force_tap(index=randrange(15))
 
         if objects['no_suppress'].exists():
             back()
             sleep(1)
-            objects['rebels'].force_wait(10)
+            objects['rebels'].force_exists(10)
 
         if rebels := objects["rebels"].count():
-            objects['rebels'].force_tap_nth(rebels - 1)
+            objects['rebels'].force_tap(index=rebels - 1)
             sleep(1.5)
             self.close_bella()
-            objects["suppress"].force_wait(10)
+            objects["suppress"].force_exists(10)
 
-        if objects["suppress"].tap() and not objects["set_out"].waitap(2):
+        if objects["suppress"].tap() and not objects["set_out"].tap(2):
             self.close_ad()
             self.to_map()
             self.withdraw()
@@ -495,8 +496,8 @@ class Castle:
 
         if objects["alliance_donate"].tap():
             sleep(1.5)
-            objects["donate_blue"].spam_tap(4, 0.6)
-            objects["donate_confirm"].waitap(3)
+            objects["donate_blue"].tap(times=4, interval=0.6)
+            objects["donate_confirm"].tap(3)
 
         elif objects["bright_challenge"].exists():
             self.challenge()
@@ -515,13 +516,13 @@ class Castle:
     def kingroad_claim(cls):
         """claims completed kingroad tasks"""
         objects["kingroad"].tap()
-        if objects["kingroad_done"].waitap(2):
+        if objects["kingroad_done"].tap(2):
             print("finished kingroad chapter!")
             cls.close_ad()
             cls.kingroad_claim()
         else:
             reset_screen()
-            while objects["kingroad_claim"].waitap(0.7):
+            while objects["kingroad_claim"].tap(0.7):
                 print("claimed kingroad task!")
                 sleep(1.5)
                 back()
@@ -544,25 +545,25 @@ class Castle:
             reset_screen()
             self.close_ad()
             if objects["avatar"].tap():
-                objects["account"].wait(4)
+                objects["account"].exists(4)
             if objects["account"].tap():
-                objects["switch"].force_wait(15)
+                objects["switch"].force_exists(15)
             if objects["switch"].tap():
                 sleep(1.5)
-            if not (objects["login"].waitap(3) and objects["gmail"].wait(10)):
+            if not (objects["login"].tap(3) and objects["gmail"].exists(10)):
                 continue
-            objects["gmail"].force_tap_nth(gmail)
+            objects["gmail"].force_tap(index=gmail)
             for _ in range(15):
-                if objects["acc_list"].wait(1):
+                if objects["acc_list"].exists(1):
                     break
-                elif objects['google_down'].exists():
-                    objects['continue'].force_waitap(10)
-                    objects['acc_list'].wait(10)
+                elif objects['google_down'].tap(1):
+                    objects['continue'].force_tap(10)
+                    objects['acc_list'].exists(10)
             else:
                 continue
             is_green = objects["green_castle"].exists()
-            objects["castle"].force_tap_nth(account - is_green)
-            objects["confirm"].waitap()
+            objects["castle"].force_tap(index=account - is_green)
+            objects["confirm"].force_tap(20)
             print("logged in.")
             sleep(7.5)
             self.load()
@@ -579,7 +580,7 @@ class Castle:
                 return
             if objects['age'].tap():
                 sleep(1)
-                if objects['confirm_age'].waitap(3):
+                if objects['confirm_age'].tap(3):
                     print("confirmed age")
             if perf_counter() - start > 200:
                 print("loading timeout. restart app.")
@@ -599,8 +600,8 @@ class Castle:
             if cls.close_bella():
                 print("closed bella. looking for hand.")
                 sleep(1)
-                while objects["hand"].waitap(1):
-                    objects["unlock"].waitap(0.6)
+                while objects["hand"].tap(1):
+                    objects["unlock"].tap(0.6)
                 print("end hand.")
             if objects["exit_game"].exists():
                 print("invalid token.")
@@ -624,7 +625,7 @@ class Castle:
             sleep(1)
             if check_castle_status() == CastleStatus.CLOSED_AD:
                 return
-            elif objects["no"].waitap(3):
+            elif objects["no"].tap(3):
                 sleep(1.5)
             else:
                 tap_center()
@@ -642,35 +643,35 @@ class Castle:
     def claim_quest(cls):
         if objects["quest"].tap():
             sleep(1.5)
-            while objects["daily_quest_claim"].waitap(0.4):
+            while objects["daily_quest_claim"].tap(0.4):
                 back()
-            while objects["claim_daily_quest"].waitap(0.4):
+            while objects["claim_daily_quest"].tap(0.4):
                 back()
             sleep(2.2)
             objects["growth_quest"].tap()
             for _ in range(3):
-                while objects["claim_growth_quest"].waitap(3):
-                    if not objects["reward"].waitap(10):
+                while objects["claim_growth_quest"].tap(3):
+                    if not objects["reward"].tap(10):
                         back()
                         sleep(1.5)
                         back()
-                if not objects["another_growth_quest"].waitap(2):
+                if not objects["another_growth_quest"].tap(2):
                     break
             cls.close_ad()
 
     @classmethod
     def claim_mail(cls) -> None:
         objects["mail"].force_tap()
-        if objects["delete_mail"].waitap(3):
-            objects['confirm_use_stamina'].force_waitap(10)
+        if objects["delete_mail"].tap(3):
+            objects['confirm_use_stamina'].force_tap(10)
             sleep(2)
         for _ in range(objects["mail_reward"].count()):
             cls.close_ad()
             objects['mail'].force_tap()
-            objects['mail_reward'].force_waitap(10)
-            if not objects["claim_torch"].waitap(2):
-                objects["read_claim_all"].force_waitap(10)
-                objects["confirm_green"].force_waitap(10)
+            objects['mail_reward'].force_tap(10)
+            if not objects["claim_torch"].tap(2):
+                objects["read_claim_all"].force_tap(10)
+                objects["confirm_green"].force_tap(10)
         cls.close_ad()
 
     @classmethod
@@ -687,8 +688,8 @@ class Castle:
     def events(cls) -> None:
         def event():
             if not objects["event"].exists():
-                objects["events"].force_waitap(10)
-                objects["event"].force_wait(10)
+                objects["events"].force_tap(10)
+                objects["event"].force_exists(10)
 
         def claim_7_march(event_index: int = 0):
             event()
@@ -696,7 +697,7 @@ class Castle:
                 return
 
             sleep(0.5)
-            objects["!"].wait(3)
+            objects["!"].exists(3)
             if objects["event_claim"].exists():
                 objects["event_claim"].tap_each()
                 sleep(0.5)
@@ -704,8 +705,8 @@ class Castle:
                 back()
                 cls.close_ad()
                 claim_7_march(event_index + 1)
-            elif objects["!"].tap_nth(event_index):
-                objects["event_claim"].wait(2)
+            elif objects["!"].tap(index=event_index):
+                objects["event_claim"].exists(2)
                 claim_7_march(event_index + 1)
             cls.close_ad()
 
@@ -713,7 +714,7 @@ class Castle:
             event()
             if objects["rising_road"].tap() or objects['dragons_domain'].tap():
                 sleep(2)
-                while objects["event_arrow"].waitap(4):
+                while objects["event_arrow"].tap(4):
                     sleep(2)
                     back()
                 cls.close_ad()
@@ -722,15 +723,15 @@ class Castle:
             event()
             if objects["camel"].tap():
                 sleep(1)
-                if objects["!"].waitap(2):
+                if objects["!"].tap(2):
                     sleep(2)
-                    while objects['event_claim'].waitap(2):
+                    while objects['event_claim'].tap(2):
                         sleep(2)
                         back()
                     sleep(2)
-                    if objects["!"].tap_nth(1):
-                        objects['event_claim'].force_wait(10)
-                        while objects['event_claim'].tap_nth(1):
+                    if objects["!"].tap(index=1):
+                        objects['event_claim'].force_exists(10)
+                        while objects['event_claim'].tap(index=1):
                             sleep(1)
                             back()
                             sleep(2)
@@ -751,7 +752,7 @@ class Castle:
         cls.close_ad()
 
     def tasks(self) -> bool:
-        if not objects['tasks'].waitap(3):
+        if not objects['tasks'].tap(3):
             self.close_ad()
             if self.level < 5:
                 return objects['tasks'].tap()
@@ -767,16 +768,16 @@ class Castle:
         for _ in range(3):
             swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.5)
             sleep(1)
-        if objects['pinata_task'].waitap(2) and objects['pinata'].wait(3):
+        if objects['pinata_task'].tap(2) and objects['pinata'].exists(3):
             for _ in range(3):
                 objects['pinata'].tap_each()
-                if objects['try_luck'].waitap(7):
+                if objects['try_luck'].tap(7):
                     sleep(2)
-                    objects['card'].force_waitap(10)
-                    objects['free_crystal'].force_waitap(10)
-                    objects['fold'].force_waitap(10)
-                    objects['confirm_use_stamina'].force_waitap(10)
-                    objects['pinata'].wait(3)
+                    objects['card'].force_tap(10)
+                    objects['free_crystal'].force_tap(10)
+                    objects['fold'].force_tap(10)
+                    objects['confirm_use_stamina'].force_tap(10)
+                    objects['pinata'].exists(3)
         else:
             back()
             sleep(1)
@@ -786,19 +787,19 @@ class Castle:
     def upgrade_lord_skills(cls) -> None:
         print("upgrading lord skills")
         objects["lord_info"].tap()
-        if not objects["lord_skills"].waitap(10):
+        if not objects["lord_skills"].tap(10):
             cls.close_ad()
             cls.upgrade_lord_skills()
             return
-        objects["development_skills"].force_waitap(10)
+        objects["development_skills"].force_tap(10)
         sleep(0.5)
         while not objects["skill_points_0"].exists():
             if objects["upgrade_to_max"].exists():
                 break
-            while not objects["lord_skill"].waitap(1):
+            while not objects["lord_skill"].tap(1):
                 swipe_center(Direction.Up, SwipeSpeed.Fast, 0.4)
                 sleep(1.5)
-            objects["upgrade_to_max"].force_waitap(3)
+            objects["upgrade_to_max"].force_tap(3)
         cls.close_ad()
 
     @staticmethod
@@ -806,15 +807,15 @@ class Castle:
         """use lord skills, harvest, gather speed up, recall all. from city or map"""
         print("lord skills...")
         objects["lord"].tap()
-        if objects["gather_speed_up"].waitap(2):
-            objects["use"].waitap(2)
-        if objects["harvest"].waitap(2):
-            objects["use"].waitap(2)
-        objects["recall_all"].waitap(3)
+        if objects["gather_speed_up"].tap(2):
+            objects["use"].tap(2)
+        if objects["harvest"].tap(2):
+            objects["use"].tap(2)
+        objects["recall_all"].tap(3)
         sleep(0.15)
-        if not objects["use"].waitap(2):
+        if not objects["use"].tap(2):
             back()
-            objects["use"].waitap(2)
+            objects["use"].tap(2)
         print("lord skills done.")
         reset_screen()
         sleep(1.2)
@@ -834,26 +835,26 @@ class Castle:
             sleep(1.5)
         if objects["hospital"].tap():
             print("healing...")
-            objects["heal"].waitap(3)
+            objects["heal"].tap(3)
             sleep(1)
             if self.confirm_rss():
                 sleep(1.5)
-        if objects["ask_help"].waitap(0.2):
-            objects["sanctuary"].wait(2)
+        if objects["ask_help"].tap(0.2):
+            objects["sanctuary"].exists(2)
         if objects["sanctuary"].tap():
             print("sanctuary...")
-            objects["revive"].waitap(3)
-            objects["claim_holy_water"].waitap(1)
-            if not objects["confirm_green"].waitap(1):
-                objects["holy_quest"].waitap(1)
-                objects["claim_holy_quest"].waitap(1)
-                if objects["confirm_green"].waitap(1):
+            objects["revive"].tap(3)
+            objects["claim_holy_water"].tap(1)
+            if not objects["confirm_green"].tap(1):
+                objects["holy_quest"].tap(1)
+                objects["claim_holy_quest"].tap(1)
+                if objects["confirm_green"].tap(1):
                     sleep(0.8)
-                objects["holy_revival"].waitap(1)
-            objects["revive"].waitap(1)
+                objects["holy_revival"].tap(1)
+            objects["revive"].tap(1)
             sleep(0.5)
             back()
-            objects["hospital_building"].wait(2)
+            objects["hospital_building"].exists(2)
         if objects["hospital_building"].tap():
             sleep(1.5)
         if self.speed_up():
@@ -874,7 +875,7 @@ class Castle:
             sleep(1)
             self.no_speed += 1
 
-        if objects["one-tap_speed_up"].tap() and objects["confirm_speed_up"].waitap(3):
+        if objects["one-tap_speed_up"].tap() and objects["confirm_speed_up"].tap(3):
             sleep(1.5)
             self.no_speed -= 1
             return True
@@ -884,12 +885,12 @@ class Castle:
     def research(self) -> None:
         marches = self.marches
         level = self.level
-        objects["research_task"].force_waitap(10)
-        if not objects["military"].wait(2):
         if not self.tasks():
             return
+        objects["research_task"].force_tap(10)
+        if not objects["military"].exists(2):
             objects["back"].force_tap()
-        objects["military"].force_wait(10)
+            objects["military"].force_exists(10)
         if (
             marches == 1 and level >= 5
             or marches == 2 and level >=12
@@ -904,7 +905,7 @@ class Castle:
                     swipe_center(Direction.Up, SwipeSpeed.Turbo, 0.7)
             sleep(1)
 
-            if not objects["legion"].waitap(2):
+            if not objects["legion"].tap(2):
                 if not objects["leadership"].tap():
                     if not objects["horseshoes"].tap():
                         if not objects["expansion"].tap():
@@ -916,26 +917,26 @@ class Castle:
             sleep(3)
             for techno in sample(resources_technology, k=len(resources_technology)):
                 if techno.tap():
-                    if objects["research_blue"].wait(1.5):
+                    if objects["research_blue"].exists(1.5):
                         break
                     else:
                         back()
                         sleep(1)
 
-        if not objects["research_blue"].waitap(1):
+        if not objects["research_blue"].tap(1):
             if objects['go_research'].tap():
                 sleep(1)
-                objects['hand'].force_waitap(2)
+                objects['hand'].force_tap(2)
                 sleep(1)
-                objects['hand'].force_waitap(2)
+                objects['hand'].force_tap(2)
                 sleep(2)
                 self._build_need()
             elif objects['get_now_research'].exists():
                 self.close_ad()
-                if not objects['college_icon'].waitap(2):
+                if not objects['college_icon'].tap(2):
                     self.to_map()
                     self.close_ad()
-                    objects['college_icon'].force_waitap(10)
+                    objects['college_icon'].force_tap(10)
                 sleep(2)
                 self.speed_up()
         sleep(1)
@@ -960,11 +961,11 @@ class Castle:
             sleep(0.8)
         if max_item is not None:
             max_item.tap()
-            objects["forge_green"].wait(10)
-            objects["forge_green"].tap_nth(max_num - 1)
-            if objects["+"].waitap(1):
-                objects["select"].waitap(3)
-            objects["forge_blue"].waitap(5)
+            objects["forge_green"].exists(10)
+            objects["forge_green"].tap(index=max_num - 1)
+            if objects["+"].tap(1):
+                objects["select"].tap(3)
+            objects["forge_blue"].tap(5)
         cls.close_ad()
 
     def _build_need(self) -> bool:
@@ -973,7 +974,7 @@ class Castle:
             reset_screen()
 
             if objects["free"].exists() or objects['free_upgrade'].exists():
-                while objects['free'].waitap(1) or objects['free_upgrade'].waitap(1):
+                while objects['free'].tap(1) or objects['free_upgrade'].tap(1):
                     sleep(1)
                 print("built for free.")
                 return True
@@ -992,7 +993,7 @@ class Castle:
                 return False
 
             if (
-                objects["hand"].waitap(1)
+                objects["hand"].tap(1)
                 or objects["upgrade_blue"].tap()
                 or objects["big_upgrade_blue"].tap()
                 or objects["hammer_use"].tap()
@@ -1009,7 +1010,7 @@ class Castle:
             self.to_map()
             self.close_ad()
             self.upgrade_castle()
-        if objects["upgrade"].waitap(2):
+        if objects["upgrade"].tap(2):
             sleep(2)
         self._build_need()
         self.close_ad()
@@ -1018,13 +1019,13 @@ class Castle:
         if not self.tasks():
             return False
         print("building")
-        if not objects["build_task"].waitap(10):
+        if not objects["build_task"].tap(10):
             self.close_ad()
             return self.build()
         sleep(1)
-        objects["hand"].waitap(2)
+        objects["hand"].tap(2)
 
-        if objects["upgrade"].waitap(1.5) or objects['hand'].tap():
+        if objects["upgrade"].tap(1.5) or objects['hand'].tap():
             sleep(1.5)
         elif objects['kingroad_go'].exists() or objects['kingroad_claim'].exists():
             self.close_ad()
@@ -1036,19 +1037,19 @@ class Castle:
     def claim_recruits(self) -> None:
         if not self.tasks():
             return
-        objects['recruit_task'].force_wait(10)
+        objects['recruit_task'].force_exists(10)
         barracks = objects['recruit_task'].count()
         back()
         sleep(2)
         for i in range(barracks):
-            objects['tasks'].force_waitap(10)
-            if not objects['recruit_task'].wait(3):
+            objects['tasks'].force_tap(10)
+            if not objects['recruit_task'].exists(3):
                 self.claim_recruits()
-            objects['recruit_task'].force_tap_nth(i)
+            objects['recruit_task'].force_tap(index=i)
             sleep(2)
-            if not objects['hand'].waitap(1):
+            if not objects['hand'].tap(1):
                 tap_center()
-            if objects['speed_up'].wait(2):
+            if objects['speed_up'].exists(2):
                 sleep(1)
                 reset_screen()
                 self.speed_up()
@@ -1059,43 +1060,42 @@ class Castle:
         if not self.tasks():
             return
         print(f"recruiting {"horses" if horses else "powerful troops"}.")
-        objects["recruit_task"].wait(1.5)
+        objects["recruit_task"].exists(1.5)
         barracks = objects["recruit_task"].count()
         back()
         sleep(2)
         for i in range(barracks * 2):
             self.close_ad()
-            objects["tasks"].force_waitap(5)
+            objects["tasks"].force_tap(5)
             sleep(1.5)
-            objects["recruit_task"].tap_nth(i % barracks)
+            objects["recruit_task"].tap(index=i % barracks)
             sleep(1)
-            objects["hand"].waitap(4)
+            objects["hand"].tap(4)
             sleep(1)
-            if not objects["recruit"].waitap(3):
+            if not objects["recruit"].tap(1):
                 objects["free"].tap()
-                sleep(1)
                 continue
-            if not objects["recruit_blue"].wait(2):
+            if not objects["recruit_blue"].exists(2):
                 self.speed_up()
-                if not objects['recruit_blue'].wait(1):
+                if not objects['recruit_blue'].exists(1):
                     continue
             if objects["x_news"].tap():
                 sleep(1.5)
             if horses:
-                objects["cavalry"].waitap(1)
+                objects["cavalry"].tap(1)
                 sleep(1.2)
-                objects["previous"].spam_tap(8, 0.02)
+                objects["previous"].tap(times=8, interval=0.02)
                 sleep(0.3)
-                objects["second"].force_waitap(10)
-                if objects['upgrade_barracks'].waitap(2):
+                objects["second"].force_tap(10)
+                if objects['upgrade_barracks'].tap(2):
                     sleep(1)
                     self._build_need()
                     self.close_ad()
                     continue
             else:
-                choice(troops).waitap(1)
+                choice(troops).tap(1)
                 sleep(0.2)
-            objects['recruit_blue'].force_waitap(5)
+            objects['recruit_blue'].force_tap(5)
             sleep(1)
             self.confirm_rss()
         back()
@@ -1106,13 +1106,13 @@ class Castle:
         if not objects['altar'].tap():
             cls.to_map()
             cls.close_ad()
-            objects['altar'].force_waitap(10)
+            objects['altar'].force_tap(10)
         sleep(2)
-        objects['conjure'].force_waitap(10)
-        objects['conjure_10_times'].force_wait(10)
+        objects['conjure'].force_tap(10)
+        objects['conjure_10_times'].force_exists(10)
         for i in [1, 0]:
-            objects['conjure_10_times'].force_tap_nth(i)
-            if objects['confirm_use_stamina'].waitap(2):
+            objects['conjure_10_times'].force_tap(index=i)
+            if objects['confirm_use_stamina'].tap(2):
                 break
             back()
             reset_screen()
@@ -1126,25 +1126,25 @@ class Castle:
         objects["pack"].force_tap()
         sleep(1.5)
         for i in range(objects["use_blue"].count()):
-            if not objects["use_blue"].wait(1):
+            if not objects["use_blue"].exists(1):
                 cls.close_ad()
                 objects["pack"].force_tap()
-                objects["use_blue"].force_wait(5)
-            if not objects["use_blue"].tap_nth(i):
+                objects["use_blue"].force_exists(5)
+            if not objects["use_blue"].tap(index=i):
                 break
-            if objects["use_all_items"].waitap(1):
-                objects["use_all"].force_waitap(10)
+            if objects["use_all_items"].tap(1):
+                objects["use_all"].force_tap(10)
                 continue
             else:
                 objects["max_items"].tap()
-            objects["use_item"].waitap(1)
+            objects["use_item"].tap(1)
         cls.close_ad()
 
     @classmethod
     def join_alliance(cls) -> None:
         objects['alliance'].force_tap()
-        if objects['alliance_bonuses'].waitap(2):
-            objects['apply'].wait(2)
+        if objects['alliance_bonuses'].tap(2):
+            objects['apply'].exists(2)
         if not (objects['apply'].exists() or objects['join'].exists()):
             cls.close_ad()
             return
@@ -1171,19 +1171,19 @@ class Castle:
     @classmethod
     def alliance_rewards(cls) -> None:
         objects['alliance'].force_tap()
-        if objects['alliance_quest'].waitap(3):
-            objects['claim_all'].waitap(2)
+        if objects['alliance_quest'].tap(3):
+            objects['claim_all'].tap(2)
             cls.close_ad()
             objects['alliance'].force_tap()
             sleep(1.5)
         swipe_center(Direction.Up, SwipeSpeed.Slow, 1)
-        objects['fiend_trial'].force_waitap(10)
+        objects['fiend_trial'].force_tap(10)
         sleep(2)
-        while objects['battle'].waitap(1):
-            objects['set_out'].force_waitap(10)
-            objects['skip'].force_waitap(10)
-            objects['confirm_green'].force_waitap(10)
-            objects['ok'].force_waitap(10)
+        while objects['battle'].tap(1):
+            objects['set_out'].force_tap(10)
+            objects['skip'].force_tap(10)
+            objects['confirm_green'].force_tap(10)
+            objects['ok'].force_tap(10)
             sleep(2)
         cls.close_ad()
 
@@ -1192,7 +1192,7 @@ class Castle:
         """Goes to map from inside city"""
         cls.close_ad()
         objects["map"].force_tap()
-        if not objects["book"].wait(10):
+        if not objects["book"].exists(10):
             cls.to_map()
             return
         sleep(1)
@@ -1213,8 +1213,8 @@ class Castle:
 
     @staticmethod
     def withdraw() -> bool:
-        if objects["withdraw"].spam_tap(2, 1):
-            objects["confirm_use_stamina"].force_waitap(5)
+        if objects["withdraw"].tap(times=2, interval=1):
+            objects["confirm_use_stamina"].force_tap(5)
             return True
         return False
 
@@ -1226,39 +1226,39 @@ class Castle:
             self.close_ad()
             return
         if objects["search"].tap():
-            objects["monster"].force_wait(10)
+            objects["monster"].force_exists(10)
         if objects["monster"].tap():
             if randrange(5) == 2:
-                objects['monster_plus'].force_waitap(10)
-            objects["go"].force_wait(10)
-        objects["go"].spam_tap(5, 0.2)
+                objects['monster_plus'].force_tap(10)
+            objects["go"].force_exists(10)
+        objects["go"].tap(times=5, interval=0.2)
         sleep(1)
-        if not self.withdraw() and objects["arrow"].wait(2):
-            objects["arrow"].force_spam_tap(2, 0.2)
+        if not self.withdraw() and objects["arrow"].exists(2):
+            objects["arrow"].force_tap(times=2, interval=0.2)
         for _ in range(30):
             if objects["quick_search"].tap():
-                objects["map_hand"].force_waitap(3)
-                objects["arrow"].wait(2)
-                objects["arrow"].spam_tap(2, 0.5)
+                objects["map_hand"].force_tap(3)
+                objects["arrow"].exists(2)
+                objects["arrow"].tap(times=2, interval=0.5)
 
             elif objects['attack'].tap():
-                objects["set_out"].waitap(2)
-                if objects["use_stamina"].waitap(1):
-                    objects["confirm_use_stamina"].force_waitap(3)
+                objects["set_out"].tap(2)
+                if objects["use_stamina"].tap(1):
+                    objects["confirm_use_stamina"].force_tap(3)
                     back()
-                    objects["set_out"].force_waitap(3)
+                    objects["set_out"].force_tap(3)
                     sleep(1.5)
-                if not objects['book'].wait(1):
+                if not objects['book'].exists(1):
                     self.stamina = False
                 break
             tap_center()
         self.close_ad()
 
     def _set_out(self) -> bool:
-        if not objects['gather'].waitap(4):
+        if not objects['gather'].tap(4):
             return False
 
-        if not objects['set_out'].wait(2):
+        if not objects['set_out'].exists(2):
             back()
             sleep(1)
             return False
@@ -1268,7 +1268,7 @@ class Castle:
 
         objects["set_out"].force_tap()
 
-        if not objects['book'].wait(1):
+        if not objects['book'].exists(1):
             self.is_enough_troops = False
             back()
             sleep(1)
@@ -1283,12 +1283,12 @@ class Castle:
         for _ in range(24):
             level, need_type = next(self.mine_type)
             print(f"searching mine. lv {level} {need_type.name.lower()}")
-            need_type.value.force_waitap(15)
-            objects["plus"].spam_tap(5, 0)
-            objects["minus"].spam_tap(MAX_MINE_LEVEL - level, 0)
-            objects["go"].spam_tap(4, 0.1)
+            need_type.value.force_tap(15)
+            objects["plus"].tap(times=5)
+            objects["minus"].tap(times=MAX_MINE_LEVEL - level)
+            objects["go"].tap(times=4, interval=0.1)
 
-            if objects["gather"].waitap(4):
+            if objects["gather"].tap(4):
                 self._set_out()
                 print("mine taken.")
                 self.mine_type = chain([(level, need_type)], self.mine_type)
@@ -1300,14 +1300,14 @@ class Castle:
         print("Elite")
         objects["book"].force_tap()
 
-        if objects["x_news"].waitap(0.5):
+        if objects["x_news"].tap(0.5):
             sleep(0.8)
 
-        objects["elite_mines"].force_waitap(4)
+        objects["elite_mines"].force_tap(4)
         sleep(1)
 
         if (
-            not objects["blue"].wait(3)
+            not objects["blue"].exists(3)
             or (mines := objects["blue"].count()) == len(self.elite_mines_got)
         ):
             back()
@@ -1318,7 +1318,7 @@ class Castle:
         blue = choice(list(free))
         self.elite_mines_got.add(blue)
 
-        objects["blue"].force_tap_nth(blue)
+        objects["blue"].force_tap(index=blue)
 
         if not self._set_out():
             return self.get_elite_mine()
