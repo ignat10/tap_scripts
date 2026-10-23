@@ -542,10 +542,6 @@ class Castle:
         while not objects[f"avatar_{avatar}"].exists(): #type: ignore
             print(f"logging into {self.name}")
             reset_screen()
-            if objects["exit_game"].exists():
-                print("invalid token.")
-                restart_app()
-                self.load()
             self.close_ad()
             if objects["avatar"].tap():
                 objects["account"].wait(4)
