@@ -753,11 +753,10 @@ class Castle:
     def tasks(self) -> bool:
         if not objects['tasks'].waitap(3):
             self.close_ad()
-            if not objects['tasks'].tap():
-                if self.level < 5:
-                    return False
-                else:
-                    log_raise("cannot find tasks object")
+            if self.level < 5:
+                return objects['tasks'].tap()
+            else:
+                objects['tasks'].force_tap(10)
         return True
 
     def pinata(self) -> None:
@@ -883,12 +882,12 @@ class Castle:
         return False
 
     def research(self) -> None:
-        if not self.tasks():
-            return
         marches = self.marches
         level = self.level
         objects["research_task"].force_waitap(10)
         if not objects["military"].wait(2):
+        if not self.tasks():
+            return
             objects["back"].force_tap()
         objects["military"].force_wait(10)
         if (
