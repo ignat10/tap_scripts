@@ -1,8 +1,12 @@
 from sqlite3 import Connection, IntegrityError, Row, connect
 from time import perf_counter
-from typing import Any
+from typing import Any, Iterator, TYPE_CHECKING
 
 from src.paths import CASTLES_DB_PATH
+
+
+if TYPE_CHECKING:
+    from src.actions import Castle
 
 DATA_COLUMNS = frozenset({"name", "last_login", "google", "account", "avatar"})
 
@@ -76,18 +80,12 @@ def remove_all_castles() -> int:
     return cursor.rowcount
 
 
-def iter_castles():
-    # Imported locally because actions persists Castle properties through this module.
+def iter_castles() -> Iterator[Castle]:
     from src.actions import Castle
-
     while (name := get_available()) is not None:
         castle = Castle(**get_castle(name))
         started_at = perf_counter()
-        try:
-            yield castle
-        finally:
-            Castle.close_ad()
-            release(name)
+        yield castle
 
         seconds = int(perf_counter() - started_at)
         minutes, seconds = divmod(seconds, 60)

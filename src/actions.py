@@ -529,18 +529,15 @@ class Castle:
 
     def log_into_account(self) -> None:
         """logs into current account. from city or map."""
-        gmail = self.google
-        account = self.account
-        avatar = self.avatar
+        if self.account is None:
+            self.new_account()
+            return
         assert (
-            gmail is not None
+            self.google is not None
         ), f"called log_into_account for {self.name}, but google was not set in {CASTLES_DB_PATH}"
-        assert (
-            account is not None
-        ), f"called log_into_account for {self.name}, but account was not set in {CASTLES_DB_PATH}"
-        assert avatar is not None, f"called log_into_account for {self.name}, but avatar was not set in {CASTLES_DB_PATH}"
+        assert self.avatar is not None, f"called log_into_account for {self.name}, but avatar was not set in {CASTLES_DB_PATH}"
 
-        while not objects[f"avatar_{avatar}"].exists(): #type: ignore
+        while not objects[f"avatar_{self.avatar}"].exists(): #type: ignore
             print(f"logging into {self.name}")
             reset_screen()
             self.close_ad()
@@ -552,7 +549,7 @@ class Castle:
                 sleep(1.5)
             if not (objects["login"].tap(3) and objects["gmail"].exists(10)):
                 continue
-            objects["gmail"].force_tap(index=gmail)
+            objects["gmail"].force_tap(index=self.google)
             for _ in range(15):
                 if objects["acc_list"].exists(1):
                     break
@@ -562,13 +559,12 @@ class Castle:
             else:
                 continue
             is_green = objects["green_castle"].exists()
-            if not objects["castle"].tap(index=account - is_green):
+            if not objects["castle"].tap(index=self.account - is_green):
                 log_raise("Google account cooldown.")
             objects["confirm"].force_tap(20)
             print("logged in.")
             sleep(7.5)
             self.load()
-            return
 
     @classmethod
     def load(cls) -> None:
@@ -1328,10 +1324,6 @@ class Castle:
         return True
 
     def grow(self):
-        if self.account is None:
-            self.new_account()
-        else:
-            self.log_into_account()
         self.bind_account()
         self.claim_rss()
         if self.last_login_minutes // 60 > 12:
