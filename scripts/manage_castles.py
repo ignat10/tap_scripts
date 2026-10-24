@@ -7,6 +7,8 @@ from src.castles import (
     get_column,
     remove_all_castles,
     remove_castle,
+    update_castle,
+    DATA_COLUMNS,
 )
 
 
@@ -20,13 +22,19 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    command = input("Action (add/remove/remove-all/list): ").strip().lower()
+    command = input("Action (add/edit/remove/remove-all/list): ").strip().lower()
     match command:
         case "add":
             name = input("Castle name: ").strip()
             google = int(input("Google: "))
             add_castle(name, google)
             print(f"Added castle: {name}")
+        case "edit":
+            name = input("Castle name: ").strip()
+            column = input(f"Field {DATA_COLUMNS}: ").strip().lower()
+            value = int(input(f"New {column}: "))
+            update_castle(name, column, value)
+            print(f"Updated {name}: {column} = {value}")
         case "remove":
             name = input("Castle name: ").strip()
             remove_castle(name)

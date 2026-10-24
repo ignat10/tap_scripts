@@ -4,8 +4,7 @@ from typing import Any
 
 from src.paths import CASTLES_DB_PATH
 
-DATA_COLUMNS = ("name", "last_login", "google", "account", "avatar")
-MUTABLE_COLUMNS = frozenset(DATA_COLUMNS[2:])
+DATA_COLUMNS = frozenset({"name", "last_login", "google", "account", "avatar"})
 
 
 def _connect() -> Connection:
@@ -34,8 +33,8 @@ def get_column(column: str) -> list[Any]:
 
 
 def update_castle(name: str, column: str, value: Any) -> None:
-    if column not in MUTABLE_COLUMNS:
-        raise ValueError(f"cannot update castle column: {column}")
+    if column not in DATA_COLUMNS:
+        raise ValueError(f"unknown castle column: {column}")
     with _connect() as connection:
         cursor = connection.execute(
             f"UPDATE castles SET {column} = ? WHERE name = ?",
