@@ -11,6 +11,7 @@ ScreenObjectName = Literal[
     "x",
     "x_news",
     "x_new",
+    "x_ldplayer",
     "continue_game",
     "claim_healed",
     "hospital",

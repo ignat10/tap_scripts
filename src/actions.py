@@ -582,6 +582,7 @@ class Castle:
                 sleep(1)
                 if objects['confirm_age'].tap(3):
                     print("confirmed age")
+            objects['x_ldplayer'].tap()
             if perf_counter() - start > 200:
                 print("loading timeout. restart app.")
                 restart_app()
