@@ -3,7 +3,6 @@ from functools import cached_property
 from itertools import chain
 from random import randrange, choice, sample
 from time import sleep, perf_counter
-from typing import cast
 
 from screen_objects import (
     back,
@@ -22,7 +21,7 @@ from src.device import shake
 from src.castles import get_column, update_castle
 from src.objects import (
     objects,
-    ScreenObjectName,
+    avatars,
     bug_levels,
     troops,
     equipment,
@@ -75,7 +74,7 @@ class Castle:
         if avatar is not None:
             value_assert("avatar", avatar, int)
             assert 0 <= avatar <= 14, f"avatar in {CASTLES_DB_PATH} must be between 0 and 14"
-        self._name = name
+        self.name = name
         self._google = google
         self._account = account
         self._avatar = avatar
@@ -96,9 +95,6 @@ class Castle:
         self.is_enough_troops = True
         self.elite_mines_got: set[int] = set()
 
-    @property
-    def name(self) -> ScreenObjectName:
-        return cast(ScreenObjectName, self._name)
 
     @property
     def google(self) -> int:
@@ -106,7 +102,7 @@ class Castle:
 
     @google.setter
     def google(self, value: int):
-        update_castle(self._name, "google", value)
+        update_castle(self.name, "google", value)
         self._google = value
 
     @property
@@ -115,7 +111,7 @@ class Castle:
 
     @account.setter
     def account(self, value: int):
-        update_castle(self._name, "account", value)
+        update_castle(self.name, "account", value)
         self._account = value
 
     @property
@@ -124,7 +120,7 @@ class Castle:
 
     @avatar.setter
     def avatar(self, value: int | None):
-        update_castle(self._name, "avatar", value)
+        update_castle(self.name, "avatar", value)
         self._avatar = value
 
     @property
@@ -527,7 +523,7 @@ class Castle:
                 sleep(1.5)
                 back()
 
-    def log_into_account(self) -> None:
+    def log_into_account(self, green_regular_position: int) -> None:
         """logs into current account. from city or map."""
         if self.account is None:
             self.new_account()
@@ -537,7 +533,7 @@ class Castle:
         ), f"called log_into_account for {self.name}, but google was not set in {CASTLES_DB_PATH}"
         assert self.avatar is not None, f"called log_into_account for {self.name}, but avatar was not set in {CASTLES_DB_PATH}"
 
-        while not objects[f"avatar_{self.avatar}"].exists(): #type: ignore
+        while not avatars[self.avatar].exists(): #type: ignore
             print(f"logging into {self.name}")
             reset_screen()
             self.close_ad()
@@ -558,7 +554,7 @@ class Castle:
                     objects['acc_list'].exists(10)
             else:
                 continue
-            is_green = objects["green_castle"].exists()
+            is_green = objects["green_castle"].exists() and self.account > green_regular_position
             if not objects["castle"].tap(index=self.account - is_green): # FIX: green castle might be in self.account number.
                 log_raise("Google account cooldown.")
             objects["confirm"].force_tap(20)

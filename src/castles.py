@@ -36,6 +36,15 @@ def get_column(column: str) -> list[Any]:
         return [row[0] for row in connection.execute(f"SELECT {column} FROM castles")]
 
 
+def get_castle_name_by_avatar(avatar_number: int) -> str | None:
+    with _connect() as connection:
+        row = connection.execute(
+            "SELECT name FROM castles WHERE avatar = ? ORDER BY name LIMIT 1",
+            (avatar_number,),
+        ).fetchone()
+    return row[0] if row is not None else None
+
+
 def update_castle(name: str, column: str, value: Any) -> None:
     if column not in DATA_COLUMNS:
         raise ValueError(f"unknown castle column: {column}")

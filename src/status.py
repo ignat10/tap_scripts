@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import Enum, auto
 
-from src.objects import objects, resources_need
+from src.objects import objects, resources_need, avatars
 
 
 class MineType(Enum):
@@ -56,3 +56,9 @@ class Task(Enum):
             if task.value.exists():
                 return task
         return None
+
+def check_avatar() -> int | None:
+    for num, avatar in avatars.items():
+        if avatar.exists():
+            return num
+    return None

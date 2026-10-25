@@ -1,8 +1,9 @@
 from screen_objects import start_app
 
-from src.castles import iter_castles, release
-from src.utils import parse_instance
+from src.castles import iter_castles, release, get_castle_name_by_avatar, get_castle
+from src.utils import parse_instance, log_raise
 from src.device import launch_instance
+from src.status import check_avatar
 
 
 def main():
@@ -15,7 +16,14 @@ def main():
         return
     try:
         castle.load()
-        castle.log_into_account()
+        avatar = check_avatar()
+        if avatar is None:
+            log_raise("Loaded, but no avatar was found.")
+        name = get_castle_name_by_avatar(avatar)
+        assert name is not None
+        print(f"Currently logged into {name}")
+        account = get_castle(name)['account']
+        castle.log_into_account(account)
     except:
         release(castle.name)
         raise
@@ -27,12 +35,14 @@ def main():
         try:
             name_old = castle.name
             castle.grow()
+            old_account = castle.account
+            assert old_account is not None
             castle = next(castles, None)
             if castle is None:
                 break
             name_new = castle.name
-            castle.log_into_account()
-        except Exception as e:
+            castle.log_into_account(old_account)
+        except Exception:
             raise
 
         finally:

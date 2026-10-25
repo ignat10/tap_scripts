@@ -324,3 +324,9 @@ march_limits: dict[int, ScreenObject] = {
     for name, obj in objects.items()
     if name.startswith("march_limit_")
 }
+
+avatars: dict[int, ScreenObject] = {
+    int(name[7:]): obj
+    for name, obj in objects.items()
+    if name.startswith("avatar_")
+}
