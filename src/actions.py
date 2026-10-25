@@ -1141,7 +1141,8 @@ class Castle:
     @classmethod
     def join_alliance(cls) -> None:
         objects['alliance'].force_tap()
-        if objects['alliance_bonuses'].tap(2):
+        if objects['alliance_bonuses'].exists(2):
+            back()
             objects['apply'].exists(2)
         if not (objects['apply'].exists() or objects['join'].exists()):
             cls.close_ad()
