@@ -9,6 +9,7 @@ from src.status import check_avatar
 def main():
     instance = parse_instance()
     launch_instance(instance)
+    from src.logger import logger # Import after launch_instance, that logger will have instance name
     start_app()
     castles = iter_castles()
     castle = next(castles, None)
@@ -21,10 +22,11 @@ def main():
             log_raise("Loaded, but no avatar was found.")
         name = get_castle_name_by_avatar(avatar)
         assert name is not None
-        print(f"Currently logged into {name}")
+        logger.info(f"Currently logged into {name}")
         account = get_castle(name)['account']
         castle.log_into_account(account)
     except:
+        logger.exception("Exception occurred while logging into first castle.")
         release(castle.name)
         raise
 
@@ -42,7 +44,8 @@ def main():
                 break
             name_new = castle.name
             castle.log_into_account(old_account)
-        except Exception:
+        except:
+            logger.exception("Exception occurred in main loop.")
             raise
 
         finally:
