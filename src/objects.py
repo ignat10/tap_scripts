@@ -209,7 +209,7 @@ ScreenObjectName = Literal[
     "2-16_characters",
     "change_name_green",
     "pick_avatar",
-    "avatar_switch",
+    "switch_arrows",
     "switch_avatar",
     "switch",
     "new_game",

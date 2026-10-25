@@ -275,7 +275,7 @@ class Castle:
         objects["avatar"].force_tap(3)
         if objects["x_news"].tap(1):
             sleep(1)
-        objects["avatar_switch"].force_tap(10)
+        objects["switch_arrows"].force_tap(10)
         sleep(1)
         objects['pick_avatar'].force_exists(10)
         assert objects['pick_avatar'].count() == 15
