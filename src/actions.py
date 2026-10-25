@@ -559,7 +559,7 @@ class Castle:
             else:
                 continue
             is_green = objects["green_castle"].exists()
-            if not objects["castle"].tap(index=self.account - is_green):
+            if not objects["castle"].tap(index=self.account - is_green): # FIX: green castle might be in self.account number.
                 log_raise("Google account cooldown.")
             objects["confirm"].force_tap(20)
             print("logged in.")
